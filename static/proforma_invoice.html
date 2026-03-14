@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Proforma Invoice - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            width: calc(100% - 260px);
+            height: calc(100vh - 70px);
+            display: flex;
+            padding: 0 !important;
+        }
+
+        .form-section {
+            width: 45%;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+            border-right: 1px solid #eee;
+        }
+
+        .preview-section {
+            width: 55%;
+            background: #525659;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .paper {
+            background: white;
+            width: 595px;
+            min-height: 842px;
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .product-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #2E3192;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .custom-dropdown {
+            border: 2px solid #2E3192 !important;
+            background-color: #f8f9ff;
+            font-weight: 600;
+        }
+
+        /* Preview Styles */
+        .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .p-logo { color: #C5A059; font-weight: bold; font-size: 18px; }
+        .p-contact { text-align: right; font-size: 9px; }
+        .p-line-navy { height: 4px; background: #2E3192; margin-top: 5px; }
+        .p-line-gold { height: 2px; background: #C5A059; margin-top: 2px; }
+        .p-title { font-size: 18px; font-weight: bold; margin: 20px 0; }
+        .p-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .p-table th { background: #f2f2f2; padding: 5px; border: 1px solid #ddd; text-align: left; }
+        .p-table td { padding: 5px; border: 1px solid #ddd; }
+        .highlight { background: #fffde7; padding: 0 2px; }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container"><i data-lucide="building-2"></i></div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Admin</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li>
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="form-section">
+            <h2>📝 Generate Proforma Invoice</h2>
+            <form id="proforma-form" onsubmit="submitProforma(event)">
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>PI Number</label>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span style="background: #e9ecef; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; color: #6c757d;">JHOM/PI/</span>
+                            <input type="text" id="pi_id" value="2026/002" oninput="updatePreview()" style="flex: 1;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex: 1;"><label>PI Date</label><input type="text" id="pi_date" value="12 February 2026" oninput="updatePreview()"></div>
+                </div>
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>LC Date</label><input type="text" id="lc_date" value="12 February 2026" oninput="updatePreview()"></div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Validity</label>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <input type="number" id="validity" value="7" oninput="updatePreview()" style="flex: 1;">
+                            <span style="background: #e9ecef; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; color: #6c757d;">Days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 20px 0;">
+                <h3>Buyer Details</h3>
+                <div class="form-group"><label>Company Name</label><input type="text" id="buyer_name" value="NEW MARIA TOWN" oninput="updatePreview()"></div>
+                <div class="form-group"><label>Registered Address</label><textarea id="buyer_address" oninput="updatePreview()">383 Block 311 Street 336 Manama, Al Asimah Bahrain</textarea></div>
+
+                <hr style="margin: 20px 0;">
+                <h3>Products</h3>
+                <div id="products-container"></div>
+                <button type="button" class="add-product-btn" onclick="addProduct()" style="background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 20px;">+ Add Product</button>
+
+                <hr style="margin: 20px 0;">
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Incoterm</label>
+                        <select id="incoterm" class="custom-dropdown" onchange="toggleIncotermFields()" style="padding: 11px;">
+                            <option value="FOB">FOB – India Port</option>
+                            <option value="CIF">CIF – Extra Port</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;"><label>Currency</label><input type="text" id="currency" value="USD" readonly style="background-color: #e9ecef;"></div>
+                </div>
+
+                <div class="form-group" id="cif_port_group" style="display: none;">
+                    <label>CIF Destination Port</label>
+                    <input type="text" id="cif_port" placeholder="Enter destination port name" oninput="updatePreview()">
+                </div>
+
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Advance %</label><input type="number" id="advance_pct" value="60" oninput="calculateTerms('advance')"></div>
+                    <div class="form-group" style="flex: 1;"><label>Balance %</label><input type="number" id="balance_pct" value="40" oninput="calculateTerms('balance')"></div>
+                </div>
+
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Shipment Mode</label>
+                        <select id="shipment_mode" class="custom-dropdown" onchange="updatePreview()" style="padding: 11px;">
+                            <option value="By Sea">By Sea</option>
+                            <option value="By Air">By Air</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;"><label>Delivery Time</label>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <input type="text" id="delivery_time" value="30–45" oninput="updatePreview()" style="flex: 1;">
+                            <span style="background: #e9ecef; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; color: #6c757d;">Days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Port of Loading</label><input type="text" id="port_loading" value="India Port" readonly style="background-color: #e9ecef;"></div>
+                    <div class="form-group" style="flex: 1;"><label>Port of Discharge</label><input type="text" id="port_discharge" value="Khalifa Bin Salman Port" oninput="updatePreview()"></div>
+                </div>
+
+                <div class="form-group"><label>Amount in Words</label><input type="text" id="amount_words" readonly style="background-color: #e9ecef;"></div>
+                <div class="form-group"><label>Grand Total</label><input type="text" id="grand_total" readonly style="background-color: #e9ecef;"></div>
+
+                <button type="submit" class="submit-btn" id="export-btn">🚀 Export Proforma PDF</button>
+            </form>
+        </div>
+
+        <div class="preview-section">
+            <div class="paper" id="preview-paper">
+                <div class="p-header">
+                    <div class="p-logo">JHOM EXIM<br>WORLDWIDE LLP</div>
+                    <div class="p-contact">
+                        478, AR Mal, Mota Varachha, Surat, Gujarat,<br>
+                        India-394101.<br>
+                        https://jhomeximworldwide.com<br>
+                        ceo@jhomeximworldwide.com
+                    </div>
+                </div>
+                <div class="p-line-navy"></div>
+                <div class="p-line-gold"></div>
+
+                <div class="p-title">PROFORMA INVOICE</div>
+
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 15px; margin-bottom: 15px;">
+                    <div style="width: 60%;">
+                        <strong>Exporter:</strong><br>
+                        JHOM EXIM WORLDWIDE LLP<br>
+                        Surat, Gujarat, India<br>
+                        www.jhomeximworldwide.com<br>
+                        jhomeximworldwidellp@gmail.com<br>
+                        +91 87800 27334
+                    </div>
+                <div style="width: 40%; text-align: right;">
+                    Proforma Invoice No: <span id="prev_id" class="highlight"></span><br>
+                    Date: <span id="prev_date" class="highlight"></span><br>
+                    LC Date: <span id="prev_lc_date" class="highlight"></span><br>
+                    Validity: <span id="prev_validity" class="highlight"></span>
+                </div>
+                </div>
+
+                <div style="border-bottom: 3px solid #ccc; padding-bottom: 20px; margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">Buyer Details</div>
+                    <strong>Company Name:</strong> <span id="prev_buyer_name" class="highlight"></span><br><br>
+                    <strong>Registered Address:</strong> <span id="prev_buyer_address" class="highlight"></span>
+                </div>
+
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">Product Details</div>
+                <table class="p-table">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Description</th>
+                            <th>HS Code</th>
+                            <th>Packaging</th>
+                            <th>Quantity</th>
+                            <th>Origin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prev_table_body"></tbody>
+                </table>
+
+                <div style="border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px;">
+                    <strong>Incoterm:</strong> <span id="prev_incoterm" class="highlight"></span> | 
+                    <strong>Currency:</strong> <span id="prev_currency" class="highlight"></span>
+                </div>
+
+                <div id="prev_product_details"></div>
+
+                <div style="font-size: 14px; font-weight: bold; margin: 20px 0;">
+                    Grand Total <span id="prev_incoterm_2"></span> Value: 
+                    <span id="prev_grand_total" class="highlight"></span>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <strong>Amount in Words:</strong> <span id="prev_amount_words" class="highlight"></span>
+                </div>
+
+                <div style="border-bottom: 1px solid #ccc; padding-bottom: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">Payment Terms</div>
+                    • <span id="prev_advance_pct"></span>% Advance through Bank Transfer (T/T)<br>
+                    • <span id="prev_balance_pct"></span>% Balance under Irrevocable L/C at sight
+                </div>
+
+                <div style="border-bottom: 1px solid #ccc; padding-bottom: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">Shipment Terms</div>
+                    • Mode: <span id="prev_shipment_mode"></span> | Time: <span id="prev_delivery_time"></span><br>
+                    • Loading: <span id="prev_port_loading"></span> | Discharge: <span id="prev_port_discharge"></span>
+                </div>
+
+                <div style="margin-top:60px;">
+                    <strong>For JHOM EXIM WORLDWIDE LLP</strong><br><br><br>
+                    Authorized Signatory<br>
+                    CEO & Founder
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        lucide.createIcons();
+        let productCount = 0;
+
+        function addProduct() {
+            productCount++;
+            const container = document.getElementById("products-container");
+            const div = document.createElement("div");
+            div.className = "product-block";
+            div.id = `prod_${productCount}`;
+            div.innerHTML = `
+                <h4 style="margin-top: 0; margin-bottom: 15px; color: #2E3192;">Product #${productCount}</h4>
+                <button type="button" onclick="removeProduct('${div.id}')" style="position: absolute; top: 15px; right: 15px; background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; ${productCount === 1 ? 'display:none' : ''}">X</button>
+                <div class="form-group"><label>Description</label><input type="text" class="p_desc" value="Cardamom" oninput="updatePreview()"></div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>HS Code</label><input type="text" class="p_hs" value="09083120" oninput="updatePreview()"></div>
+                    <div class="form-group" style="flex: 1;"><label>Packaging</label><input type="text" class="p_pkg" value="10 KG PP Bags" oninput="updatePreview()"></div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Quantity (Numeric)</label><input type="text" class="p_qty_val" value="12000" oninput="updatePreview()"></div>
+                    <div class="form-group" style="flex: 1;"><label>Unit</label><input type="text" class="p_qty_unit" value="KG" oninput="updatePreview()"></div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Origin</label><input type="text" class="p_origin" value="India" readonly style="background-color: #e9ecef;"></div>
+                    <div class="form-group" style="flex: 1;"><label>Rate</label><input type="text" class="p_rate" value="10.50" oninput="updatePreview()"></div>
+                </div>
+                <div class="form-group"><label>Product Total</label><input type="text" class="p_total" readonly style="background-color: #e9ecef;"></div>
+            `;
+            container.appendChild(div);
+            updatePreview();
+        }
+
+        function removeProduct(id) { document.getElementById(id).remove(); updatePreview(); }
+        function toggleIncotermFields() {
+            const inc = document.getElementById("incoterm").value;
+            document.getElementById("cif_port_group").style.display = (inc === "CIF") ? "block" : "none";
+            updatePreview();
+        }
+        function calculateTerms(type) {
+            let adv = parseInt(document.getElementById("advance_pct").value) || 0;
+            if (adv > 100) adv = 100;
+            document.getElementById("advance_pct").value = adv;
+            document.getElementById("balance_pct").value = 100 - adv;
+            updatePreview();
+        }
+        function parseNumeric(val) { return parseFloat(val.toString().replace(/[^0-9.]/g, '')) || 0; }
+        
+        function numberToWords(num) {
+            if (num === 0) return 'Zero';
+            const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+            const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            const scales = ['', 'Thousand', 'Million', 'Billion'];
+            function convertChunk(n) {
+                let s = '';
+                if (n >= 100) { s += units[Math.floor(n / 100)] + ' Hundred '; n %= 100; }
+                if (n >= 20) { s += tens[Math.floor(n / 10)] + ' '; n %= 10; }
+                else if (n >= 10) { s += teens[n - 10] + ' '; n = 0; }
+                if (n > 0) { s += units[n] + ' '; }
+                return s.trim();
+            }
+            let word = ''; let scaleIdx = 0; let intP = Math.floor(num); let decP = Math.round((num - intP) * 100);
+            while (intP > 0) {
+                let chunk = intP % 1000;
+                if (chunk > 0) word = convertChunk(chunk) + ' ' + scales[scaleIdx] + ' ' + word;
+                intP = Math.floor(intP / 1000); scaleIdx++;
+            }
+            word = word.trim() + ' Dollars';
+            if (decP > 0) word += ' and ' + convertChunk(decP) + ' Cents';
+            return word + ' Only';
+        }
+
+        function updatePreview() {
+            document.getElementById("prev_id").innerText = "JHOM/PI/" + document.getElementById("pi_id").value;
+            document.getElementById("prev_date").innerText = document.getElementById("pi_date").value;
+            document.getElementById("prev_lc_date").innerText = document.getElementById("lc_date").value;
+            document.getElementById("prev_validity").innerText = document.getElementById("validity").value + " Days";
+            document.getElementById("prev_buyer_name").innerText = document.getElementById("buyer_name").value;
+            document.getElementById("prev_buyer_address").innerText = document.getElementById("buyer_address").value;
+
+            let tableHTML = ""; let detailsHTML = ""; let grandTotal = 0;
+            document.querySelectorAll(".product-block").forEach((block, i) => {
+                const desc = block.querySelector(".p_desc").value;
+                const hs = block.querySelector(".p_hs").value;
+                const pkg = block.querySelector(".p_pkg").value;
+                const qtyVal = parseNumeric(block.querySelector(".p_qty_val").value);
+                const qtyUnit = block.querySelector(".p_qty_unit").value;
+                const rate = parseNumeric(block.querySelector(".p_rate").value);
+                const total = rate * qtyVal;
+                block.querySelector(".p_total").value = total.toLocaleString();
+                grandTotal += total;
+                tableHTML += `<tr><td>${i+1}</td><td>${desc}</td><td>${hs}</td><td>${pkg}</td><td>${qtyVal} ${qtyUnit}</td><td>India</td></tr>`;
+                detailsHTML += `<div style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;"><strong>${desc}</strong>: $${total.toLocaleString()}</div>`;
+            });
+
+            document.getElementById("prev_table_body").innerHTML = tableHTML;
+            document.getElementById("prev_product_details").innerHTML = detailsHTML;
+            document.getElementById("grand_total").value = grandTotal.toLocaleString();
+            document.getElementById("prev_grand_total").innerText = "$ " + grandTotal.toLocaleString();
+            const words = numberToWords(grandTotal);
+            document.getElementById("amount_words").value = words;
+            document.getElementById("prev_amount_words").innerText = words;
+
+            const inc = document.getElementById("incoterm").value;
+            const fullInc = inc === "CIF" ? `CIF – ${document.getElementById("cif_port").value}` : "FOB – India Port";
+            document.getElementById("prev_incoterm").innerText = fullInc;
+            document.getElementById("prev_incoterm_2").innerText = fullInc;
+            document.getElementById("prev_currency").innerText = "USD";
+            document.getElementById("prev_advance_pct").innerText = document.getElementById("advance_pct").value;
+            document.getElementById("prev_balance_pct").innerText = document.getElementById("balance_pct").value;
+            document.getElementById("prev_shipment_mode").innerText = document.getElementById("shipment_mode").value;
+            document.getElementById("prev_delivery_time").innerText = document.getElementById("delivery_time").value + " Days";
+            document.getElementById("prev_port_loading").innerText = document.getElementById("port_loading").value;
+            document.getElementById("prev_port_discharge").innerText = document.getElementById("port_discharge").value;
+        }
+
+        async function submitProforma(e) {
+            e.preventDefault();
+            const btn = document.getElementById("export-btn");
+            btn.innerText = "⏳ Generating...";
+            const products = [];
+            document.querySelectorAll(".product-block").forEach((b, i) => {
+                products.push({
+                    sr_no: i + 1,
+                    description: b.querySelector(".p_desc").value,
+                    hs_code: b.querySelector(".p_hs").value,
+                    packaging: b.querySelector(".p_pkg").value,
+                    quantity: b.querySelector(".p_qty_val").value + " " + b.querySelector(".p_qty_unit").value,
+                    origin: "India",
+                    rate: parseNumeric(b.querySelector(".p_rate").value),
+                    total: parseNumeric(b.querySelector(".p_total").value)
+                });
+            });
+            const payload = {
+                id: "JHOM/PI/" + document.getElementById("pi_id").value,
+                date: document.getElementById("pi_date").value,
+                lc_date: document.getElementById("lc_date").value,
+                validity: document.getElementById("validity").value + " Days",
+                buyer_name: document.getElementById("buyer_name").value,
+                buyer_address: document.getElementById("buyer_address").value,
+                products,
+                incoterm: document.getElementById("incoterm").value === "CIF" ? `CIF – ${document.getElementById("cif_port").value}` : "FOB – India Port",
+                currency: "USD",
+                advance_pct: parseInt(document.getElementById("advance_pct").value),
+                balance_pct: parseInt(document.getElementById("balance_pct").value),
+                mode_of_shipment: document.getElementById("shipment_mode").value,
+                delivery_time: document.getElementById("delivery_time").value + " Days",
+                port_of_loading: "India Port",
+                port_of_discharge: document.getElementById("port_discharge").value,
+                amount_in_words: document.getElementById("amount_words").value,
+                grand_total: parseNumeric(document.getElementById("grand_total").value)
+            };
+            const res = await fetch('/api/proforma/generate-pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Proforma_${payload.id.replace(/\//g,'_')}.pdf`;
+            a.click();
+            btn.innerText = "🚀 Export Proforma PDF";
+        }
+        window.onload = addProduct;
+    </script>
+</body>
+</html>

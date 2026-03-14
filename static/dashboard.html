@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Business Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container">
+                <i data-lucide="building-2"></i>
+            </div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">
+                <i data-lucide="log-out"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li>
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Welcome back! Here's your business overview</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="totalBuyers">0</h3>
+                    <p>Total Buyers</p>
+                </div>
+                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="totalManufacturers">0</h3>
+                    <p>Manufacturers</p>
+                </div>
+                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="totalTasks">0</h3>
+                    <p>Active Tasks</p>
+                </div>
+                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="driveStatus">-</h3>
+                    <p>Drive Status</p>
+                </div>
+                <div class="stat-icon purple"><i data-lucide="hard-drive"></i></div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Buyers</h3>
+                    <a href="buyers.html" class="btn btn-small">View All</a>
+                </div>
+                <div class="card-body">
+                    <div id="recentBuyers" class="table-container">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Tasks</h3>
+                    <a href="tasks.html" class="btn btn-small">View All</a>
+                </div>
+                <div class="card-body">
+                    <div id="recentTasks" class="table-container">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

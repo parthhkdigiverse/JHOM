@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - Business Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .calendar-main-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .calendar-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .calendar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .calendar-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--gray-900);
+        }
+
+        .event-type-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .badge-appointment {
+            background: #3788d8;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-meeting {
+            background: #f59e0b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-work {
+            background: #10b981;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-task {
+            background: #ef4444;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-event {
+            background: #8b5cf6;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .today-event {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .today-event:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .today-event-time {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .today-event-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .event-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            padding: 15px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .event-item:hover {
+            background: var(--gray-100);
+            transform: translateX(5px);
+        }
+
+        .event-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .event-time {
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-bottom: 5px;
+        }
+
+        .event-location {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .calendar-main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container">
+                <i data-lucide="building-2"></i>
+            </div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="logout()" class="btn btn-small btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li>
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>Calendar & Events</h1>
+                <p>Manage your schedule, tasks, and deadlines</p>
+            </div>
+            <button onclick="showAddModal()" class="btn btn-primary">
+                <i data-lucide="plus" class="btn-icon"></i> Add Event
+            </button>
+        </div>
+
+        <div class="calendar-main-container">
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+                <div class="event-type-badges">
+                    <span class="badge-appointment">Appointment</span>
+                    <span class="badge-meeting">Meeting</span>
+                    <span class="badge-work">Work</span>
+                    <span class="badge-task">Task</span>
+                    <span class="badge-event">Event</span>
+                </div>
+                <div id="calendar"></div>
+            </div>
+
+            <!-- Sidebar Section -->
+            <div class="sidebar-section">
+                <!-- Stats Card -->
+                <div class="calendar-card">
+                    <h3>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalEvents">0</div>
+                            <div class="stat-label">Total Events</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="todayEvents">0</div>
+                            <div class="stat-label">Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Events -->
+                <div class="calendar-card">
+                    <h3>📅 Today's Schedule</h3>
+                    <div id="todayEventsList"></div>
+                </div>
+
+                <!-- All Events List -->
+                <div class="calendar-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0;">All Events</h3>
+                        <button class="btn btn-primary btn-small" onclick="loadAllEvents()">
+                            <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+                    <div id="allEventsList" class="event-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Event</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+
+            <input type="hidden" id="eventId">
+
+            <div class="form-group">
+                <label>Title <span class="required">*</span></label>
+                <input type="text" id="eventTitle" placeholder="e.g., Team Meeting" required>
+            </div>
+
+            <div class="form-group">
+                <label>Event Type <span class="required">*</span></label>
+                <select id="eventType" required>
+                    <option value="appointment">📋 Appointment</option>
+                    <option value="meeting">👥 Meeting</option>
+                    <option value="work">💼 Work</option>
+                    <option value="task">✅ Task</option>
+                    <option value="event">🎉 Event</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Time <span class="required">*</span></label>
+                    <input type="datetime-local" id="startTime" required>
+                </div>
+                <div class="form-group">
+                    <label>End Time <span class="required">*</span></label>
+                    <input type="datetime-local" id="endTime" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="eventDescription" rows="3" placeholder="Add details..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="eventLocation" placeholder="e.g., Office, Zoom">
+            </div>
+
+            <div class="form-actions">
+                <button type="button" onclick="closeModal()" class="btn btn-secondary">
+                    <i data-lucide="x" class="btn-icon"></i> Cancel
+                </button>
+                <button type="button" onclick="saveEvent()" class="btn btn-primary">
+                    <i data-lucide="save" class="btn-icon"></i> <span id="saveButtonText">Create Event</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Event Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Event Details</h2>
+                <span class="close" onclick="closeViewModal()">&times;</span>
+            </div>
+
+            <div id="viewEventContent"></div>
+
+            <div class="form-actions">
+                <button onclick="editEventFromView()" class="btn btn-primary">
+                    <i data-lucide="edit-2" class="btn-icon"></i> Edit
+                </button>
+                <button onclick="deleteEventFromView()" class="btn btn-danger">
+                    <i data-lucide="trash-2" class="btn-icon"></i> Delete
+                </button>
+                <button onclick="closeViewModal()" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script>
+        // Check auth
+        if (!localStorage.getItem('auth_token')) {
+            window.location.href = 'index.html';
+        }
+
+        // Display user
+        var userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                var user = JSON.parse(userStr);
+                document.getElementById('userName').textContent = user.username || 'User';
+            } catch (e) {
+                document.getElementById('userName').textContent = 'User';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Calendar variables
+        let calendar;
+        let currentViewEventId = null;
+
+        // Load events from localStorage or use defaults
+        var eventsKey = 'calendar_events';
+        var events = JSON.parse(localStorage.getItem(eventsKey)) || [
+            {
+                id: 1,
+                title: 'Team Meeting',
+                start: new Date().toISOString().split('T')[0] + 'T10:00:00',
+                end: new Date().toISOString().split('T')[0] + 'T11:00:00',
+                event_type: 'meeting',
+                location: 'Conference Room',
+                description: 'Weekly team meeting',
+                backgroundColor: '#f59e0b',
+                borderColor: '#f59e0b'
+            },
+            {
+                id: 2,
+                title: 'Buyer Call',
+                start: new Date(Date.now() + 86400000).toISOString().split('T')[0] + 'T14:00:00',
+                end: new Date(Date.now() + 86400000).toISOString().split('T')[0] + 'T15:00:00',
+                event_type: 'appointment',
+                location: 'Zoom',
+                description: 'Discuss requirements',
+                backgroundColor: '#3788d8',
+                borderColor: '#3788d8'
+            }
+        ];
+
+        var eventIdCounter = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
+
+        // Save to localStorage
+        function saveEvents() {
+            localStorage.setItem(eventsKey, JSON.stringify(events));
+        }
+
+        // Initialize calendar
+        function initCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events,
+                eventClick: function (info) {
+                    info.jsEvent.preventDefault();
+                    showViewModal(parseInt(info.event.id));
+                },
+                editable: true,
+                eventDrop: function (info) {
+                    var event = events.find(e => e.id == info.event.id);
+                    if (event) {
+                        event.start = info.event.start.toISOString().slice(0, 16);
+                        event.end = info.event.end ? info.event.end.toISOString().slice(0, 16) : event.start;
+                        saveEvents();
+                        loadTodayEvents();
+                        loadAllEvents();
+                    }
+                },
+                selectable: true,
+                select: function (info) {
+                    document.getElementById('startTime').value = info.startStr.slice(0, 16);
+                    document.getElementById('endTime').value = info.endStr.slice(0, 16);
+                    showAddModal();
+                    calendar.unselect();
+                }
+            });
+            calendar.render();
+        }
+
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add Event';
+            document.getElementById('saveButtonText').textContent = 'Create Event';
+            document.getElementById('eventId').value = '';
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventType').value = 'meeting';
+            document.getElementById('eventDescription').value = '';
+            document.getElementById('eventLocation').value = '';
+            var now = new Date();
+            var start = new Date(now.getTime() + 3600000);
+            var end = new Date(start.getTime() + 3600000);
+            document.getElementById('startTime').value = start.toISOString().slice(0, 16);
+            document.getElementById('endTime').value = end.toISOString().slice(0, 16);
+            document.getElementById('eventModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('eventModal').style.display = 'none';
+        }
+
+        function showViewModal(eventId) {
+            currentViewEventId = eventId;
+            var event = events.find(e => e.id === eventId);
+            if (!event) return;
+            var colors = { 'appointment': '#3788d8', 'meeting': '#f59e0b', 'work': '#10b981', 'task': '#ef4444', 'event': '#8b5cf6' };
+            var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
+            var html = '<div style="margin-bottom: 15px;"><span class="badge" style="background: ' + colors[event.event_type] + '; color: white; padding: 6px 12px; border-radius: 20px;">' + icons[event.event_type] + ' ' + event.event_type.toUpperCase() + '</span></div>';
+            html += '<h2 style="margin-bottom: 15px;">' + event.title + '</h2>';
+            html += '<div style="background: #f9fafb; padding: 15px; border-radius: 8px;"><p><strong>📅 Start:</strong> ' + new Date(event.start).toLocaleString() + '</p>';
+            html += '<p><strong>⏰ End:</strong> ' + new Date(event.end).toLocaleString() + '</p>';
+            if (event.location) html += '<p><strong>📍 Location:</strong> ' + event.location + '</p>';
+            if (event.description) html += '<p><strong>📝 Description:</strong><br>' + event.description + '</p>';
+            html += '</div>';
+            document.getElementById('viewEventContent').innerHTML = html;
+            document.getElementById('viewModal').style.display = 'block';
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
+            currentViewEventId = null;
+        }
+
+        function editEventFromView() {
+            if (!currentViewEventId) return;
+            var event = events.find(e => e.id === currentViewEventId);
+            if (!event) return;
+            document.getElementById('modalTitle').textContent = 'Edit Event';
+            document.getElementById('saveButtonText').textContent = 'Update Event';
+            document.getElementById('eventId').value = event.id;
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventType').value = event.event_type;
+            document.getElementById('eventDescription').value = event.description || '';
+            document.getElementById('eventLocation').value = event.location || '';
+            document.getElementById('startTime').value = event.start.slice(0, 16);
+            document.getElementById('endTime').value = event.end.slice(0, 16);
+            closeViewModal();
+            document.getElementById('eventModal').style.display = 'block';
+        }
+
+        function deleteEventFromView() {
+            if (!currentViewEventId) return;
+            if (!confirm('Delete this event?')) return;
+            events = events.filter(e => e.id !== currentViewEventId);
+            saveEvents();
+            closeViewModal();
+            calendar.removeAllEvents();
+            calendar.addEventSource(events);
+            loadTodayEvents();
+            loadAllEvents();
+            loadStats();
+            alert('Event deleted!');
+        }
+
+        function saveEvent() {
+            var eventId = document.getElementById('eventId').value;
+            var title = document.getElementById('eventTitle').value.trim();
+            var eventType = document.getElementById('eventType').value;
+            var startTime = document.getElementById('startTime').value;
+            var endTime = document.getElementById('endTime').value;
+            var description = document.getElementById('eventDescription').value.trim();
+            var location = document.getElementById('eventLocation').value.trim();
+            if (!title || !startTime || !endTime) { alert('Please fill required fields'); return; }
+            var colors = { 'appointment': '#3788d8', 'meeting': '#f59e0b', 'work': '#10b981', 'task': '#ef4444', 'event': '#8b5cf6' };
+            if (eventId) {
+                var index = events.findIndex(e => e.id == eventId);
+                if (index > -1) events[index] = { id: parseInt(eventId), title, start: startTime, end: endTime, event_type: eventType, location, description, backgroundColor: colors[eventType], borderColor: colors[eventType] };
+            } else {
+                events.push({ id: eventIdCounter++, title, start: startTime, end: endTime, event_type: eventType, location, description, backgroundColor: colors[eventType], borderColor: colors[eventType] });
+            }
+            saveEvents();
+            closeModal();
+            calendar.removeAllEvents();
+            calendar.addEventSource(events);
+            loadTodayEvents();
+            loadAllEvents();
+            loadStats();
+            alert(eventId ? 'Event updated!' : 'Event created!');
+        }
+
+        function loadTodayEvents() {
+            var today = new Date().toISOString().split('T')[0];
+            var todayEvents = events.filter(e => e.start.startsWith(today));
+            var container = document.getElementById('todayEventsList');
+            if (todayEvents.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No events today</p></div>';
+            } else {
+                var html = '';
+                todayEvents.forEach(e => {
+                    html += '<div class="today-event" onclick="showViewModal(' + e.id + ')"><div class="today-event-time">' + e.start.slice(11, 16) + ' - ' + e.end.slice(11, 16) + '</div><div class="today-event-title">' + e.title + '</div>';
+                    if (e.location) html += '<div style="font-size: 11px; opacity: 0.9; margin-top: 3px;">📍 ' + e.location + '</div>';
+                    html += '</div>';
+                });
+                container.innerHTML = html;
+            }
+            document.getElementById('todayEvents').textContent = todayEvents.length;
+        }
+
+        function loadAllEvents() {
+            var container = document.getElementById('allEventsList');
+            if (events.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No events yet</p></div>';
+            } else {
+                var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
+                var html = '';
+                events.forEach(e => {
+                    html += '<div class="event-item" onclick="showViewModal(' + e.id + ')"><div class="event-item-header"><div><div class="event-title">' + icons[e.event_type] + ' ' + e.title + '</div><div class="event-time">📅 ' + new Date(e.start).toLocaleString() + '</div>';
+                    if (e.location) html += '<div class="event-location">📍 ' + e.location + '</div>';
+                    html += '</div></div></div>';
+                });
+                container.innerHTML = html;
+            }
+        }
+
+        function loadStats() {
+            document.getElementById('totalEvents').textContent = events.length;
+        }
+
+        // Initialize
+        initCalendar();
+        loadTodayEvents();
+        loadAllEvents();
+        loadStats();
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

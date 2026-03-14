@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Quotation - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            width: calc(100% - 260px);
+            height: calc(100vh - 70px);
+            display: flex;
+            padding: 0 !important; /* Override default padding */
+        }
+
+        .form-section {
+            width: 45%;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+            border-right: 1px solid #eee;
+        }
+
+        .preview-section {
+            width: 55%;
+            background: #525659;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .paper {
+            background: white;
+            width: 595px;
+            min-height: 842px;
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .product-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #2E3192;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .p-logo { color: #C5A059; font-weight: bold; font-size: 18px; line-height: 1.1; }
+        .p-contact { text-align: right; font-size: 9px; line-height: 1.3; color: #333; }
+        .p-line-navy { height: 4px; background: #2E3192; margin-top: 5px; }
+        .p-line-gold { height: 2px; background: #C5A059; margin-top: 2px; margin-bottom: 25px; }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container"><i data-lucide="building-2"></i></div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Admin</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="form-section">
+            <h2>📝 Generate Quotation</h2>
+            <form id="quote-form" onsubmit="submitJSON(event)">
+                <div id="products-container"></div>
+                <button type="button" class="add-product-btn" onclick="addProduct()" style="background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 20px;">+ Add Another Product</button>
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Price Term</label>
+                        <select id="price_term" onchange="updatePreview()">
+                            <option value="FOB">FOB</option>
+                            <option value="CIF">CIF</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Grand Total Price ($)</label>
+                        <input type="text" id="grand_total" value="0.00" readonly style="background-color: #e9ecef;">
+                    </div>
+                </div>
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Advance Payment %</label>
+                        <input type="number" id="advance_pct" value="60" oninput="calculateMath()" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Balance Payment %</label>
+                        <input type="number" id="balance_pct" value="40" readonly required style="background-color: #e9ecef;">
+                    </div>
+                </div>
+                <div class="row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Delivery Mode</label>
+                        <select id="delivery_mode" onchange="updatePreview()">
+                            <option value="By Sea">By Sea</option>
+                            <option value="By Air">By Air</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Timeline (Days)</label>
+                        <input type="text" id="timeline" value="30-45 days" oninput="updatePreview()" required>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn" id="export-btn">🚀 Export Finished PDF</button>
+            </form>
+        </div>
+
+        <div class="preview-section">
+            <div class="paper" id="preview-paper">
+                <div class="p-header">
+                    <div class="p-logo">JHOM EXIM<br>WORLDWIDE LLP</div>
+                    <div class="p-contact">
+                        478, AR Mal, Mota Varachha, Surat, Gujarat,<br>
+                        India-394101.<br>
+                        https://jhomeximworldwide.com<br>
+                        ceo@jhomeximworldwide.com
+                    </div>
+                </div>
+                <div class="p-line-navy"></div>
+                <div class="p-line-gold"></div>
+
+                <div style="margin-top: 10px; font-size: 12px; line-height: 1.5;">
+                    <strong>Greetings from JHOM EXIM WORLDWIDE LLP!</strong><br><br>
+                    We are pleased to offer you a quotation for the export of premium-quality products, as per your interest.
+                    Please find the detailed proposal below.
+                </div>
+                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Product Details</h3>
+                <div id="preview_products_list"></div>
+                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Price Terms (<span id="prev_price_term" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">FOB</span>)</h3>
+                <ul id="preview_prices_list" style="list-style-type: none; padding-left: 20px;"></ul>
+                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Payment Terms</h3>
+                <ul style="list-style-type: none; padding-left: 20px;">
+                    <li><span id="prev_advance" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">60</span>% Advance of the total <span id="prev_price_term_2">FOB</span> Value upon order confirmation</li>
+                    <li><span id="prev_balance" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">40</span>% Balance under Irrevocable Letter of Credit (LC) at sight</li>
+                </ul>
+                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Estimated Delivery Timeline</h3>
+                <ul style="list-style-type: none; padding-left: 20px;">
+                    <li><span id="prev_delivery_mode" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">By Sea</span>: <span id="prev_timeline" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">30-45 days</span></li>
+                </ul>
+                <br>
+                We look forward to building a strong and successful business relationship with you.
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        lucide.createIcons();
+        let productCount = 0;
+        function addProduct() {
+            productCount++;
+            const container = document.getElementById("products-container");
+            const div = document.createElement("div");
+            div.className = "product-block";
+            div.id = `product_block_${productCount}`;
+            div.innerHTML = `
+                <h4 style="margin-top: 0; margin-bottom: 15px; color: #2E3192;">📦 Product ${productCount}</h4>
+                <button type="button" onclick="removeProduct('${div.id}')" style="position: absolute; top: 15px; right: 15px; background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">X Remove</button>
+                <div class="form-group"><label>Product Name</label><input type="text" class="p_name" value="Cardamom" oninput="updatePreview()" required></div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Quantity</label><input type="text" class="p_qty" value="12 MT" oninput="updatePreview()" required></div>
+                    <div class="form-group" style="flex: 1;"><label>Packaging</label><input type="text" class="p_pkg" value="10 kg" oninput="updatePreview()" required></div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Grade</label><input type="text" class="p_grade" value="Export Quality" oninput="updatePreview()" required></div>
+                    <div class="form-group" style="flex: 1;"><label>Origin</label><input type="text" class="p_origin" value="India" oninput="updatePreview()" required></div>
+                </div>
+                <div class="form-group"><label>Price for this Product ($)</label><input type="number" class="p_price" value="359300" oninput="updatePreview()" required></div>
+            `;
+            container.appendChild(div);
+            updatePreview();
+        }
+        function removeProduct(id) { document.getElementById(id).remove(); updatePreview(); }
+        function updatePreview() {
+            const blocks = document.querySelectorAll(".product-block");
+            let productsHTML = ""; let pricesHTML = ""; let total = 0;
+            blocks.forEach((block, i) => {
+                const name = block.querySelector(".p_name").value || "...";
+                const qty = block.querySelector(".p_qty").value || "...";
+                const pkg = block.querySelector(".p_pkg").value || "...";
+                const grade = block.querySelector(".p_grade").value || "...";
+                const origin = block.querySelector(".p_origin").value || "...";
+                const price = parseFloat(block.querySelector(".p_price").value) || 0;
+                total += price;
+                productsHTML += `<strong>${i+1}. ${name}</strong><ul style="list-style-type: disc; padding-left: 20px; margin: 5px 0;"><li>Qty: ${qty}</li><li>Pkg: ${pkg}</li><li>Grade: ${grade}</li><li>Origin: ${origin}</li></ul>`;
+                pricesHTML += `<li>${name}: $${price.toLocaleString()}</li>`;
+            });
+            document.getElementById("grand_total").value = total.toLocaleString();
+            document.getElementById("preview_products_list").innerHTML = productsHTML;
+            document.getElementById("preview_prices_list").innerHTML = pricesHTML;
+            const pTerm = document.getElementById("price_term").value;
+            document.getElementById("prev_price_term").innerText = pTerm;
+            document.getElementById("prev_price_term_2").innerText = pTerm;
+            document.getElementById("prev_delivery_mode").innerText = document.getElementById("delivery_mode").value;
+            document.getElementById("prev_timeline").innerText = document.getElementById("timeline").value;
+            calculateMath();
+        }
+        function calculateMath() {
+            let adv = document.getElementById("advance_pct").value;
+            if (adv > 100) adv = 100;
+            document.getElementById("balance_pct").value = 100 - adv;
+            document.getElementById("prev_advance").innerText = adv;
+            document.getElementById("prev_balance").innerText = 100 - adv;
+        }
+        async function submitJSON(e) {
+            e.preventDefault();
+            const btn = document.getElementById('export-btn');
+            btn.innerText = "⏳ Generating...";
+            const products = [];
+            document.querySelectorAll(".product-block").forEach(b => {
+                products.push({
+                    name: b.querySelector(".p_name").value,
+                    quantity: b.querySelector(".p_qty").value,
+                    packaging: b.querySelector(".p_pkg").value,
+                    grade: b.querySelector(".p_grade").value,
+                    origin: b.querySelector(".p_origin").value,
+                    price: parseFloat(b.querySelector(".p_price").value) || 0
+                });
+            });
+            const payload = {
+                products,
+                price_term: document.getElementById("price_term").value,
+                advance_pct: parseInt(document.getElementById("advance_pct").value) || 0,
+                balance_pct: parseInt(document.getElementById("balance_pct").value) || 0,
+                delivery_mode: document.getElementById("delivery_mode").value,
+                timeline: document.getElementById("timeline").value
+            };
+            const res = await fetch('/api/quotation/generate-pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Quotation_${products[0]?.name || 'Export'}.pdf`;
+            a.click();
+            btn.innerText = "🚀 Export Finished PDF";
+        }
+        window.onload = addProduct;
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturers - Business Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container">
+                <i data-lucide="building-2"></i>
+            </div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li>
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>Buyers Management</h1>
+                <p>Manage your buyer information and contacts</p>
+            </div>
+            <button onclick="showAddModal()" class="btn btn-primary">
+                <i data-lucide="plus" class="btn-icon"></i> Add New Buyer
+            </button>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="🔍 Search buyers by name, company, email..."
+                class="search-input">
+        </div>
+
+        <!-- Buyers Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>All Buyers</h3>
+                <span id="buyerCount" class="count-badge">0 buyers</span>
+            </div>
+            <div class="card-body">
+                <div id="buyersContainer" class="table-container">
+                    <p class="loading">Loading buyers...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="buyerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Buyer</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="buyerForm">
+                <div class="form-section">
+                    <h3 class="section-title">Basic Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Buyer Name <span class="required">*</span></label>
+                            <input type="text" id="name" name="name" placeholder="Enter buyer name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company_name">Company Name <span class="required">*</span></label>
+                            <input type="text" id="company_name" name="company_name" placeholder="Enter company name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="buyer@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+91-XXXXXXXXXX">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">Address Details</h3>
+
+                    <div class="form-group">
+                        <label for="address">Street Address</label>
+                        <textarea id="address" name="address" rows="2" placeholder="Enter complete address"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" placeholder="Enter city">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" placeholder="Enter state">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" placeholder="Enter country" value="India">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">Business Details</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gst_number">GST Number</label>
+                            <input type="text" id="gst_number" name="gst_number" placeholder="Enter GST/VAT/TIN number">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment_terms">Payment Terms <span class="required">*</span></label>
+                            <select id="payment_terms" name="payment_terms" required>
+                                <option value="">-- Select Payment Terms --</option>
+                                <option value="FOB">📦 FOB (Free On Board)</option>
+                                <option value="CIF">🚢 CIF (Cost, Insurance & Freight)</option>
+                            </select>
+                            <small>💡 FOB: Buyer arranges shipping | CIF: Seller includes shipping & insurance</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">
+                        <span class="btn-icon">✕</span> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="btn-icon">💾</span> Save Buyer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/buyers.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

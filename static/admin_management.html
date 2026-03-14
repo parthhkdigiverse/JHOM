@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Management - JHOM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container">
+                <i data-lucide="shield-check"></i>
+            </div>
+            <h2>Super Admin Portal</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">
+                <i data-lucide="log-out"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu" id="sidebarMenu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="active superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Admin Management</h1>
+            <p>Manage system access and monitor global stats</p>
+        </div>
+
+        <!-- Global Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statBuyers">0</h3>
+                    <p>Total Buyers</p>
+                </div>
+                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statManufacturers">0</h3>
+                    <p>Manufacturers</p>
+                </div>
+                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statTasks">0</h3>
+                    <p>Total Tasks</p>
+                </div>
+                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+            </div>
+        </div>
+
+        <!-- Admins List -->
+        <div class="card mt-20">
+            <div class="card-header">
+                <h3>System Administrators</h3>
+                <button class="btn" id="addAdminBtn">
+                    <i data-lucide="user-plus"></i> Add New Admin
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="adminsContainer" class="table-container">
+                    <p class="loading">Fetching administrative users...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Admin</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="adminForm">
+                <input type="hidden" id="adminId">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="text" id="password" required>
+                    <small>Visible to superusers only</small>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role">
+                        <option value="admin">Regular Admin</option>
+                        <option value="superuser">Super User</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="is_active" checked> Active Account
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn">Save Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/admin_management.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

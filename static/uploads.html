@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploads - Business Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container">
+                <i data-lucide="building-2"></i>
+            </div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li>
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li>
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>File Upload Management</h1>
+                <p>Upload and manage documents</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i data-lucide="cloud" class="header-icon" style="margin-right: 10px; color: var(--accent);"></i>
+                <h3>Google Drive Status</h3>
+            </div>
+            <div class="card-body">
+                <div id="driveStatusContainer">
+                    <p class="loading">Checking connection...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Tabs -->
+        <div class="card">
+            <div class="card-header">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('buyer')">Buyer Upload</button>
+                    <button class="tab-btn" onclick="switchTab('manufacturer')">Manufacturer Upload</button>
+                    <button class="tab-btn" onclick="switchTab('direct')">Direct Upload</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Buyer Upload Tab -->
+                <div id="buyer-tab" class="tab-content active">
+                    <h3>Upload Buyer Document</h3>
+                    <form id="buyerUploadForm" class="upload-form">
+                        <div class="form-group">
+                            <label for="buyerId">Select Buyer *</label>
+                            <select id="buyerId" name="buyerId" required>
+                                <option value="">Loading buyers...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="buyerFile">Select File *</label>
+                            <input type="file" id="buyerFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                required>
+                            <small>Allowed: PDF, Images, Word documents</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="buyerUploadBtn">
+                            Upload to Buyer
+                        </button>
+                    </form>
+                    <div id="buyerUploadResult" class="upload-result"></div>
+                </div>
+
+                <!-- Manufacturer Upload Tab -->
+                <div id="manufacturer-tab" class="tab-content">
+                    <h3>Upload Manufacturer Document</h3>
+                    <form id="manufacturerUploadForm" class="upload-form">
+                        <div class="form-group">
+                            <label for="manufacturerId">Select Manufacturer *</label>
+                            <select id="manufacturerId" name="manufacturerId" required>
+                                <option value="">Loading manufacturers...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="manufacturerFile">Select File *</label>
+                            <input type="file" id="manufacturerFile" name="file"
+                                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+                            <small>Allowed: PDF, Images, Word documents</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="manufacturerUploadBtn">
+                            Upload to Manufacturer
+                        </button>
+                    </form>
+                    <div id="manufacturerUploadResult" class="upload-result"></div>
+                </div>
+
+                <!-- Direct Upload Tab -->
+                <div id="direct-tab" class="tab-content">
+                    <h3>Direct Upload</h3>
+                    <form id="directUploadForm" class="upload-form">
+                        <div class="form-group">
+                            <label for="directFile">Select File *</label>
+                            <input type="file" id="directFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                required>
+                            <small>Allowed: PDF, Images, Word documents</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="directUploadBtn">
+                            Upload File
+                        </button>
+                    </form>
+                    <div id="directUploadResult" class="upload-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files List -->
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>📁 Buyer Files</h3>
+                    <button onclick="loadDriveFiles('buyer')" class="btn btn-small">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <div id="buyerFiles" class="files-list">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🏭 Manufacturer Files</h3>
+                    <button onclick="loadDriveFiles('manufacturer')" class="btn btn-small">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <div id="manufacturerFiles" class="files-list">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>📄 Direct Files</h3>
+                    <button onclick="loadDriveFiles('direct')" class="btn btn-small">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <div id="directFiles" class="files-list">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/uploads.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

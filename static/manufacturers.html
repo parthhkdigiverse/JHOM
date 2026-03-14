@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturers - Business Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="icon-container">
+                <i data-lucide="building-2"></i>
+            </div>
+            <h2>Business Management</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="icon-container"><i data-lucide="layout-dashboard"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="buyers.html">
+                    <span class="icon-container"><i data-lucide="shopping-cart"></i></span>
+                    <span>Buyers</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="manufacturers.html">
+                    <span class="icon-container"><i data-lucide="factory"></i></span>
+                    <span>Manufacturers</span>
+                </a>
+            </li>
+            <li>
+                <a href="tasks.html">
+                    <span class="icon-container"><i data-lucide="check-square"></i></span>
+                    <span>Tasks</span>
+                </a>
+            </li>
+            <li>
+                <a href="calendar.html">
+                    <span class="icon-container"><i data-lucide="calendar"></i></span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="proforma_invoice.html">
+                    <span class="icon-container"><i data-lucide="receipt"></i></span>
+                    <span>Proforma Invoice</span>
+                </a>
+            </li>
+            <li>
+                <a href="quotation.html">
+                    <span class="icon-container"><i data-lucide="file-text"></i></span>
+                    <span>Quotations</span>
+                </a>
+            </li>
+            <li>
+                <a href="uploads.html">
+                    <span class="icon-container"><i data-lucide="folder-open"></i></span>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="superuser-only">
+                <a href="admin_management.html">
+                    <span class="icon-container"><i data-lucide="users"></i></span>
+                    <span>Admins</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>Manufacturers Management</h1>
+                <p>Manage your manufacturer information and partners</p>
+            </div>
+            <button onclick="showAddModal()" class="btn btn-primary">
+                <i data-lucide="plus" class="btn-icon"></i> Add New Manufacturer
+            </button>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="🔍 Search manufacturers by name, company, category..."
+                class="search-input">
+        </div>
+
+        <!-- Manufacturers Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>All Manufacturers</h3>
+                <span id="manufacturerCount" class="count-badge">0 manufacturers</span>
+            </div>
+            <div class="card-body">
+                <div id="manufacturersContainer" class="table-container">
+                    <p class="loading">Loading manufacturers...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="manufacturerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Manufacturer</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="manufacturerForm">
+                <div class="form-section">
+                    <h3 class="section-title">Basic Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Manufacturer Name <span class="required">*</span></label>
+                            <input type="text" id="name" name="name" placeholder="Enter manufacturer name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company_name">Company Name <span class="required">*</span></label>
+                            <input type="text" id="company_name" name="company_name" placeholder="Enter company name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="manufacturer@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+91-XXXXXXXXXX">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">Address Details</h3>
+
+                    <div class="form-group">
+                        <label for="address">Street Address</label>
+                        <textarea id="address" name="address" rows="2" placeholder="Enter complete address"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" placeholder="Enter city">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" placeholder="Enter state">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" placeholder="Enter country" value="India">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">Business Details</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gst_number">GST Number</label>
+                            <input type="text" id="gst_number" name="gst_number" placeholder="Enter GST/VAT/TIN number">
+                        </div>
+                        <div class="form-group">
+                            <label for="product_category">Product Category <span class="required">*</span></label>
+                            <select id="product_category" name="product_category" required>
+                                <option value="">-- Select Product Category --</option>
+                                <option value="Electronics">📱 Electronics & Electrical</option>
+                                <option value="Textiles">👕 Textiles & Apparel</option>
+                                <option value="Furniture">🪑 Furniture & Home Decor</option>
+                                <option value="Automotive">🚗 Automotive Parts</option>
+                                <option value="Chemicals">🧪 Chemicals & Pharmaceuticals</option>
+                                <option value="Food">🍔 Food & Beverages</option>
+                                <option value="Machinery">⚙️ Machinery & Equipment</option>
+                                <option value="Plastics">🔷 Plastics & Polymers</option>
+                                <option value="Metals">🔩 Metals & Alloys</option>
+                                <option value="Construction">🏗️ Construction Materials</option>
+                                <option value="Packaging">📦 Packaging Materials</option>
+                                <option value="Agriculture">🌾 Agriculture & Farming</option>
+                                <option value="Beauty">💄 Beauty & Personal Care</option>
+                                <option value="Sports">⚽ Sports & Fitness</option>
+                                <option value="Toys">🧸 Toys & Games</option>
+                                <option value="Stationery">✏️ Stationery & Office Supplies</option>
+                                <option value="Hardware">🔧 Hardware & Tools</option>
+                                <option value="Medical">🏥 Medical Equipment</option>
+                                <option value="Leather">👜 Leather & Footwear</option>
+                                <option value="Glass">🪟 Glass & Ceramics</option>
+                                <option value="Paper">📄 Paper & Pulp</option>
+                                <option value="Rubber">⚫ Rubber Products</option>
+                                <option value="Timber">🪵 Timber & Wood Products</option>
+                                <option value="Jewelry">💎 Jewelry & Gems</option>
+                                <option value="Other">🔹 Other</option>
+                            </select>
+                            <small>💡 Select the primary product category for this manufacturer</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">
+                        <span class="btn-icon">✕</span> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="btn-icon">💾</span> Save Manufacturer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/manufacturers.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
