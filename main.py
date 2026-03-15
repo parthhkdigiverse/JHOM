@@ -19,8 +19,13 @@ app = FastAPI(
 
 @app.on_event("startup")
 async def startup_event():
-    await init_db()
-    await seed_admin()
+    print("⏳ Application starting up...")
+    db_success = await init_db()
+    if db_success:
+        await seed_admin()
+        print("🚀 Application ready!")
+    else:
+        print("⚠️ Application started with database errors. Some endpoints may fail.")
 
 # CORS Middleware
 app.add_middleware(

@@ -17,19 +17,33 @@ DATABASE_NAME = "jhom_db"
 
 async def init_db():
     """Initialize Beanie with the MongoDB client and models"""
-    client = AsyncIOMotorClient(MONGODB_URL)
-    
-    await init_beanie(
-        database=client[DATABASE_NAME],
-        document_models=[
-            Admin,
-            Buyer,
-            Manufacturer,
-            Task,
-            CalendarEvent
-        ]
-    )
-    print(f"✅ Connected to MongoDB: {DATABASE_NAME}")
+    if not MONGODB_URL:
+        print("❌ CRITICAL: MONGODB_URL environment variable is not set!")
+        return False
+
+    try:
+        print(f"📡 Connecting to MongoDB: {DATABASE_NAME}...")
+        client = AsyncIOMotorClient(MONGODB_URL, serverSelectionTimeoutMS=5000)
+        
+        # Verify connection
+        await client.admin.command('ping')
+        
+        await init_beanie(
+            database=client[DATABASE_NAME],
+            document_models=[
+                Admin,
+                Buyer,
+                Manufacturer,
+                Task,
+                CalendarEvent
+            ]
+        )
+        print(f"✅ Successfully initialized Beanie for database: {DATABASE_NAME}")
+        return True
+    except Exception as e:
+        print(f"❌ FAILED to connect to MongoDB: {str(e)}")
+        print("💡 TIP: Verify your MONGODB_URL and check if your IP is whitelisted in MongoDB Atlas.")
+        return False
 
 async def seed_admin():
     """Ensure admin1 exists as superuser and remove other default users"""
