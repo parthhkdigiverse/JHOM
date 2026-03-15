@@ -2,10 +2,7 @@
 auth.requireAuth();
 
 // Display user name
-const user = auth.getCurrentUser();
-if (user) {
-    document.getElementById('userName').textContent = user.username;
-}
+auth.updateHeader();
 
 let allTasks = [];
 let allAdmins = [];

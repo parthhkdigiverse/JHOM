@@ -207,6 +207,14 @@ var auth = (function() {
     }
 
     // Apply role-based visibility to the UI
+    function updateHeader() {
+        const nameElem = document.getElementById('userName');
+        if (nameElem && user) {
+            nameElem.textContent = user.full_name || user.username;
+        }
+    }
+
+    // Apply role-based visibility to the UI
     function applyRoleVisibility() {
         const adminElements = document.querySelectorAll('.superuser-only');
         const superuser = isSuperuser();
@@ -250,7 +258,22 @@ var auth = (function() {
                 logout();
                 return false;
             }
-            return response.ok;
+            if (response.ok) {
+                return response.json().then(function(data) {
+                    // Update user info with latest from server
+                    if (data.username) {
+                        user = {
+                            username: data.username,
+                            full_name: data.full_name || (user ? user.full_name : null),
+                            role: data.role || (user ? user.role : 'user')
+                        };
+                        localStorage.setItem('user', JSON.stringify(user));
+                        updateHeader();
+                    }
+                    return true;
+                });
+            }
+            return false;
         })
         .catch(function(error) {
             console.error('[AUTH] Token verification error:', error);
@@ -272,6 +295,7 @@ var auth = (function() {
         getCurrentUser: getCurrentUser,
         isSuperuser: isSuperuser,
         applyRoleVisibility: applyRoleVisibility,
+        updateHeader: updateHeader,
         requireAuth: requireAuth,
         verifyToken: verifyToken
     };
@@ -284,9 +308,10 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.pathname !== '') {
         
         if (auth.isAuthenticated()) {
-            auth.applyRoleVisibility();
+            auth.updateHeader();
             auth.verifyToken().then(function(valid) {
                 if (valid) {
+                    auth.updateHeader();
                     auth.applyRoleVisibility(); // Re-apply after verification
                 }
             });

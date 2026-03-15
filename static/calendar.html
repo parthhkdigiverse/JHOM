@@ -465,10 +465,7 @@
         auth.requireAuth();
 
         // Display user
-        const user = auth.getCurrentUser();
-        if (user) {
-            document.getElementById('userName').textContent = user.username;
-        }
+        auth.updateHeader();
 
         // Calendar variables
         let calendar;

@@ -2,10 +2,7 @@
 auth.requireAuth();
 
 // Display user name
-const user = auth.getCurrentUser();
-if (user) {
-    document.getElementById('userName').textContent = user.full_name || user.username;
-}
+auth.updateHeader();
 
 /**
  * Load all dashboard data

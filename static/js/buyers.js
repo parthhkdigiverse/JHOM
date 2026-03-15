@@ -2,10 +2,7 @@
 auth.requireAuth();
 
 // Display user name
-var user = auth.getCurrentUser();
-if (user) {
-    document.getElementById('userName').textContent = user.username;
-}
+auth.updateHeader();
 
 // Global variables
 var currentBuyerId = null;

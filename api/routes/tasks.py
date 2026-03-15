@@ -18,7 +18,12 @@ async def get_assignee_info(task: Task):
     username = None
     full_name = None
     if task.assigned_to:
-        assignee = await task.assigned_to.fetch()
+        # Check if it's already a document or a link
+        if hasattr(task.assigned_to, "fetch"):
+            assignee = await task.assigned_to.fetch()
+        else:
+            assignee = task.assigned_to
+            
         if assignee:
             username = assignee.username
             full_name = assignee.full_name or assignee.username

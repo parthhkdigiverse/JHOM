@@ -65,6 +65,7 @@ async def verify_token_endpoint(current_admin: Admin = Depends(get_current_admin
     return {
         "status": "valid",
         "username": current_admin.username,
+        "full_name": current_admin.full_name,
         "role": current_admin.role
     }
 

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    document.getElementById('userName').textContent = currentUser.full_name || currentUser.username;
+    auth.updateHeader();
 
     // 2. Load Initial Data
     loadAdmins();

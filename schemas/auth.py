@@ -66,6 +66,7 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str
     username: str
+    full_name: Optional[str] = None
     role: Optional[str] = "user"
 
 class AdminLogin(BaseModel):
@@ -74,6 +75,7 @@ class AdminLogin(BaseModel):
 
 class AdminResponse(BaseModel):
     username: str
+    full_name: Optional[str] = None
     role: str
     message: Optional[str] = None
     access_token: Optional[str] = None
