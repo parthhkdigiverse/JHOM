@@ -529,51 +529,53 @@
         async function submitProforma(e) {
             e.preventDefault();
             const btn = document.getElementById("export-btn");
+            const originalText = btn.innerText;
             btn.innerText = "⏳ Generating...";
-            const products = [];
-            document.querySelectorAll(".product-block").forEach((b, i) => {
-                products.push({
-                    sr_no: i + 1,
-                    description: b.querySelector(".p_desc").value,
-                    hs_code: b.querySelector(".p_hs").value,
-                    packaging: b.querySelector(".p_pkg").value,
-                    quantity: b.querySelector(".p_qty_val").value + " " + b.querySelector(".p_qty_unit").value,
-                    origin: "India",
-                    rate: parseNumeric(b.querySelector(".p_rate").value),
-                    total: parseNumeric(b.querySelector(".p_total").value)
+            btn.disabled = true;
+            
+            try {
+                const products = [];
+                document.querySelectorAll(".product-block").forEach((b, i) => {
+                    products.push({
+                        sr_no: i + 1,
+                        description: b.querySelector(".p_desc").value,
+                        hs_code: b.querySelector(".p_hs").value,
+                        packaging: b.querySelector(".p_pkg").value,
+                        quantity: b.querySelector(".p_qty_val").value + " " + b.querySelector(".p_qty_unit").value,
+                        origin: "India",
+                        rate: parseNumeric(b.querySelector(".p_rate").value),
+                        total: parseNumeric(b.querySelector(".p_total").value)
+                    });
                 });
-            });
-            const payload = {
-                id: "JHOM/PI/" + document.getElementById("pi_id").value,
-                date: document.getElementById("pi_date").value,
-                lc_date: document.getElementById("lc_date").value,
-                validity: document.getElementById("validity").value + " Days",
-                buyer_name: document.getElementById("buyer_name").value,
-                buyer_address: document.getElementById("buyer_address").value,
-                products,
-                incoterm: document.getElementById("incoterm").value === "CIF" ? `CIF – ${document.getElementById("cif_port").value}` : "FOB – India Port",
-                currency: "USD",
-                advance_pct: parseInt(document.getElementById("advance_pct").value),
-                balance_pct: parseInt(document.getElementById("balance_pct").value),
-                mode_of_shipment: document.getElementById("shipment_mode").value,
-                delivery_time: document.getElementById("delivery_time").value + " Days",
-                port_of_loading: "India Port",
-                port_of_discharge: document.getElementById("port_discharge").value,
-                amount_in_words: document.getElementById("amount_words").value,
-                grand_total: parseNumeric(document.getElementById("grand_total").value)
-            };
-            const res = await fetch('/api/proforma/generate-pdf', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Proforma_${payload.id.replace(/\//g,'_')}.pdf`;
-            a.click();
-            btn.innerText = "🚀 Export Proforma PDF";
+                
+                const payload = {
+                    id: "JHOM/PI/" + document.getElementById("pi_id").value,
+                    date: document.getElementById("pi_date").value,
+                    lc_date: document.getElementById("lc_date").value,
+                    validity: document.getElementById("validity").value + " Days",
+                    buyer_name: document.getElementById("buyer_name").value,
+                    buyer_address: document.getElementById("buyer_address").value,
+                    products,
+                    incoterm: document.getElementById("incoterm").value === "CIF" ? `CIF – ${document.getElementById("cif_port").value}` : "FOB – India Port",
+                    currency: "USD",
+                    advance_pct: parseInt(document.getElementById("advance_pct").value),
+                    balance_pct: parseInt(document.getElementById("balance_pct").value),
+                    mode_of_shipment: document.getElementById("shipment_mode").value,
+                    delivery_time: document.getElementById("delivery_time").value + " Days",
+                    port_of_loading: "India Port",
+                    port_of_discharge: document.getElementById("port_discharge").value,
+                    amount_in_words: document.getElementById("amount_words").value,
+                    grand_total: parseNumeric(document.getElementById("grand_total").value)
+                };
+                
+                await PDFAPI.generateProforma(payload);
+            } catch (error) {
+                console.error('Proforma generation failed:', error);
+                alert('Error: ' + error.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         }
         window.onload = addProduct;
     </script>

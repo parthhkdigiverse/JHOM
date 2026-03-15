@@ -370,38 +370,40 @@
         async function submitJSON(e) {
             e.preventDefault();
             const btn = document.getElementById('export-btn');
+            const originalText = btn.innerText;
             btn.innerText = "⏳ Generating...";
-            const products = [];
-            document.querySelectorAll(".product-block").forEach(b => {
-                products.push({
-                    name: b.querySelector(".p_name").value,
-                    quantity: b.querySelector(".p_qty").value,
-                    packaging: b.querySelector(".p_pkg").value,
-                    grade: b.querySelector(".p_grade").value,
-                    origin: b.querySelector(".p_origin").value,
-                    price: parseFloat(b.querySelector(".p_price").value) || 0
+            btn.disabled = true;
+            
+            try {
+                const products = [];
+                document.querySelectorAll(".product-block").forEach(b => {
+                    products.push({
+                        name: b.querySelector(".p_name").value,
+                        quantity: b.querySelector(".p_qty").value,
+                        packaging: b.querySelector(".p_pkg").value,
+                        grade: b.querySelector(".p_grade").value,
+                        origin: b.querySelector(".p_origin").value,
+                        price: parseFloat(b.querySelector(".p_price").value) || 0
+                    });
                 });
-            });
-            const payload = {
-                products,
-                price_term: document.getElementById("price_term").value,
-                advance_pct: parseInt(document.getElementById("advance_pct").value) || 0,
-                balance_pct: parseInt(document.getElementById("balance_pct").value) || 0,
-                delivery_mode: document.getElementById("delivery_mode").value,
-                timeline: document.getElementById("timeline").value
-            };
-            const res = await fetch('/api/quotation/generate-pdf', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Quotation_${products[0]?.name || 'Export'}.pdf`;
-            a.click();
-            btn.innerText = "🚀 Export Finished PDF";
+                
+                const payload = {
+                    products,
+                    price_term: document.getElementById("price_term").value,
+                    advance_pct: parseInt(document.getElementById("advance_pct").value) || 0,
+                    balance_pct: parseInt(document.getElementById("balance_pct").value) || 0,
+                    delivery_mode: document.getElementById("delivery_mode").value,
+                    timeline: document.getElementById("timeline").value
+                };
+                
+                await PDFAPI.generateQuotation(payload);
+            } catch (error) {
+                console.error('Quotation generation failed:', error);
+                alert('Error: ' + error.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         }
         window.onload = addProduct;
     </script>

@@ -300,6 +300,67 @@ var StatsAPI = {
     }
 };
 
+// PDF API
+var PDFAPI = {
+    generateProforma: function(data) {
+        return this._downloadPDF(getApiUrl('/api/proforma/generate-pdf'), data, 'Proforma_Invoice.pdf');
+    },
+    
+    generateQuotation: function(data) {
+        return this._downloadPDF(getApiUrl('/api/quotation/generate-pdf'), data, 'Quotation.pdf');
+    },
+    
+    _downloadPDF: function(url, data, defaultFilename) {
+        console.log('[PDF] Generating:', url);
+        
+        return fetch(url, {
+            method: 'POST',
+            headers: Object.assign({
+                'Content-Type': 'application/json'
+            }, auth.getAuthHeaders()),
+            body: JSON.stringify(data)
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                return response.json().then(function(err) {
+                    throw new Error(err.detail || err.message || 'Failed to generate PDF');
+                }).catch(function() {
+                    throw new Error('Server error (' + response.status + ')');
+                });
+            }
+            
+            // Get filename from header if possible
+            var filename = defaultFilename;
+            var disposition = response.headers.get('Content-Disposition');
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                var matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) { 
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+            
+            return response.blob().then(function(blob) {
+                return { blob: blob, filename: filename };
+            });
+        })
+        .then(function(result) {
+            // Trigger download
+            var url = window.URL.createObjectURL(result.blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = result.filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+            return true;
+        });
+    }
+};
+
 // --- GLOBAL INITIALIZATION ---
 // Auto-load stats on any page that has the stat elements
 document.addEventListener('DOMContentLoaded', async function() {
