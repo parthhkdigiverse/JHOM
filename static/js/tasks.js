@@ -15,6 +15,13 @@ async function loadTasks() {
     try {
         const tasks = await TasksAPI.getAll();
         allTasks = tasks;
+        
+        // Update count badge
+        const countBadge = document.getElementById('taskCount');
+        if (countBadge) {
+            countBadge.textContent = `${tasks.length} tasks`;
+        }
+        
         displayTasks(tasks);
     } catch (error) {
         console.error('Load tasks error:', error);
@@ -56,10 +63,10 @@ function displayTasks(tasks) {
                         <td>${task.due_date || '-'}</td>
                         <td>${task.assigned_to || '-'}</td>
                         <td>
-                            <button onclick="editTask(${task.id})" class="btn-icon" title="Edit">
+                            <button onclick="editTask('${task.id}')" class="btn-icon" title="Edit">
                                 ✏️
                             </button>
-                            <button onclick="deleteTask(${task.id})" class="btn-icon" title="Delete">
+                            <button onclick="deleteTask('${task.id}')" class="btn-icon" title="Delete">
                                 🗑️
                             </button>
                         </td>

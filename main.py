@@ -8,7 +8,7 @@ import uvicorn
 from api.routes import auth, buyer, manufacturer, tasks, calendar, file_upload, quotation, proforma_invoice
 
 # Import database
-from database.connection import init_db
+from database.connection import init_db, seed_admin
 
 # Initialize FastAPI
 app = FastAPI(
@@ -20,6 +20,7 @@ app = FastAPI(
 @app.on_event("startup")
 async def startup_event():
     await init_db()
+    await seed_admin()
 
 # CORS Middleware
 app.add_middleware(
@@ -66,11 +67,10 @@ if __name__ == "__main__":
     print("   Login:    http://127.0.0.1:8000/static/index.html")
     print("   API Docs: http://127.0.0.1:8000/docs")
     print("   ReDoc:    http://127.0.0.1:8000/redoc")
-    print("\n🔐 Default Login Credentials:")
+    print("\n🔐 Default Superuser Credentials:")
     print("   Admin: admin1 / admin123")
-    print("   User:  user1 / user123")
     print("\n✨ Features:")
-    print("   ✅ User Authentication")
+    print("   ✅ User Authentication & Role Management")
     print("   ✅ Buyer Management")
     print("   ✅ Manufacturer Management")
     print("   ✅ Task Management")
@@ -79,6 +79,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("🛑 Press CTRL+C to stop the server")
     print("=" * 70 + "\n")
+
     
     # Choose one:
     

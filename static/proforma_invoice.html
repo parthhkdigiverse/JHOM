@@ -198,9 +198,43 @@
         </ul>
     </div>
 
-    <div class="main-content">
-        <div class="form-section">
-            <h2>📝 Generate Proforma Invoice</h2>
+    <div class="main-content" style="display: block; overflow-y: auto;">
+        <div class="page-header" style="padding: 30px 30px 10px;">
+            <div>
+                <h1>Generate Proforma Invoice</h1>
+                <p>Create and export professional invoices</p>
+            </div>
+        </div>
+
+        <!-- Global Stats -->
+        <div class="stats-grid" style="padding: 0 30px 20px;">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statBuyers">0</h3>
+                    <p>Total Buyers</p>
+                </div>
+                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statManufacturers">0</h3>
+                    <p>Manufacturers</p>
+                </div>
+                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statTasks">0</h3>
+                    <p>Total Tasks</p>
+                </div>
+                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+            </div>
+        </div>
+
+        <div style="display: flex; height: auto;">
+        <div class="form-section" style="width: 45%; border-top: 1px solid #eee;">
+            <h2>📝 Invoice Details</h2>
+
             <form id="proforma-form" onsubmit="submitProforma(event)">
                 <div class="row" style="display: flex; gap: 15px;">
                     <div class="form-group" style="flex: 1;">

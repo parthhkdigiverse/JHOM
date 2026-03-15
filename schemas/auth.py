@@ -1,5 +1,9 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel, EmailStr, BeforeValidator, Field
+from typing import Optional, Annotated
+from beanie import PydanticObjectId
+
+# Custom type for robust ObjectID serialization
+PyObjectId = Annotated[str, BeforeValidator(str)]
 
 # Token schemas
 class Token(BaseModel):
@@ -19,7 +23,7 @@ class UserCreate(UserBase):
     password: str
 
 class User(UserBase):
-    id: Optional[int] = None
+    id: Optional[PydanticObjectId] = None
     disabled: Optional[bool] = False
     role: Optional[str] = "user"
 
@@ -46,8 +50,9 @@ class AdminUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 class Admin(AdminBase):
-    id: int
+    id: PyObjectId
     is_active: bool
+
 
     class Config:
         from_attributes = True
@@ -75,7 +80,7 @@ class AdminResponse(BaseModel):
     token_type: Optional[str] = "bearer"
 
 class AdminListResponse(AdminBase):
-    id: int
+    id: PyObjectId
     is_active: bool
     password: Optional[str] = None  # Included as per user requirement
 

@@ -7,48 +7,21 @@ if (user) {
     document.getElementById('userName').textContent = user.full_name || user.username;
 }
 
-// Load dashboard data
+/**
+ * Load all dashboard data
+ */
 async function loadDashboard() {
     try {
-        // Load stats
-        await loadStats();
-        
-        // Load recent data
-        await loadRecentBuyers();
-        await loadRecentTasks();
-        await loadDriveStatus();
+        // Global stats are handled by api.js auto-loader if elements exist
+        // So we focus on recent data here
+        await Promise.all([
+            loadRecentBuyers(),
+            loadRecentTasks(),
+            loadDriveStatus()
+        ]);
         
     } catch (error) {
         console.error('Dashboard load error:', error);
-    }
-}
-
-// Load statistics
-async function loadStats() {
-    try {
-        // Use Global Stats API if available (more efficient)
-        const stats = await StatsAPI.getGlobal();
-        
-        document.getElementById('totalBuyers').textContent = stats.total_buyers;
-        document.getElementById('totalManufacturers').textContent = stats.total_manufacturers;
-        document.getElementById('totalTasks').textContent = stats.total_tasks;
-        
-    } catch (error) {
-        console.error('Stats load error, falling back to manual count:', error);
-        // Fallback for non-superusers or if API fails
-        try {
-            const [buyers, manufacturers, tasks] = await Promise.all([
-                BuyersAPI.getAll(),
-                ManufacturersAPI.getAll(),
-                TasksAPI.getAll()
-            ]);
-
-            document.getElementById('totalBuyers').textContent = buyers?.length || 0;
-            document.getElementById('totalManufacturers').textContent = manufacturers?.length || 0;
-            document.getElementById('totalTasks').textContent = tasks?.length || 0;
-        } catch (innerError) {
-            console.error('Fallback stats load error:', innerError);
-        }
     }
 }
 
@@ -60,7 +33,7 @@ async function loadRecentBuyers() {
 
         const container = document.getElementById('recentBuyers');
 
-        if (recentBuyers.length === 0) {
+        if (!recentBuyers || recentBuyers.length === 0) {
             container.innerHTML = '<p class="no-data">No buyers found</p>';
             return;
         }
@@ -90,7 +63,9 @@ async function loadRecentBuyers() {
         
     } catch (error) {
         console.error('Recent buyers error:', error);
-        document.getElementById('recentBuyers').innerHTML = '<p class="error">Failed to load buyers</p>';
+        if (document.getElementById('recentBuyers')) {
+            document.getElementById('recentBuyers').innerHTML = '<p class="error">Failed to load buyers</p>';
+        }
     }
 }
 
@@ -102,7 +77,7 @@ async function loadRecentTasks() {
 
         const container = document.getElementById('recentTasks');
 
-        if (recentTasks.length === 0) {
+        if (!recentTasks || recentTasks.length === 0) {
             container.innerHTML = '<p class="no-data">No tasks found</p>';
             return;
         }
@@ -132,7 +107,9 @@ async function loadRecentTasks() {
         
     } catch (error) {
         console.error('Recent tasks error:', error);
-        document.getElementById('recentTasks').innerHTML = '<p class="error">Failed to load tasks</p>';
+        if (document.getElementById('recentTasks')) {
+            document.getElementById('recentTasks').innerHTML = '<p class="error">Failed to load tasks</p>';
+        }
     }
 }
 
@@ -140,18 +117,22 @@ async function loadRecentTasks() {
 async function loadDriveStatus() {
     try {
         const status = await UploadAPI.getDriveStatus();
+        const driveElem = document.getElementById('driveStatus');
         
-        if (status && status.status === 'success') {
-            document.getElementById('driveStatus').textContent = '✅ Connected';
-        } else {
-            document.getElementById('driveStatus').textContent = '❌ Disconnected';
+        if (driveElem) {
+            if (status && status.status === 'success') {
+                driveElem.textContent = '✅ Connected';
+            } else {
+                driveElem.textContent = '❌ Disconnected';
+            }
         }
         
     } catch (error) {
         console.error('Drive status error:', error);
-        document.getElementById('driveStatus').textContent = '⚠️ Error';
+        const driveElem = document.getElementById('driveStatus');
+        if (driveElem) driveElem.textContent = '⚠️ Error';
     }
 }
 
-// Initialize dashboard
-loadDashboard();
+// Initialize dashboard on load
+document.addEventListener('DOMContentLoaded', loadDashboard);

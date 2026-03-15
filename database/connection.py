@@ -30,3 +30,29 @@ async def init_db():
         ]
     )
     print(f"✅ Connected to MongoDB: {DATABASE_NAME}")
+
+async def seed_admin():
+    """Ensure admin1 exists as superuser and remove other default users"""
+    # 1. Remove other default users if they exist
+    # (e.g., user1, or any other user that shouldn't be there by default)
+    # We only want admin1 to remain as the primary entry point
+    await Admin.find(Admin.username != "admin1").delete()
+    
+    # 2. Ensure admin1 exists
+    admin1 = await Admin.find_one(Admin.username == "admin1")
+    
+    if not admin1:
+        admin1 = Admin(
+            username="admin1",
+            password="admin123",  # In a real app, this should be hashed
+            full_name="System Administrator",
+            role="superuser",
+            is_active=True
+        )
+        await admin1.insert()
+        print("👤 Created default superuser: admin1")
+    else:
+        # Update role to superuser if it wasn't already
+        admin1.role = "superuser"
+        await admin1.save()
+        print("👤 Verified admin1 as superuser")

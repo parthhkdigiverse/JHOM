@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('userName').textContent = currentUser.full_name || currentUser.username;
 
     // 2. Load Initial Data
-    loadStats();
     loadAdmins();
+
 
     // 3. Modal Controls
     const modal = document.getElementById('adminModal');
@@ -75,16 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-async function loadStats() {
-    try {
-        const stats = await StatsAPI.getGlobal();
-        document.getElementById('statBuyers').textContent = stats.total_buyers;
-        document.getElementById('statManufacturers').textContent = stats.total_manufacturers;
-        document.getElementById('statTasks').textContent = stats.total_tasks;
-    } catch (error) {
-        console.error('Error loading stats:', error);
-    }
-}
+// Removed redundant loadStats function
+
 
 async function loadAdmins() {
     const container = document.getElementById('adminsContainer');

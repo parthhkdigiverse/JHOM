@@ -216,6 +216,53 @@ var UploadAPI = {
     }
 };
 
+// Calendar API
+var CalendarAPI = {
+    getAll: function(start, end) {
+        var url = getApiUrl('/api/calendar/events/fullcalendar');
+        var params = [];
+        if (start) params.push('start=' + start);
+        if (end) params.push('end=' + end);
+        if (params.length > 0) url += '?' + params.join('&');
+        return apiCall(url);
+    },
+    
+    getById: function(id) {
+        return apiCall(getApiUrl('/api/calendar/events/' + id));
+    },
+    
+    create: function(data) {
+        return apiCall(getApiUrl('/api/calendar/events'), {
+            method: 'POST',
+            headers: auth.getAuthHeaders(),
+            body: JSON.stringify(data)
+        });
+    },
+    
+    update: function(id, data) {
+        return apiCall(getApiUrl('/api/calendar/events/' + id), {
+            method: 'PUT',
+            headers: auth.getAuthHeaders(),
+            body: JSON.stringify(data)
+        });
+    },
+    
+    delete: function(id) {
+        return apiCall(getApiUrl('/api/calendar/events/' + id), {
+            method: 'DELETE',
+            headers: auth.getAuthHeaders()
+        });
+    },
+    
+    getToday: function() {
+        return apiCall(getApiUrl('/api/calendar/events/today/list'));
+    },
+    
+    getUpcoming: function(days) {
+        return apiCall(getApiUrl('/api/calendar/events/upcoming/list?days=' + (days || 7)));
+    }
+};
+
 // Admins API (Superuser only)
 var AdminsAPI = {
     getAll: function() {
@@ -252,3 +299,28 @@ var StatsAPI = {
         return apiCall(getApiUrl('/api/auth/stats'));
     }
 };
+
+// --- GLOBAL INITIALIZATION ---
+// Auto-load stats on any page that has the stat elements
+document.addEventListener('DOMContentLoaded', async function() {
+    const buyerElem = document.getElementById('statBuyers');
+    const mfrElem = document.getElementById('statManufacturers');
+    const taskElem = document.getElementById('statTasks');
+    
+    // Only fetch if at least one element exists and user is logged in
+    if ((buyerElem || mfrElem || taskElem) && auth.isAuthenticated()) {
+        try {
+            console.log('[GLOBAL] Loading project-wide stats...');
+            const stats = await StatsAPI.getGlobal();
+            
+            if (buyerElem) buyerElem.textContent = stats.total_buyers || 0;
+            if (mfrElem) mfrElem.textContent = stats.total_manufacturers || 0;
+            if (taskElem) taskElem.textContent = stats.total_tasks || 0;
+            
+            console.log('[GLOBAL] Stats loaded successfully');
+
+        } catch (error) {
+            console.error('[GLOBAL] Failed to load stats:', error);
+        }
+    }
+});

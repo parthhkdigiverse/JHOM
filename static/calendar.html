@@ -298,6 +298,32 @@
             </button>
         </div>
 
+        <!-- Global Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statBuyers">0</h3>
+                    <p>Total Buyers</p>
+                </div>
+                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statManufacturers">0</h3>
+                    <p>Manufacturers</p>
+                </div>
+                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statTasks">0</h3>
+                    <p>Total Tasks</p>
+                </div>
+                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+            </div>
+        </div>
+
+
         <div class="calendar-main-container">
             <!-- Calendar Section -->
             <div class="calendar-section">
@@ -430,67 +456,23 @@
     </div>
 
     <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
     <script>
         // Check auth
-        if (!localStorage.getItem('auth_token')) {
-            window.location.href = 'index.html';
-        }
+        auth.requireAuth();
 
         // Display user
-        var userStr = localStorage.getItem('user');
-        if (userStr) {
-            try {
-                var user = JSON.parse(userStr);
-                document.getElementById('userName').textContent = user.username || 'User';
-            } catch (e) {
-                document.getElementById('userName').textContent = 'User';
-            }
-        }
-
-        // Logout function
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
+        const user = auth.getCurrentUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.username;
         }
 
         // Calendar variables
         let calendar;
         let currentViewEventId = null;
-
-        // Load events from localStorage or use defaults
-        var eventsKey = 'calendar_events';
-        var events = JSON.parse(localStorage.getItem(eventsKey)) || [
-            {
-                id: 1,
-                title: 'Team Meeting',
-                start: new Date().toISOString().split('T')[0] + 'T10:00:00',
-                end: new Date().toISOString().split('T')[0] + 'T11:00:00',
-                event_type: 'meeting',
-                location: 'Conference Room',
-                description: 'Weekly team meeting',
-                backgroundColor: '#f59e0b',
-                borderColor: '#f59e0b'
-            },
-            {
-                id: 2,
-                title: 'Buyer Call',
-                start: new Date(Date.now() + 86400000).toISOString().split('T')[0] + 'T14:00:00',
-                end: new Date(Date.now() + 86400000).toISOString().split('T')[0] + 'T15:00:00',
-                event_type: 'appointment',
-                location: 'Zoom',
-                description: 'Discuss requirements',
-                backgroundColor: '#3788d8',
-                borderColor: '#3788d8'
-            }
-        ];
-
-        var eventIdCounter = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
-
-        // Save to localStorage
-        function saveEvents() {
-            localStorage.setItem(eventsKey, JSON.stringify(events));
-        }
 
         // Initialize calendar
         function initCalendar() {
@@ -502,26 +484,43 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                events: events,
-                eventClick: function (info) {
-                    info.jsEvent.preventDefault();
-                    showViewModal(parseInt(info.event.id));
-                },
-                editable: true,
-                eventDrop: function (info) {
-                    var event = events.find(e => e.id == info.event.id);
-                    if (event) {
-                        event.start = info.event.start.toISOString().slice(0, 16);
-                        event.end = info.event.end ? info.event.end.toISOString().slice(0, 16) : event.start;
-                        saveEvents();
-                        loadTodayEvents();
-                        loadAllEvents();
+                // Load events from API
+                events: async function(info, successCallback, failureCallback) {
+                    try {
+                        const start = info.start.toISOString().split('T')[0];
+                        const end = info.end.toISOString().split('T')[0];
+                        const events = await CalendarAPI.getAll(start, end);
+                        successCallback(events);
+                        
+                        // Also update stats and other lists
+                        loadStats();
+                    } catch (error) {
+                        console.error('Fetch events error:', error);
+                        failureCallback(error);
                     }
                 },
+                eventClick: function (info) {
+                    info.jsEvent.preventDefault();
+                    showViewModal(info.event.id);
+                },
+                editable: false, // Simple version first
                 selectable: true,
                 select: function (info) {
-                    document.getElementById('startTime').value = info.startStr.slice(0, 16);
-                    document.getElementById('endTime').value = info.endStr.slice(0, 16);
+                    // Pre-fill dates from selection
+                    let start = info.startStr;
+                    let end = info.endStr;
+                    
+                    // If it's just a date (no time), add default times
+                    if (start.length === 10) {
+                        start += 'T09:00';
+                        end = start.split('T')[0] + 'T10:00';
+                    } else {
+                        start = start.slice(0, 16);
+                        end = end.slice(0, 16);
+                    }
+                    
+                    document.getElementById('startTime').value = start;
+                    document.getElementById('endTime').value = end;
                     showAddModal();
                     calendar.unselect();
                 }
@@ -537,11 +536,16 @@
             document.getElementById('eventType').value = 'meeting';
             document.getElementById('eventDescription').value = '';
             document.getElementById('eventLocation').value = '';
-            var now = new Date();
-            var start = new Date(now.getTime() + 3600000);
-            var end = new Date(start.getTime() + 3600000);
-            document.getElementById('startTime').value = start.toISOString().slice(0, 16);
-            document.getElementById('endTime').value = end.toISOString().slice(0, 16);
+            
+            // Set default times if not already set by selection
+            if (!document.getElementById('startTime').value) {
+                var now = new Date();
+                var start = new Date(now.getTime() + 3600000);
+                var end = new Date(start.getTime() + 3600000);
+                document.getElementById('startTime').value = start.toISOString().slice(0, 16);
+                document.getElementById('endTime').value = end.toISOString().slice(0, 16);
+            }
+            
             document.getElementById('eventModal').style.display = 'block';
         }
 
@@ -549,21 +553,28 @@
             document.getElementById('eventModal').style.display = 'none';
         }
 
-        function showViewModal(eventId) {
+        async function showViewModal(eventId) {
             currentViewEventId = eventId;
-            var event = events.find(e => e.id === eventId);
-            if (!event) return;
-            var colors = { 'appointment': '#3788d8', 'meeting': '#f59e0b', 'work': '#10b981', 'task': '#ef4444', 'event': '#8b5cf6' };
-            var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
-            var html = '<div style="margin-bottom: 15px;"><span class="badge" style="background: ' + colors[event.event_type] + '; color: white; padding: 6px 12px; border-radius: 20px;">' + icons[event.event_type] + ' ' + event.event_type.toUpperCase() + '</span></div>';
-            html += '<h2 style="margin-bottom: 15px;">' + event.title + '</h2>';
-            html += '<div style="background: #f9fafb; padding: 15px; border-radius: 8px;"><p><strong>📅 Start:</strong> ' + new Date(event.start).toLocaleString() + '</p>';
-            html += '<p><strong>⏰ End:</strong> ' + new Date(event.end).toLocaleString() + '</p>';
-            if (event.location) html += '<p><strong>📍 Location:</strong> ' + event.location + '</p>';
-            if (event.description) html += '<p><strong>📝 Description:</strong><br>' + event.description + '</p>';
-            html += '</div>';
-            document.getElementById('viewEventContent').innerHTML = html;
-            document.getElementById('viewModal').style.display = 'block';
+            try {
+                const event = await CalendarAPI.getById(eventId);
+                
+                var colors = { 'appointment': '#3788d8', 'meeting': '#f59e0b', 'work': '#10b981', 'task': '#ef4444', 'event': '#8b5cf6' };
+                var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
+                
+                var html = '<div style="margin-bottom: 15px;"><span class="badge" style="background: ' + (colors[event.event_type] || '#3788d8') + '; color: white; padding: 6px 12px; border-radius: 20px;">' + (icons[event.event_type] || '📅') + ' ' + event.event_type.toUpperCase() + '</span></div>';
+                html += '<h2 style="margin-bottom: 15px;">' + event.title + '</h2>';
+                html += '<div style="background: #f9fafb; padding: 15px; border-radius: 8px;"><p><strong>📅 Start:</strong> ' + new Date(event.start_time).toLocaleString() + '</p>';
+                html += '<p><strong>⏰ End:</strong> ' + new Date(event.end_time).toLocaleString() + '</p>';
+                if (event.location) html += '<p><strong>📍 Location:</strong> ' + event.location + '</p>';
+                if (event.description) html += '<p><strong>📝 Description:</strong><br>' + event.description + '</p>';
+                html += '</div>';
+                
+                document.getElementById('viewEventContent').innerHTML = html;
+                document.getElementById('viewModal').style.display = 'block';
+            } catch (error) {
+                console.error('View event error:', error);
+                alert('Failed to load event details');
+            }
         }
 
         function closeViewModal() {
@@ -571,38 +582,50 @@
             currentViewEventId = null;
         }
 
-        function editEventFromView() {
+        async function editEventFromView() {
             if (!currentViewEventId) return;
-            var event = events.find(e => e.id === currentViewEventId);
-            if (!event) return;
-            document.getElementById('modalTitle').textContent = 'Edit Event';
-            document.getElementById('saveButtonText').textContent = 'Update Event';
-            document.getElementById('eventId').value = event.id;
-            document.getElementById('eventTitle').value = event.title;
-            document.getElementById('eventType').value = event.event_type;
-            document.getElementById('eventDescription').value = event.description || '';
-            document.getElementById('eventLocation').value = event.location || '';
-            document.getElementById('startTime').value = event.start.slice(0, 16);
-            document.getElementById('endTime').value = event.end.slice(0, 16);
-            closeViewModal();
-            document.getElementById('eventModal').style.display = 'block';
+            try {
+                const event = await CalendarAPI.getById(currentViewEventId);
+                
+                document.getElementById('modalTitle').textContent = 'Edit Event';
+                document.getElementById('saveButtonText').textContent = 'Update Event';
+                document.getElementById('eventId').value = event.id;
+                document.getElementById('eventTitle').value = event.title;
+                document.getElementById('eventType').value = event.event_type;
+                document.getElementById('eventDescription').value = event.description || '';
+                document.getElementById('eventLocation').value = event.location || '';
+                
+                // Format for datetime-local
+                document.getElementById('startTime').value = new Date(event.start_time).toISOString().slice(0, 16);
+                document.getElementById('endTime').value = new Date(event.end_time).toISOString().slice(0, 16);
+                
+                closeViewModal();
+                document.getElementById('eventModal').style.display = 'block';
+            } catch (error) {
+                console.error('Edit load error:', error);
+                alert('Failed to load event for editing');
+            }
         }
 
-        function deleteEventFromView() {
+        async function deleteEventFromView() {
             if (!currentViewEventId) return;
             if (!confirm('Delete this event?')) return;
-            events = events.filter(e => e.id !== currentViewEventId);
-            saveEvents();
-            closeViewModal();
-            calendar.removeAllEvents();
-            calendar.addEventSource(events);
-            loadTodayEvents();
-            loadAllEvents();
-            loadStats();
-            alert('Event deleted!');
+            
+            try {
+                await CalendarAPI.delete(currentViewEventId);
+                alert('Event deleted!');
+                closeViewModal();
+                calendar.refetchEvents();
+                loadTodayEvents();
+                loadAllEvents();
+                loadStats();
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('Failed to delete event');
+            }
         }
 
-        function saveEvent() {
+        async function saveEvent() {
             var eventId = document.getElementById('eventId').value;
             var title = document.getElementById('eventTitle').value.trim();
             var eventType = document.getElementById('eventType').value;
@@ -610,60 +633,100 @@
             var endTime = document.getElementById('endTime').value;
             var description = document.getElementById('eventDescription').value.trim();
             var location = document.getElementById('eventLocation').value.trim();
-            if (!title || !startTime || !endTime) { alert('Please fill required fields'); return; }
-            var colors = { 'appointment': '#3788d8', 'meeting': '#f59e0b', 'work': '#10b981', 'task': '#ef4444', 'event': '#8b5cf6' };
-            if (eventId) {
-                var index = events.findIndex(e => e.id == eventId);
-                if (index > -1) events[index] = { id: parseInt(eventId), title, start: startTime, end: endTime, event_type: eventType, location, description, backgroundColor: colors[eventType], borderColor: colors[eventType] };
-            } else {
-                events.push({ id: eventIdCounter++, title, start: startTime, end: endTime, event_type: eventType, location, description, backgroundColor: colors[eventType], borderColor: colors[eventType] });
+            
+            if (!title || !startTime || !endTime) { 
+                alert('Please fill required fields'); 
+                return; 
             }
-            saveEvents();
-            closeModal();
-            calendar.removeAllEvents();
-            calendar.addEventSource(events);
-            loadTodayEvents();
-            loadAllEvents();
-            loadStats();
-            alert(eventId ? 'Event updated!' : 'Event created!');
-        }
+            
+            // Format dates for backend: "YYYY-MM-DD HH:MM"
+            const formatForAPI = (dtStr) => dtStr.replace('T', ' ');
+            
+            const eventData = {
+                title: title,
+                event_type: eventType,
+                start_time: formatForAPI(startTime),
+                end_time: formatForAPI(endTime),
+                description: description || null,
+                location: location || null
+            };
 
-        function loadTodayEvents() {
-            var today = new Date().toISOString().split('T')[0];
-            var todayEvents = events.filter(e => e.start.startsWith(today));
-            var container = document.getElementById('todayEventsList');
-            if (todayEvents.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No events today</p></div>';
-            } else {
-                var html = '';
-                todayEvents.forEach(e => {
-                    html += '<div class="today-event" onclick="showViewModal(' + e.id + ')"><div class="today-event-time">' + e.start.slice(11, 16) + ' - ' + e.end.slice(11, 16) + '</div><div class="today-event-title">' + e.title + '</div>';
-                    if (e.location) html += '<div style="font-size: 11px; opacity: 0.9; margin-top: 3px;">📍 ' + e.location + '</div>';
-                    html += '</div>';
-                });
-                container.innerHTML = html;
-            }
-            document.getElementById('todayEvents').textContent = todayEvents.length;
-        }
-
-        function loadAllEvents() {
-            var container = document.getElementById('allEventsList');
-            if (events.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No events yet</p></div>';
-            } else {
-                var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
-                var html = '';
-                events.forEach(e => {
-                    html += '<div class="event-item" onclick="showViewModal(' + e.id + ')"><div class="event-item-header"><div><div class="event-title">' + icons[e.event_type] + ' ' + e.title + '</div><div class="event-time">📅 ' + new Date(e.start).toLocaleString() + '</div>';
-                    if (e.location) html += '<div class="event-location">📍 ' + e.location + '</div>';
-                    html += '</div></div></div>';
-                });
-                container.innerHTML = html;
+            try {
+                if (eventId) {
+                    await CalendarAPI.update(eventId, eventData);
+                    alert('Event updated!');
+                } else {
+                    await CalendarAPI.create(eventData);
+                    alert('Event created!');
+                }
+                
+                closeModal();
+                calendar.refetchEvents();
+                loadTodayEvents();
+                loadAllEvents();
+                loadStats();
+            } catch (error) {
+                console.error('Save event error:', error);
+                alert('Failed to save event: ' + error.message);
             }
         }
 
-        function loadStats() {
-            document.getElementById('totalEvents').textContent = events.length;
+        async function loadTodayEvents() {
+            try {
+                const response = await CalendarAPI.getToday();
+                const container = document.getElementById('todayEventsList');
+                
+                if (!response.events || response.events.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No events today</p></div>';
+                } else {
+                    var html = '';
+                    response.events.forEach(e => {
+                        html += '<div class="today-event" onclick="showViewModal(\'' + e.id + '\')">';
+                        html += '<div class="today-event-time">' + e.start_time + ' - ' + e.end_time + '</div>';
+                        html += '<div class="today-event-title">' + e.title + '</div>';
+                        if (e.location) html += '<div style="font-size: 11px; opacity: 0.9; margin-top: 3px;">📍 ' + e.location + '</div>';
+                        html += '</div>';
+                    });
+                    container.innerHTML = html;
+                }
+                document.getElementById('todayEvents').textContent = response.total || 0;
+            } catch (error) {
+                console.error('Load today events error:', error);
+            }
+        }
+
+        async function loadAllEvents() {
+            try {
+                const response = await CalendarAPI.getUpcoming(30); // Get next 30 days
+                const container = document.getElementById('allEventsList');
+                
+                if (!response.events || response.events.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No upcoming events</p></div>';
+                } else {
+                    var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
+                    var html = '';
+                    response.events.forEach(e => {
+                        html += '<div class="event-item" onclick="showViewModal(\'' + e.id + '\')">';
+                        html += '<div class="event-item-header"><div>';
+                        html += '<div class="event-title">' + (icons[e.event_type] || '📅') + ' ' + e.title + '</div>';
+                        html += '<div class="event-time">📅 ' + new Date(e.start_time).toLocaleString() + '</div>';
+                        if (e.location) html += '<div class="event-location">📍 ' + e.location + '</div>';
+                        html += '</div></div></div>';
+                    });
+                    container.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Load all events error:', error);
+            }
+        }
+
+        async function loadStats() {
+            // Get total events for current month via getAll if needed, 
+            // but for now just showing upcoming count is simpler
+            try {
+                const response = await CalendarAPI.getUpcoming(30);
+                document.getElementById('totalEvents').textContent = response.total || 0;
+            } catch (error) {}
         }
 
         // Initialize
@@ -671,6 +734,7 @@
         loadTodayEvents();
         loadAllEvents();
         loadStats();
+
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>

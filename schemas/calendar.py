@@ -4,7 +4,9 @@ Pydantic Schemas for Calendar Events - Simplified Version
 
 from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Annotated
+from beanie import PydanticObjectId
+from schemas.auth import PyObjectId
 
 class CalendarEventBase(BaseModel):
     title: str
@@ -42,17 +44,19 @@ class CalendarEventUpdate(BaseModel):
     status: Optional[str] = None  # scheduled, completed, cancelled
 
 class CalendarEventResponse(BaseModel):
-    id: int
-    admin_id: int
+    id: PyObjectId
+    admin_id: PyObjectId
     title: str
     event_type: str
     start_time: datetime
     end_time: datetime
-    description: Optional[str]
-    location: Optional[str]
+    description: Optional[str] = None
+    location: Optional[str] = None
     status: str
     created_at: datetime
     updated_at: datetime
     
     class Config:
         from_attributes = True
+        alias_generator = lambda x: x
+        populate_by_name = True

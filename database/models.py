@@ -66,7 +66,9 @@ class Task(Document):
     assigned_to: Link[Admin]
     deadline: datetime
     status: Indexed(str) = "pending"
+    priority: str = "medium"
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Settings:

@@ -142,18 +142,28 @@ async def get_global_stats(
     current_user: Admin = Depends(get_current_admin)
 ):
     """Get high-level stats for the dashboard"""
-    buyer_count = await Buyer.count()
-    mfr_count = await Manufacturer.count()
-    task_count = await Task.count()
-    
-    # Optional: status breakdown for tasks
-    pending_tasks = await Task.find(Task.status == "pending").count()
-    
-    return {
-        "buyers": buyer_count,
-        "manufacturers": mfr_count,
-        "tasks": {
-            "total": task_count,
-            "pending": pending_tasks
+    try:
+        # Using find_all().count() which is more robust in some Beanie versions
+        buyer_count = await Buyer.find_all().count()
+        mfr_count = await Manufacturer.find_all().count()
+        task_count = await Task.find_all().count()
+        
+        # Optional: status breakdown for tasks
+        pending_tasks = await Task.find(Task.status == "pending").count()
+        
+        return {
+            "total_buyers": buyer_count,
+            "total_manufacturers": mfr_count,
+            "total_tasks": task_count,
+            "tasks_detail": {
+                "total": task_count,
+                "pending": pending_tasks
+            }
         }
-    }
+    except Exception as e:
+        return {
+            "total_buyers": 0,
+            "total_manufacturers": 0,
+            "total_tasks": 0,
+            "error": str(e)
+        }
