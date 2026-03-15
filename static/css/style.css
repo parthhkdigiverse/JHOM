@@ -295,31 +295,6 @@ body {
 }
 
 /* ==========================================
-   ANIMATIONS & UTILITIES
-   ========================================== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(20px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-/* ==========================================
    CUSTOM SCROLLBAR
    ========================================== */
 ::-webkit-scrollbar {
@@ -328,17 +303,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--slate-50);
+    background: var(--bg-main);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--slate-300);
+    background: var(--slate-800);
     border-radius: 5px;
-    border: 2px solid var(--slate-50);
+    border: 2px solid var(--bg-main);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--slate-400);
+    background: var(--slate-700);
 }
 
 /* ==========================================
@@ -712,222 +687,6 @@ textarea:focus {
 }
 
 /* ==========================================
-   FORMS & INPUTS
-   ========================================== */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--slate-700);
-    margin-bottom: 6px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="date"],
-input[type="datetime-local"],
-input[type="file"],
-select,
-textarea {
-    width: 100%;
-    padding: 10px 14px;
-    background: white;
-    border: 1px solid var(--slate-200);
-    border-radius: var(--border-radius);
-    color: var(--slate-900);
-    font-size: 14px;
-    transition: var(--transition);
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-    background: var(--white);
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid var(--slate-100);
-}
-
-/* ==========================================
-   BUTTONS
-   ========================================== */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    transition: var(--transition);
-    border: 1px solid transparent;
-    gap: 10px;
-    outline: none;
-    letter-spacing: 0.01em;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.btn:active {
-    transform: translateY(0px);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    color: var(--white);
-    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
-}
-
-.btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
-}
-
-.btn-secondary {
-    background: var(--white);
-    border-color: var(--slate-200);
-    color: var(--secondary);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-secondary:hover {
-    background: var(--slate-50);
-    border-color: var(--slate-300);
-}
-
-.btn-danger {
-    background: var(--white);
-    color: var(--danger);
-    border-color: #fee2e2;
-}
-
-.btn-danger:hover {
-    background: #fef2f2;
-    border-color: var(--danger);
-}
-
-.btn-success {
-    background: var(--white);
-    color: var(--success);
-    border-color: #d1fae5;
-}
-
-.btn-success:hover {
-    background: #f0fdf4;
-    border-color: var(--success);
-}
-
-.btn-small {
-    padding: 6px 12px;
-    font-size: 13px;
-}
-
-.btn-block {
-    width: 100%;
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.btn-icon {
-    font-size: 18px;
-}
-
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
-}
-
-.action-buttons .btn-icon {
-    padding: 6px 10px;
-    font-size: 16px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.action-buttons .btn-icon:hover {
-    background: var(--slate-100);
-    transform: scale(1.15);
-}
-
-/* ==========================================
-   TABLE
-   ========================================== */
-.table-container {
-    overflow-x: auto;
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--slate-200);
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-.table th {
-    padding: 16px 20px;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--slate-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    background: var(--slate-50);
-    border-bottom: 1px solid var(--slate-200);
-}
-
-.table td {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--slate-200);
-    color: var(--slate-700);
-    font-weight: 500;
-}
-
-.table tbody tr {
-    transition: var(--transition-fast);
-}
-
-.table tbody tr:hover {
-    background: var(--slate-50);
-}
-
-.table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* ==========================================
    BADGES
    ========================================== */
 .badge {
@@ -1261,27 +1020,6 @@ textarea:focus {
 }
 
 /* ==========================================
-   SCROLLBAR
-   ========================================== */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-main);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--slate-800);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--slate-700);
-}
-
-/* ==========================================
    RESPONSIVE
    ========================================== */
 /* ==========================================
@@ -1382,6 +1120,4 @@ textarea:focus {
     .stats-grid {
         grid-template-columns: 1fr;
     }
-}
-
 }
