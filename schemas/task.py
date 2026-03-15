@@ -29,6 +29,7 @@ class TaskUpdate(BaseModel):
 
 class TaskResponse(TaskBase):
     id: PyObjectId
+    assigned_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

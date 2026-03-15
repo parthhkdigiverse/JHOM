@@ -8,7 +8,37 @@ if (user) {
 }
 
 let allTasks = [];
+let allAdmins = [];
 let editingTaskId = null;
+
+/**
+ * Load all administrators to populate the "Assign To" dropdown
+ */
+async function loadAdmins() {
+    try {
+        console.log('[Tasks] Loading administrators...');
+        const admins = await AdminsAPI.getAll();
+        allAdmins = admins;
+        
+        const dropdown = document.getElementById('assigned_to');
+        if (dropdown) {
+            // Keep the default "Select User" option
+            const defaultOption = dropdown.options[0];
+            dropdown.innerHTML = '';
+            dropdown.appendChild(defaultOption);
+            
+            admins.forEach(admin => {
+                const option = document.createElement('option');
+                option.value = admin.username;
+                option.textContent = `👤 ${admin.full_name || admin.username}`;
+                dropdown.appendChild(option);
+            });
+            console.log(`[Tasks] Loaded ${admins.length} administrators`);
+        }
+    } catch (error) {
+        console.error('[Tasks] Failed to load admins:', error);
+    }
+}
 
 // Load all tasks
 async function loadTasks() {
@@ -61,7 +91,7 @@ function displayTasks(tasks) {
                         <td><span class="badge badge-${task.status}">${task.status.replace('_', ' ')}</span></td>
                         <td><span class="badge badge-${task.priority}">${task.priority}</span></td>
                         <td>${task.due_date || '-'}</td>
-                        <td>${task.assigned_to || '-'}</td>
+                        <td>${task.assigned_name || task.assigned_to || '-'}</td>
                         <td>
                             <button onclick="editTask('${task.id}')" class="btn-icon" title="Edit">
                                 ✏️
@@ -214,5 +244,10 @@ window.onclick = function(event) {
     }
 }
 
-// Initialize
-loadTasks();
+// Initialize page
+async function init() {
+    await loadAdmins();
+    await loadTasks();
+}
+
+init();

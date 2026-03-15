@@ -10,6 +10,36 @@ from utils.auth import get_current_admin
 router = APIRouter()
 
 # ==========================================
+#  HELPERS
+# ==========================================
+
+async def get_assignee_info(task: Task):
+    """Fetch assignee details and return (username, full_name)"""
+    username = None
+    full_name = None
+    if task.assigned_to:
+        assignee = await task.assigned_to.fetch()
+        if assignee:
+            username = assignee.username
+            full_name = assignee.full_name or assignee.username
+    return username, full_name
+
+def format_task_response(task: Task, username: str, full_name: str):
+    """Unified task response formatter"""
+    return {
+        "id": str(task.id),
+        "title": task.title,
+        "description": task.description,
+        "status": task.status,
+        "priority": getattr(task, 'priority', 'medium'),
+        "due_date": task.deadline.strftime("%Y-%m-%d %H:%M:%S") if task.deadline else None,
+        "assigned_to": username,
+        "assigned_name": full_name,
+        "created_at": task.created_at,
+        "updated_at": task.updated_at
+    }
+
+# ==========================================
 #  ROUTES
 # ==========================================
 
@@ -30,23 +60,8 @@ async def get_all_tasks(
         
         result = []
         for t in tasks_list:
-            assignee_name = None
-            if t.assigned_to:
-                assignee = await t.assigned_to.fetch()
-                if assignee:
-                    assignee_name = assignee.username
-            
-            result.append({
-                "id": str(t.id),
-                "title": t.title,
-                "description": t.description,
-                "status": t.status,
-                "priority": getattr(t, 'priority', 'medium'),
-                "due_date": t.deadline.strftime("%Y-%m-%d %H:%M:%S") if t.deadline else None,
-                "assigned_to": assignee_name,
-                "created_at": t.created_at,
-                "updated_at": t.updated_at
-            })
+            u, f = await get_assignee_info(t)
+            result.append(format_task_response(t, u, f))
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -64,23 +79,8 @@ async def get_task(
             detail=f"Task with id {task_id} not found"
         )
     
-    assignee_name = None
-    if task.assigned_to:
-        assignee = await task.assigned_to.fetch()
-        if assignee:
-            assignee_name = assignee.username
-
-    return {
-        "id": str(task.id),
-        "title": task.title,
-        "description": task.description,
-        "status": task.status,
-        "priority": getattr(task, 'priority', 'medium'),
-        "due_date": task.deadline.strftime("%Y-%m-%d %H:%M:%S") if task.deadline else None,
-        "assigned_to": assignee_name,
-        "created_at": task.created_at,
-        "updated_at": task.updated_at
-    }
+    u, f = await get_assignee_info(task)
+    return format_task_response(task, u, f)
 
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
@@ -90,30 +90,41 @@ async def create_task(
 ):
     """Create a new task in MongoDB"""
     try:
+        # Handle assigned_to
+        assignee = current_user
+        if task_data.assigned_to:
+            found_admin = await Admin.find_one(Admin.username == task_data.assigned_to)
+            if found_admin:
+                assignee = found_admin
+        
+        # Parse deadline safely
+        deadline = datetime.utcnow()
+        if task_data.due_date:
+            try:
+                # Remove T and handle various formats
+                dt_str = task_data.due_date.replace('T', ' ')
+                if len(dt_str) == 10: # YYYY-MM-DD
+                    deadline = datetime.strptime(dt_str, "%Y-%m-%d")
+                else:
+                    deadline = datetime.fromisoformat(task_data.due_date.replace(' ', 'T'))
+            except:
+                deadline = datetime.utcnow()
+
         new_task = Task(
             title=task_data.title,
             description=task_data.description,
             status=task_data.status or "pending",
             priority=task_data.priority or "medium",
-            deadline=datetime.fromisoformat(task_data.due_date) if task_data.due_date else datetime.utcnow(),
+            deadline=deadline,
             created_by=current_user,
-            assigned_to=current_user
+            assigned_to=assignee
         )
         
         await new_task.insert()
         
-        return {
-            "id": str(new_task.id),
-            "title": new_task.title,
-            "description": new_task.description,
-            "status": new_task.status,
-            "priority": new_task.priority,
-            "due_date": new_task.deadline.strftime("%Y-%m-%d %H:%M:%S"),
-            "assigned_to": current_user.username,
-            "created_at": new_task.created_at,
-            "updated_at": new_task.updated_at
-        }
+        return format_task_response(new_task, assignee.username, assignee.full_name or assignee.username)
     except Exception as e:
+        print(f"Error creating task: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{task_id}", response_model=TaskResponse)
@@ -130,30 +141,26 @@ async def update_task(
     update_data = task_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         if field == "due_date" and value:
-            setattr(task, "deadline", datetime.fromisoformat(value))
+            try:
+                dt_str = value.replace('T', ' ')
+                if len(dt_str) == 10:
+                    setattr(task, "deadline", datetime.strptime(dt_str, "%Y-%m-%d"))
+                else:
+                    setattr(task, "deadline", datetime.fromisoformat(value.replace(' ', 'T')))
+            except:
+                pass
+        elif field == "assigned_to" and value:
+            assignee = await Admin.find_one(Admin.username == value)
+            if assignee:
+                task.assigned_to = assignee
         elif hasattr(task, field):
             setattr(task, field, value)
     
     task.updated_at = datetime.utcnow()
     await task.save()
     
-    assignee_name = None
-    if task.assigned_to:
-        assignee = await task.assigned_to.fetch()
-        if assignee:
-            assignee_name = assignee.username
-
-    return {
-        "id": str(task.id),
-        "title": task.title,
-        "description": task.description,
-        "status": task.status,
-        "priority": getattr(task, 'priority', 'medium'),
-        "due_date": task.deadline.strftime("%Y-%m-%d %H:%M:%S") if task.deadline else None,
-        "assigned_to": assignee_name,
-        "created_at": task.created_at,
-        "updated_at": task.updated_at
-    }
+    u, f = await get_assignee_info(task)
+    return format_task_response(task, u, f)
 
 
 

@@ -2,7 +2,7 @@
 Pydantic Schemas for Calendar Events - Simplified Version
 """
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, BeforeValidator
 from datetime import datetime
 from typing import Optional, Annotated
 from beanie import PydanticObjectId
@@ -45,7 +45,7 @@ class CalendarEventUpdate(BaseModel):
 
 class CalendarEventResponse(BaseModel):
     id: PyObjectId
-    admin_id: PyObjectId
+    admin_id: Annotated[str, BeforeValidator(lambda v: str(v.id) if hasattr(v, 'id') else str(v))]
     title: str
     event_type: str
     start_time: datetime
@@ -58,5 +58,4 @@ class CalendarEventResponse(BaseModel):
     
     class Config:
         from_attributes = True
-        alias_generator = lambda x: x
         populate_by_name = True
