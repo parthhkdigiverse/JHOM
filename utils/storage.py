@@ -19,15 +19,37 @@ except Exception as e:
     print(f"⚠️ Google Drive not available: {e}")
     GOOGLE_DRIVE_AVAILABLE = False
 
-# Storage paths
-BUYER_DRIVE = r"E:\Buyer"
-MANUFACTURER_DRIVE = r"E:\manufacture"
-DIRECT_DRIVE = r"E:\Direct"
+# Storage paths - Use environment variables with sensible defaults
+# Vercel's only writable directory is /tmp
+is_vercel = os.environ.get("VERCEL") == "1"
+
+def get_storage_path(env_key: str, default_windows: str) -> str:
+    """Get storage path based on environment"""
+    if is_vercel:
+        path = os.path.join("/tmp", env_key.lower().replace("_DRIVE", ""))
+    else:
+        path = os.getenv(env_key, default_windows)
+    return path
+
+BUYER_DRIVE = get_storage_path("BUYER_DRIVE", r"E:\Buyer")
+MANUFACTURER_DRIVE = get_storage_path("MANUFACTURER_DRIVE", r"E:\manufacture")
+DIRECT_DRIVE = get_storage_path("DIRECT_DRIVE", r"E:\Direct")
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
-# Create directories
-for path in [BUYER_DRIVE, MANUFACTURER_DRIVE, DIRECT_DRIVE]:
-    os.makedirs(path, exist_ok=True)
+# Create directories safely
+def ensure_storage_dirs():
+    """Ensure storage directories exist without crashing if read-only"""
+    for path in [BUYER_DRIVE, MANUFACTURER_DRIVE, DIRECT_DRIVE]:
+        try:
+            if not os.path.exists(path):
+                os.makedirs(path, exist_ok=True)
+                print(f"📁 Created directory: {path}")
+        except Exception as e:
+            print(f"⚠️ Could not create directory {path}: {e}")
+
+# Call creation only if not on Vercel or in a safe way
+if not is_vercel:
+    ensure_storage_dirs()
 
 def save_to_drive(folder: str, filename: str, data: dict) -> bool:
     """

@@ -16,8 +16,17 @@ from googleapiclient.errors import HttpError
 
 # ==================== CONFIGURATION ====================
 
-OAUTH_CREDENTIALS_FILE = "oauth_credentials.json"
-TOKEN_FILE = "token.pickle"
+# Check if running on Vercel
+is_vercel = os.environ.get("VERCEL") == "1"
+
+# Use /tmp for token on Vercel
+def get_config_path(filename: str) -> str:
+    if is_vercel:
+        return os.path.join("/tmp", filename)
+    return filename
+
+OAUTH_CREDENTIALS_FILE = "oauth_credentials.json"  # Usually packaged with code
+TOKEN_FILE = get_config_path("token.pickle")
 
 # ✅ Update with YOUR folder IDs from YOUR Google Drive
 GOOGLE_DRIVE_FOLDERS = {
@@ -35,22 +44,39 @@ def get_drive_service():
     creds = None
     
     if os.path.exists(TOKEN_FILE):
-        with open(TOKEN_FILE, 'rb') as token:
-            creds = pickle.load(token)
+        try:
+            with open(TOKEN_FILE, 'rb') as token:
+                creds = pickle.load(token)
+        except Exception as e:
+            print(f"⚠️ Could not load token from {TOKEN_FILE}: {e}")
     
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"⚠️ Token refresh failed: {e}")
+                creds = None
+        
+        if not creds:
             if not os.path.exists(OAUTH_CREDENTIALS_FILE):
                 print(f"❌ {OAUTH_CREDENTIALS_FILE} not found!")
                 return None
             
+            # Note: run_local_server won't work on Vercel/Serverless
+            if is_vercel:
+                print("❌ Cannot perform initial Google Drive OAuth on Vercel. Please run locally first.")
+                return None
+                
             flow = InstalledAppFlow.from_client_secrets_file(OAUTH_CREDENTIALS_FILE, SCOPES)
             creds = flow.run_local_server(port=8080)
         
-        with open(TOKEN_FILE, 'wb') as token:
-            pickle.dump(creds, token)
+        # Try to save token if directory is writable
+        try:
+            with open(TOKEN_FILE, 'wb') as token:
+                pickle.dump(creds, token)
+        except Exception as e:
+            print(f"⚠️ Could not save token to {TOKEN_FILE}: {e} (Expected on Vercel)")
     
     return build('drive', 'v3', credentials=creds)
 
