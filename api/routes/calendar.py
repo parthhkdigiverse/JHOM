@@ -253,7 +253,7 @@ async def get_today_events(
 ):
     """Get today's events from MongoDB"""
     
-    today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     today_end = today_start + timedelta(days=1)
     
     events = await CalendarEvent.find(
@@ -287,7 +287,7 @@ async def get_upcoming_events(
 ):
     """Get upcoming events from MongoDB"""
     
-    now = datetime.now()
+    now = datetime.utcnow()
     future = now + timedelta(days=days)
     
     events = await CalendarEvent.find(

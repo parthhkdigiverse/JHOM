@@ -89,3 +89,49 @@ class CalendarEvent(Document):
 
     class Settings:
         name = "calendar_events"
+
+class Quotation(Document):
+    """Quotation model"""
+    buyer_id: Optional[Link[Buyer]] = None
+    products: List[dict] # List of ProductItem-like dicts
+    price_term: str
+    advance_pct: int
+    balance_pct: int
+    delivery_mode: str
+    timeline: str
+    status: str = "draft" # draft, sent, converted
+    created_by: Link[Admin]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Settings:
+        name = "quotations"
+
+class ProformaInvoice(Document):
+    """Proforma Invoice model"""
+    invoice_no: Indexed(str, unique=True)
+    date: str
+    lc_date: Optional[str] = None
+    validity: Optional[str] = None
+    buyer_id: Link[Buyer]
+    buyer_name: str # Snapshot in case buyer details change
+    buyer_address: str
+    products: List[dict] # List of ProformaItem-like dicts
+    incoterm: str
+    currency: str = "USD"
+    advance_pct: int
+    balance_pct: int
+    mode_of_shipment: str
+    delivery_time: str
+    port_of_loading: str
+    port_of_discharge: str
+    amount_in_words: str
+    grand_total: float
+    status: str = "issued" # issued, paid, cancelled
+    created_by: Link[Admin]
+    quotation_id: Optional[Link[Quotation]] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Settings:
+        name = "proforma_invoices"

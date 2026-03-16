@@ -3,6 +3,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
 # Import routes from api folder
 from api.routes import auth, buyer, manufacturer, tasks, calendar, file_upload, quotation, proforma_invoice
@@ -19,13 +22,13 @@ app = FastAPI(
 
 @app.on_event("startup")
 async def startup_event():
-    print("⏳ Application starting up...")
+    print("Application starting up...")
     db_success = await init_db()
     if db_success:
         await seed_admin()
-        print("🚀 Application ready!")
+        print("Application ready!")
     else:
-        print("⚠️ Application started with database errors. Some endpoints may fail.")
+        print("Application started with database errors. Some endpoints may fail.")
 
 # CORS Middleware
 app.add_middleware(
@@ -63,26 +66,49 @@ async def health():
         "version": "1.0.0"
     }
 
+def setup_logging():
+    """Configure logging to both console and file, specifically capturing uvicorn output"""
+    log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    log_file = 'server.log'
+    
+    # File handler (5MB per file, max 3 files)
+    file_handler = RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=2)
+    file_handler.setFormatter(log_formatter)
+    
+    # Root logger setup
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+    root_logger.addHandler(file_handler)
+    
+    # Specific loggers for uvicorn
+    for logger_name in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
+        log = logging.getLogger(logger_name)
+        log.addHandler(file_handler)
+        log.setLevel(logging.INFO)
+    
+    print(f"Logging initialized. Check {os.path.abspath(log_file)} for logs.")
+
 if __name__ == "__main__":
+    setup_logging()
     print("=" * 70)
-    print("🚀 BUSINESS MANAGEMENT API")
+    print("BUSINESS MANAGEMENT API")
     print("=" * 70)
-    print("\n📍 Server URLs:")
+    print("Server URLs:")
     print("   Frontend: http://127.0.0.1:8000")
     print("   Login:    http://127.0.0.1:8000/static/index.html")
     print("   API Docs: http://127.0.0.1:8000/docs")
     print("   ReDoc:    http://127.0.0.1:8000/redoc")
-    print("\n🔐 Default Superuser Credentials:")
+    print("\nDefault Superuser Credentials:")
     print("   Admin: admin1 / admin123")
-    print("\n✨ Features:")
-    print("   ✅ User Authentication & Role Management")
-    print("   ✅ Buyer Management")
-    print("   ✅ Manufacturer Management")
-    print("   ✅ Task Management")
-    print("   ✅ Calendar System")
-    print("   ✅ File Upload (Local + Google Drive)")
+    print("\nFeatures:")
+    print("   [+] User Authentication & Role Management")
+    print("   [+] Buyer Management")
+    print("   [+] Manufacturer Management")
+    print("   [+] Task Management")
+    print("   [+] Calendar System")
+    print("   [+] File Upload (Local + Google Drive)")
     print("\n" + "=" * 70)
-    print("🛑 Press CTRL+C to stop the server")
+    print("Press CTRL+C to stop the server")
     print("=" * 70 + "\n")
 
     

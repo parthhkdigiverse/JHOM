@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
 from datetime import datetime
+import traceback
 from beanie import PydanticObjectId
+import logging
+
+# Initialize logger
+logger = logging.getLogger(__name__)
 
 from database.models import Task, Admin
 from schemas.task import TaskCreate, TaskUpdate, TaskResponse
@@ -29,8 +34,31 @@ async def get_assignee_info(task: Task):
             full_name = assignee.full_name or assignee.username
     return username, full_name
 
-def format_task_response(task: Task, username: str, full_name: str):
-    """Unified task response formatter"""
+async def format_task_response(task: Task):
+    """Unified task response formatter - handles lazy fetching of links"""
+    # Robustly handle missing timestamps for older documents
+    created_at = getattr(task, 'created_at', None) or datetime.utcnow()
+    updated_at = getattr(task, 'updated_at', None) or created_at
+    
+    username = None
+    full_name = None
+    
+    if task.assigned_to:
+        try:
+            # Check if it's a Link or the Document itself
+            if hasattr(task.assigned_to, "fetch"):
+                assignee = await task.assigned_to.fetch()
+            else:
+                assignee = task.assigned_to
+            
+            if assignee:
+                username = getattr(assignee, 'username', 'unknown')
+                full_name = getattr(assignee, 'full_name', username)
+        except Exception as e:
+            logger.warning(f"Failed to fetch assignee for task {task.id}: {e}")
+            username = "unknown"
+            full_name = "unknown"
+    
     return {
         "id": str(task.id),
         "title": task.title,
@@ -40,8 +68,8 @@ def format_task_response(task: Task, username: str, full_name: str):
         "due_date": task.deadline.strftime("%Y-%m-%d %H:%M:%S") if task.deadline else None,
         "assigned_to": username,
         "assigned_name": full_name,
-        "created_at": task.created_at,
-        "updated_at": task.updated_at
+        "created_at": created_at,
+        "updated_at": updated_at
     }
 
 # ==========================================
@@ -55,21 +83,23 @@ async def get_all_tasks(
     status_filter: Optional[str] = None,
     current_admin: Admin = Depends(get_current_admin)
 ):
-    """Get all tasks with optional filters from MongoDB"""
     try:
+        logger.info(f"Fetching tasks with limit={limit}, skip={skip}...")
         query = Task.find()
         if status_filter:
             query = query.find(Task.status == status_filter)
         
         tasks_list = await query.skip(skip).limit(limit).to_list()
         
+        # Manually fetch and format
         result = []
         for t in tasks_list:
-            u, f = await get_assignee_info(t)
-            result.append(format_task_response(t, u, f))
+            formatted = await format_task_response(t)
+            result.append(formatted)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"ERROR in get_all_tasks: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to fetch tasks")
 
 @router.get("/{task_id}", response_model=TaskResponse)
 async def get_task(
@@ -84,8 +114,7 @@ async def get_task(
             detail=f"Task with id {task_id} not found"
         )
     
-    u, f = await get_assignee_info(task)
-    return format_task_response(task, u, f)
+    return await format_task_response(task)
 
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
@@ -127,10 +156,12 @@ async def create_task(
         
         await new_task.insert()
         
-        return format_task_response(new_task, assignee.username, assignee.full_name or assignee.username)
+        # Reload to get pre-fetched links if needed, or just use the objects we have
+        # Since we just inserted, links are objects.
+        return await format_task_response(new_task)
     except Exception as e:
-        print(f"Error creating task: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error creating task: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error creating task")
 
 @router.put("/{task_id}", response_model=TaskResponse)
 async def update_task(
@@ -164,8 +195,9 @@ async def update_task(
     task.updated_at = datetime.utcnow()
     await task.save()
     
-    u, f = await get_assignee_info(task)
-    return format_task_response(task, u, f)
+    # Reload for consistent links
+    task = await Task.get(task_id)
+    return await format_task_response(task)
 
 
 
