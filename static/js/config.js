@@ -1,6 +1,6 @@
 // API Configuration
 var API_CONFIG = {
-    BASE_URL: 'http://127.0.0.1:5000',
+    BASE_URL: '',
     ENDPOINTS: {
         // Auth
         LOGIN: '/api/auth/login',
