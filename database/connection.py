@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from database.models import Admin, Buyer, Manufacturer, Task, CalendarEvent
-from utils.mongodb_storage import init_gridfs
+import motor.motor_asyncio
+import gridfs
+
+# Global GridFS handle (if needed by other modules)
+db_gridfs = None
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -22,6 +26,8 @@ DATABASE_NAME = "jhom_db"
 
 async def init_db():
     """Initialize Beanie with the MongoDB client and models"""
+    global db_gridfs
+    
     if not MONGODB_URL:
         logger.error("CRITICAL: MONGODB_URL environment variable is not set!")
         return False
@@ -44,8 +50,10 @@ async def init_db():
             ]
         )
         
-        # Initialize GridFS
-        init_gridfs(client[DATABASE_NAME])
+        # Initialize GridFS using motor (AsyncIO version)
+        # Note: In motor, we typically use motor.motor_asyncio.AsyncIOMotorGridFSBucket
+        from motor.motor_asyncio import AsyncIOMotorGridFSBucket
+        db_gridfs = AsyncIOMotorGridFSBucket(client[DATABASE_NAME])
         
         logger.info(f"Successfully initialized Beanie and GridFS for database: {DATABASE_NAME}")
         return True

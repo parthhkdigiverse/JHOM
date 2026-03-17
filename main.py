@@ -69,24 +69,39 @@ async def health():
 def setup_logging():
     """Configure logging to both console and file, specifically capturing uvicorn output"""
     log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    log_file = 'server.log'
-    
-    # File handler (5MB per file, max 3 files)
-    file_handler = RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=2)
-    file_handler.setFormatter(log_formatter)
     
     # Root logger setup
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
-    root_logger.addHandler(file_handler)
     
-    # Specific loggers for uvicorn
-    for logger_name in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
-        log = logging.getLogger(logger_name)
-        log.addHandler(file_handler)
-        log.setLevel(logging.INFO)
+    # Check if we're running on Vercel
+    is_vercel = os.getenv("VERCEL") == "1"
     
-    print(f"Logging initialized. Check {os.path.abspath(log_file)} for logs.")
+    if not is_vercel:
+        log_file = 'server.log'
+        try:
+            # File handler (5MB per file, max 3 files)
+            file_handler = RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=2)
+            file_handler.setFormatter(log_formatter)
+            root_logger.addHandler(file_handler)
+            
+            # Specific loggers for uvicorn
+            for logger_name in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
+                log = logging.getLogger(logger_name)
+                log.addHandler(file_handler)
+                log.setLevel(logging.INFO)
+            
+            print(f"Logging initialized. Check {os.path.abspath(log_file)} for logs.")
+        except Exception as e:
+            print(f"Could not initialize file logging: {e}. Falling back to console only.")
+    else:
+        print("Running on Vercel - File logging disabled.")
+    
+    # Ensure console logging is always available (standard for serverless)
+    if not any(isinstance(h, logging.StreamHandler) for h in root_logger.handlers):
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(log_formatter)
+        root_logger.addHandler(console_handler)
 
 if __name__ == "__main__":
     setup_logging()
