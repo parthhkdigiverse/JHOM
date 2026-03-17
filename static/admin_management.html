@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Management - JHOM</title>
+    <title>Super Admin Portal - JHOM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
@@ -16,19 +16,18 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <div class="icon-container">
-                <i data-lucide="shield-check"></i>
-            </div>
+            <div class="icon-container"><i data-lucide="shield-check"></i></div>
             <h2>Super Admin Portal</h2>
         </div>
         <div class="nav-user">
-            <span id="userName">Loading...</span>
+            <span id="userName">System Root</span>
             <button onclick="auth.logout()" class="btn btn-small btn-danger">
-                <i data-lucide="log-out"></i> Logout
+                <i data-lucide="log-out" style="width: 14px;"></i> Logout
             </button>
         </div>
     </nav>
 
+    <!-- Sidebar -->
     <div class="sidebar">
         <ul class="sidebar-menu" id="sidebarMenu">
             <li>
@@ -79,8 +78,10 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="page-header">
-            <h1>Admin Management</h1>
-            <p>Manage system access and monitor global stats</p>
+            <div>
+                <h1>Infrastructure Governance</h1>
+                <p>Manage administrative protocols and system access levels</p>
+            </div>
         </div>
 
         <!-- Global Stats -->
@@ -109,61 +110,79 @@
         </div>
 
         <!-- Admins List -->
-        <div class="card mt-20">
+        <div class="card" style="margin-top: 32px;">
             <div class="card-header">
-                <h3>System Administrators</h3>
-                <button class="btn" id="addAdminBtn">
-                    <i data-lucide="user-plus"></i> Add New Admin
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="key" style="color: var(--primary); width: 20px;"></i>
+                    <h3 style="margin: 0;">Access Controllers</h3>
+                </div>
+                <button class="btn btn-primary" id="addAdminBtn">
+                    <i data-lucide="user-plus" class="btn-icon"></i> Provision New Admin
                 </button>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 0;">
                 <div id="adminsContainer" class="table-container">
-                    <p class="loading">Fetching administrative users...</p>
+                    <div class="loading-state" style="padding: 60px; text-align: center; color: var(--slate-400);">
+                        <i data-lucide="loader-2" class="animate-spin" style="width: 32px; height: 32px; margin-bottom: 16px;"></i>
+                        <p>Loading security profiles...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Admin Modal -->
+    <!-- Provisioning Modal -->
     <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Add New Admin</h3>
-                <span class="close">&times;</span>
+        <div class="modal-content" style="max-width: 600px; border-radius: 20px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--slate-800); padding: 24px;">
+                <h3 id="modalTitle" style="font-weight: 800; font-size: 22px;">Provision Admin</h3>
+                <button class="close btn btn-icon-only btn-secondary" style="border-radius: 50%; width: 40px; height: 40px;">&times;</button>
             </div>
-            <form id="adminForm">
+            <form id="adminForm" style="padding: 24px;">
                 <input type="hidden" id="adminId">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" required>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Identifier / Username</label>
+                        <input type="text" id="username" placeholder="e.g., j.smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Access Tier</label>
+                        <select id="role">
+                            <option value="admin">Regular Admin</option>
+                            <option value="superuser">Super User</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="full_name">Full Name</label>
-                    <input type="text" id="full_name" required>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Legal Full Name</label>
+                    <input type="text" id="full_name" placeholder="Enter formal name" required>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Enterprise Email</label>
+                    <input type="email" id="email" placeholder="name@jhom.com" required>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="text" id="password" required>
-                    <small>Visible to superusers only</small>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Security Phrase / Password</label>
+                    <div style="position: relative;">
+                        <input type="text" id="password" required placeholder="Generate secure key" style="padding-right: 40px;">
+                        <i data-lucide="lock" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; color: var(--slate-500);"></i>
+                    </div>
+                    <small style="color: var(--warning); font-size: 11px; margin-top: 4px; display: block;">Sensitive data: Provisioning visibility restricted to Super Users.</small>
                 </div>
-                <div class="form-group">
-                    <label for="role">Role</label>
-                    <select id="role">
-                        <option value="admin">Regular Admin</option>
-                        <option value="superuser">Super User</option>
-                    </select>
+
+                <div class="form-group" style="margin-top: 20px; display: flex; align-items: center; gap: 12px; background: var(--slate-950); padding: 12px; border-radius: 12px; border: 1px solid var(--slate-800);">
+                    <input type="checkbox" id="is_active" checked style="width: 18px; height: 18px;">
+                    <label style="margin: 0; font-weight: 600;">Enable Operational Access immediately</label>
                 </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="is_active" checked> Active Account
-                    </label>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn">Save Admin</button>
+
+                <div class="modal-footer" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--slate-800);">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px; font-weight: 700;">
+                        <i data-lucide="shield-check" style="width: 18px; margin-right: 8px;"></i> Commit Security Profile
+                    </button>
                 </div>
             </form>
         </div>
@@ -175,7 +194,14 @@
     <script src="js/admin_management.js"></script>
     <script>
         lucide.createIcons();
+        window.onload = function() {
+            auth.updateHeader();
+            auth.applyRoleVisibility();
+            if (typeof loadAdmins === 'function') loadAdmins();
+        };
     </script>
 </body>
+
+</html>
 
 </html>

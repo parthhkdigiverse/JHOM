@@ -63,8 +63,8 @@ function displayBuyers(buyers) {
         html += '<td>' + (buyer.city ? buyer.city + ', ' : '') + (buyer.state || 'N/A') + '</td>';
         html += '<td><span class="badge badge-primary">' + (buyer.payment_terms || 'N/A') + '</span></td>';
         html += '<td class="action-buttons">';
-        html += '<button onclick="editBuyer(' + buyer.id + ')" class="btn-icon" title="Edit">✏️</button>';
-        html += '<button onclick="deleteBuyer(' + buyer.id + ')" class="btn-icon" title="Delete">🗑️</button>';
+        html += '<button onclick="editBuyer(\'' + buyer.id + '\')" class="btn btn-icon-only btn-secondary" title="Edit"><i data-lucide="edit-3"></i></button>';
+        html += '<button onclick="deleteBuyer(\'' + buyer.id + '\')" class="btn btn-icon-only btn-danger" title="Delete"><i data-lucide="trash-2"></i></button>';
         html += '</td>';
         html += '</tr>';
     }
@@ -72,7 +72,10 @@ function displayBuyers(buyers) {
     html += '</tbody>';
     html += '</table>';
 
-    container.innerHTML = html;
+    container.innerHTML = `<div class="table-container">${html}</div>`;
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 }
 
 // Show add modal

@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buyers - JHOM</title>
+    <title>Buyers Management - JHOM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -17,17 +17,18 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <div class="icon-container">
-                <i data-lucide="building-2"></i>
-            </div>
+            <div class="icon-container"><i data-lucide="building-2"></i></div>
             <h2>JHOM</h2>
         </div>
         <div class="nav-user">
-            <span id="userName">Loading...</span>
-            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+            <span id="userName">Admin</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">
+                <i data-lucide="log-out" style="width: 14px;"></i> Logout
+            </button>
         </div>
     </nav>
 
+    <!-- Sidebar -->
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li>
@@ -91,11 +92,11 @@
     <div class="main-content">
         <div class="page-header">
             <div>
-                <h1>Buyers Management</h1>
-                <p>Manage your buyer information and contacts</p>
+                <h1>Buyers Directory</h1>
+                <p>Manage global client relationships and trade terms</p>
             </div>
             <button onclick="showAddModal()" class="btn btn-primary">
-                <i data-lucide="plus" class="btn-icon"></i> Add New Buyer
+                <i data-lucide="user-plus" class="btn-icon"></i> Register New Buyer
             </button>
         </div>
 
@@ -103,43 +104,52 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statBuyers">0</h3>
-                    <p>Total Buyers</p>
+                    <h3 id="statBuyers">—</h3>
+                    <p>Active Buyers</p>
                 </div>
-                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+                <div class="stat-icon blue"><i data-lucide="users"></i></div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statManufacturers">0</h3>
-                    <p>Manufacturers</p>
+                    <h3 id="statFOB">—</h3>
+                    <p>FOB Partners</p>
                 </div>
-                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+                <div class="stat-icon green"><i data-lucide="package"></i></div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statTasks">0</h3>
-                    <p>Total Tasks</p>
+                    <h3 id="statCIF">—</h3>
+                    <p>CIF Partners</p>
                 </div>
-                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+                <div class="stat-icon purple"><i data-lucide="ship"></i></div>
             </div>
         </div>
 
-
         <!-- Search and Filter -->
-        <div class="filters">
-            <input type="text" id="searchInput" placeholder="🔍 Search buyers by name, company, email..."
-                class="search-input">
+        <div class="card" style="margin-bottom: 24px; padding: 16px;">
+            <div class="filters" style="margin: 0; border: none; padding: 0;">
+                <div class="search-wrapper" style="position: relative; flex: 1;">
+                    <i data-lucide="search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--slate-400); width: 18px;"></i>
+                    <input type="text" id="searchInput" placeholder="Search by name, company, or destination..." class="search-input" style="padding-left: 48px; border-radius: 12px; height: 48px;">
+                </div>
+            </div>
         </div>
 
         <!-- Buyers Table -->
         <div class="card">
             <div class="card-header">
-                <h3>All Buyers</h3>
-                <span id="buyerCount" class="count-badge">0 buyers</span>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="list" style="color: var(--primary); width: 20px;"></i>
+                    <h3 style="margin: 0;">Global Client List</h3>
+                </div>
+                <span id="buyerCount" class="count-badge" style="background: var(--primary-light); color: var(--primary); font-weight: 700;">0 buyers</span>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 0;">
                 <div id="buyersContainer" class="table-container">
-                    <p class="loading">Loading buyers...</p>
+                    <div class="loading-state" style="padding: 60px; text-align: center; color: var(--slate-400);">
+                        <i data-lucide="loader-2" class="animate-spin" style="width: 32px; height: 32px; margin-bottom: 16px;"></i>
+                        <p>Syncing buyer database...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,89 +157,87 @@
 
     <!-- Add/Edit Modal -->
     <div id="buyerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Add New Buyer</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content" style="max-width: 700px; border-radius: 20px; border: 1px solid var(--slate-800);">
+            <div class="modal-header" style="border-bottom: 1px solid var(--slate-800); padding: 24px;">
+                <h2 id="modalTitle" style="font-weight: 800; font-size: 24px;">Register New Buyer</h2>
+                <button onclick="closeModal()" class="btn btn-icon-only btn-secondary" style="border-radius: 50%; width: 40px; height: 40px;">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
             </div>
-            <form id="buyerForm">
+            <form id="buyerForm" style="padding: 24px;">
                 <div class="form-section">
-                    <h3 class="section-title">Basic Information</h3>
+                    <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 20px;">Corporate Identity</h3>
 
-                    <div class="form-row">
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div class="form-group">
-                            <label for="name">Buyer Name <span class="required">*</span></label>
-                            <input type="text" id="name" name="name" placeholder="Enter buyer name" required>
+                            <label>Primary Contact Name <span style="color: var(--danger);">*</span></label>
+                            <input type="text" id="name" name="name" placeholder="Contact person" required>
                         </div>
                         <div class="form-group">
-                            <label for="company_name">Company Name <span class="required">*</span></label>
-                            <input type="text" id="company_name" name="company_name" placeholder="Enter company name"
-                                required>
+                            <label>Legal Company Name <span style="color: var(--danger);">*</span></label>
+                            <input type="text" id="company_name" name="company_name" placeholder="As per trade license" required>
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="buyer@company.com">
+                            <label>Professional Email</label>
+                            <input type="email" id="email" name="email" placeholder="example@company.com">
                         </div>
                         <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" placeholder="+91-XXXXXXXXXX">
+                            <label>Phone / WhatsApp</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+00 00000 00000">
                         </div>
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3 class="section-title">Address Details</h3>
+                <div class="form-section" style="margin-top: 32px;">
+                    <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 20px;">Operational Address</h3>
 
                     <div class="form-group">
-                        <label for="address">Street Address</label>
-                        <textarea id="address" name="address" rows="2" placeholder="Enter complete address"></textarea>
+                        <label>Business Address</label>
+                        <textarea id="address" name="address" rows="3" placeholder="Suite, Street, District"></textarea>
                     </div>
 
-                    <div class="form-row">
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
                         <div class="form-group">
-                            <label for="city">City</label>
-                            <input type="text" id="city" name="city" placeholder="Enter city">
+                            <label>City</label>
+                            <input type="text" id="city" name="city">
                         </div>
                         <div class="form-group">
-                            <label for="state">State</label>
-                            <input type="text" id="state" name="state" placeholder="Enter state">
+                            <label>State / Province</label>
+                            <input type="text" id="state" name="state">
                         </div>
                         <div class="form-group">
-                            <label for="country">Country</label>
-                            <input type="text" id="country" name="country" placeholder="Enter country" value="India">
+                            <label>Country</label>
+                            <input type="text" id="country" name="country" value="India">
                         </div>
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3 class="section-title">Business Details</h3>
+                <div class="form-section" style="margin-top: 32px; margin-bottom: 32px;">
+                    <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 20px;">Trade Compliance</h3>
 
-                    <div class="form-row">
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div class="form-group">
-                            <label for="gst_number">GST Number</label>
-                            <input type="text" id="gst_number" name="gst_number" placeholder="Enter GST/VAT/TIN number">
+                            <label>Tax ID / GST / VAT</label>
+                            <input type="text" id="gst_number" name="gst_number" placeholder="Enter registration number">
                         </div>
                         <div class="form-group">
-                            <label for="payment_terms">Payment Terms <span class="required">*</span></label>
+                            <label>Primary Incoterms <span style="color: var(--danger);">*</span></label>
                             <select id="payment_terms" name="payment_terms" required>
-                                <option value="">-- Select Payment Terms --</option>
+                                <option value="">Select Primary Term</option>
                                 <option value="FOB">📦 FOB (Free On Board)</option>
-                                <option value="CIF">🚢 CIF (Cost, Insurance & Freight)</option>
+                                <option value="CIF">🚢 CIF (Cost, Ins. & Freight)</option>
                             </select>
-                            <small>💡 FOB: Buyer arranges shipping | CIF: Seller includes shipping & insurance</small>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-actions">
-                    <button type="button" onclick="closeModal()" class="btn btn-secondary">
-                        <span class="btn-icon">✕</span> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        <span class="btn-icon">💾</span> Save Buyer
+                <div class="form-actions" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--slate-800); gap: 12px;">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="flex: 2;">
+                        <i data-lucide="save" style="width: 18px; margin-right: 8px;"></i> Save Buyer Account
                     </button>
                 </div>
             </form>
@@ -242,7 +250,14 @@
     <script src="js/buyers.js"></script>
     <script>
         lucide.createIcons();
+        window.onload = function() {
+            auth.updateHeader();
+            auth.applyRoleVisibility();
+            if (typeof loadBuyers === 'function') loadBuyers();
+        };
     </script>
 </body>
+
+</html>
 
 </html>

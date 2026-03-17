@@ -212,6 +212,10 @@ var auth = (function() {
         if (nameElem && user) {
             nameElem.textContent = user.full_name || user.username;
         }
+        const headerNameElem = document.getElementById('userNameHeader');
+        if (headerNameElem && user) {
+            headerNameElem.textContent = user.full_name || user.username;
+        }
     }
 
     // Apply role-based visibility to the UI

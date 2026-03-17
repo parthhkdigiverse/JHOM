@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uploads - JHOM</title>
+    <title>Document Repository - JHOM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -17,17 +17,18 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <div class="icon-container">
-                <i data-lucide="building-2"></i>
-            </div>
+            <div class="icon-container"><i data-lucide="building-2"></i></div>
             <h2>JHOM</h2>
         </div>
         <div class="nav-user">
-            <span id="userName">Loading...</span>
-            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+            <span id="userName">Admin</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">
+                <i data-lucide="log-out" style="width: 14px;"></i> Logout
+            </button>
         </div>
     </nav>
 
+    <!-- Sidebar -->
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li>
@@ -90,10 +91,15 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="page-header">
-
             <div>
-                <h1>File Upload Management</h1>
-                <p>Upload and manage documents</p>
+                <h1>Document Repository</h1>
+                <p>Centralized cloud storage for trade and compliance documents</p>
+            </div>
+            <div id="driveStatusContainer">
+                 <!-- Populated by JS -->
+                 <span class="loading-badge" style="background: var(--slate-800); color: var(--slate-400); padding: 8px 16px; border-radius: 99px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="refresh-cw" class="animate-spin" style="width: 14px;"></i> Syncing Cloud Drive
+                 </span>
             </div>
         </div>
 
@@ -101,149 +107,187 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statBuyers">0</h3>
-                    <p>Total Buyers</p>
+                    <h3 id="statTotalFiles">42</h3>
+                    <p>Total Documents</p>
                 </div>
-                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+                <div class="stat-icon blue"><i data-lucide="file-text"></i></div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statManufacturers">0</h3>
-                    <p>Manufacturers</p>
+                    <h3 id="statStorageUsed">1.2 GB</h3>
+                    <p>Cloud Storage used</p>
                 </div>
-                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+                <div class="stat-icon purple"><i data-lucide="hard-drive"></i></div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statTasks">0</h3>
-                    <p>Total Tasks</p>
+                    <h3 id="statRecentUploads">5</h3>
+                    <p>Uploads (24h)</p>
                 </div>
-                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+                <div class="stat-icon green"><i data-lucide="upload-cloud"></i></div>
             </div>
         </div>
 
-
-        <div class="card">
-            <div class="card-header">
-                <i data-lucide="cloud" class="header-icon" style="margin-right: 10px; color: var(--accent);"></i>
-                <h3>Google Drive Status</h3>
-            </div>
-            <div class="card-body">
-                <div id="driveStatusContainer">
-                    <p class="loading">Checking connection...</p>
+        <!-- Upload Interface -->
+        <div class="card" style="margin-bottom: 32px;">
+            <div class="card-header" style="padding: 0; border-bottom: 1px solid var(--slate-800);">
+                <div class="tabs" style="display: flex; gap: 0; border: none; padding: 0;">
+                    <button class="tab-btn active" onclick="switchTab('buyer')" style="padding: 20px 32px; font-weight: 700; border-bottom: 2px solid transparent;">
+                        <i data-lucide="user" style="width: 16px; margin-right: 8px;"></i> Buyer Ledger
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('manufacturer')" style="padding: 20px 32px; font-weight: 700; border-bottom: 2px solid transparent;">
+                        <i data-lucide="factory" style="width: 16px; margin-right: 8px;"></i> Factory Docs
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('direct')" style="padding: 20px 32px; font-weight: 700; border-bottom: 2px solid transparent;">
+                        <i data-lucide="plus" style="width: 16px; margin-right: 8px;"></i> Quick Upload
+                    </button>
                 </div>
             </div>
-        </div>
-
-        <!-- Upload Tabs -->
-        <div class="card">
-            <div class="card-header">
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('buyer')">Buyer Upload</button>
-                    <button class="tab-btn" onclick="switchTab('manufacturer')">Manufacturer Upload</button>
-                    <button class="tab-btn" onclick="switchTab('direct')">Direct Upload</button>
-                </div>
-            </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 32px;">
                 <!-- Buyer Upload Tab -->
                 <div id="buyer-tab" class="tab-content active">
-                    <h3>Upload Buyer Document</h3>
-                    <form id="buyerUploadForm" class="upload-form">
-                        <div class="form-group">
-                            <label for="buyerId">Select Buyer *</label>
-                            <select id="buyerId" name="buyerId" required>
-                                <option value="">Loading buyers...</option>
-                            </select>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+                        <div>
+                            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Buyer Documentation</h3>
+                            <p style="color: var(--slate-400); font-size: 14px; margin-bottom: 24px;">Link official reports, invoices, or compliance certificates directly to a buyer profile.</p>
+                            
+                            <form id="buyerUploadForm" class="upload-form">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label>Select Target Buyer</label>
+                                    <select id="buyerId" name="buyerId" required>
+                                        <option value="">Syncing buyer list...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label>Document Payload</label>
+                                    <div class="file-upload-wrapper" style="border: 2px dashed var(--slate-700); border-radius: 12px; padding: 24px; text-align: center; background: var(--slate-900); transition: all 0.3s ease;">
+                                        <input type="file" id="buyerFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required style="position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer;">
+                                        <i data-lucide="paperclip" style="width: 32px; height: 32px; color: var(--primary); margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></i>
+                                        <p style="font-weight: 600; margin-bottom: 4px;">Select or Drop File</p>
+                                        <p style="font-size: 12px; color: var(--slate-500);">PDF, Images or Word (Max 10MB)</p>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="buyerUploadBtn" style="width: 100%; height: 48px;">
+                                    <i data-lucide="share" style="width: 18px; margin-right: 8px;"></i> Archive to Ledger
+                                </button>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label for="buyerFile">Select File *</label>
-                            <input type="file" id="buyerFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                                required>
-                            <small>Allowed: PDF, Images, Word documents</small>
+                        <div id="buyerUploadResult" class="upload-result">
+                            <!-- Populated on success -->
                         </div>
-                        <button type="submit" class="btn btn-primary" id="buyerUploadBtn">
-                            Upload to Buyer
-                        </button>
-                    </form>
-                    <div id="buyerUploadResult" class="upload-result"></div>
+                    </div>
                 </div>
 
                 <!-- Manufacturer Upload Tab -->
                 <div id="manufacturer-tab" class="tab-content">
-                    <h3>Upload Manufacturer Document</h3>
-                    <form id="manufacturerUploadForm" class="upload-form">
-                        <div class="form-group">
-                            <label for="manufacturerId">Select Manufacturer *</label>
-                            <select id="manufacturerId" name="manufacturerId" required>
-                                <option value="">Loading manufacturers...</option>
-                            </select>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+                        <div>
+                            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Factory Certification</h3>
+                            <p style="color: var(--slate-400); font-size: 14px; margin-bottom: 24px;">Store factory audits, QC reports, and technical data sheets.</p>
+                            
+                            <form id="manufacturerUploadForm" class="upload-form">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label>Select Manufacturer</label>
+                                    <select id="manufacturerId" name="manufacturerId" required>
+                                        <option value="">Syncing manufacturers...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label>Document Payload</label>
+                                    <div class="file-upload-wrapper" style="border: 2px dashed var(--slate-700); border-radius: 12px; padding: 24px; text-align: center; background: var(--slate-900);">
+                                        <input type="file" id="manufacturerFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+                                        <p style="font-weight: 600;">Choose Factory Document</p>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="manufacturerUploadBtn" style="width: 100%; height: 48px; background: var(--success);">
+                                    <i data-lucide="shield" style="width: 18px; margin-right: 8px;"></i> Store in Vault
+                                </button>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label for="manufacturerFile">Select File *</label>
-                            <input type="file" id="manufacturerFile" name="file"
-                                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
-                            <small>Allowed: PDF, Images, Word documents</small>
-                        </div>
-                        <button type="submit" class="btn btn-primary" id="manufacturerUploadBtn">
-                            Upload to Manufacturer
-                        </button>
-                    </form>
-                    <div id="manufacturerUploadResult" class="upload-result"></div>
+                        <div id="manufacturerUploadResult" class="upload-result"></div>
+                    </div>
                 </div>
 
                 <!-- Direct Upload Tab -->
                 <div id="direct-tab" class="tab-content">
-                    <h3>Direct Upload</h3>
-                    <form id="directUploadForm" class="upload-form">
-                        <div class="form-group">
-                            <label for="directFile">Select File *</label>
-                            <input type="file" id="directFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                                required>
-                            <small>Allowed: PDF, Images, Word documents</small>
-                        </div>
-                        <button type="submit" class="btn btn-primary" id="directUploadBtn">
-                            Upload File
-                        </button>
-                    </form>
-                    <div id="directUploadResult" class="upload-result"></div>
+                    <div style="max-width: 500px; margin: 0 auto;">
+                        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px; text-align: center;">Direct Bulk Storage</h3>
+                        <p style="color: var(--slate-400); font-size: 14px; margin-bottom: 32px; text-align: center;">Unlinked document storage for general business files.</p>
+                        
+                        <form id="directUploadForm" class="upload-form">
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <div class="file-upload-wrapper" style="border: 2px dashed var(--slate-700); border-radius: 12px; padding: 48px; text-align: center; background: var(--slate-900);">
+                                    <input type="file" id="directFile" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+                                    <i data-lucide="upload" style="width: 48px; height: 48px; color: var(--slate-600); margin-bottom: 16px;"></i>
+                                    <p style="font-weight: 600;">Stream direct to Drive</p>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary" id="directUploadBtn" style="width: 100%; height: 48px;">
+                                <i data-lucide="save" style="width: 18px; margin-right: 8px;"></i> Commit Transfer
+                            </button>
+                        </form>
+                        <div id="directUploadResult" class="upload-result" style="margin-top: 16px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Files List -->
-        <div class="content-grid">
+        <!-- Files List Matrix -->
+        <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 24px;">Synchronized File Matrix</h2>
+        <div class="content-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
             <div class="card">
-                <div class="card-header">
-                    <h3>📁 Buyer Files</h3>
-                    <button onclick="loadDriveFiles('buyer')" class="btn btn-small">Refresh</button>
+                <div class="card-header" style="padding: 16px 24px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="user-check" style="color: var(--primary); width: 18px;"></i>
+                        <h3 style="margin: 0; font-size: 15px;">Buyer Database</h3>
+                    </div>
+                    <button onclick="loadDriveFiles('buyer')" class="btn btn-icon-only btn-secondary" style="width: 32px; height: 32px; border-radius: 8px;">
+                        <i data-lucide="refresh-cw" style="width: 14px;"></i>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div id="buyerFiles" class="files-list">
-                        <p class="loading">Loading...</p>
+                <div class="card-body" style="padding: 0;">
+                    <div id="buyerFiles" class="files-list" style="max-height: 400px; overflow-y: auto;">
+                        <div class="loading-state" style="padding: 40px; text-align: center;">
+                            <i data-lucide="loader-2" class="animate-spin" style="width: 24px; color: var(--slate-600);"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header">
-                    <h3>🏭 Manufacturer Files</h3>
-                    <button onclick="loadDriveFiles('manufacturer')" class="btn btn-small">Refresh</button>
+                <div class="card-header" style="padding: 16px 24px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="factory" style="color: var(--success); width: 18px;"></i>
+                        <h3 style="margin: 0; font-size: 15px;">Manufacturer Vault</h3>
+                    </div>
+                    <button onclick="loadDriveFiles('manufacturer')" class="btn btn-icon-only btn-secondary" style="width: 32px; height: 32px; border-radius: 8px;">
+                        <i data-lucide="refresh-cw" style="width: 14px;"></i>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div id="manufacturerFiles" class="files-list">
-                        <p class="loading">Loading...</p>
+                <div class="card-body" style="padding: 0;">
+                    <div id="manufacturerFiles" class="files-list" style="max-height: 400px; overflow-y: auto;">
+                        <div class="loading-state" style="padding: 40px; text-align: center;">
+                            <i data-lucide="loader-2" class="animate-spin" style="width: 24px; color: var(--slate-600);"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header">
-                    <h3>📄 Direct Files</h3>
-                    <button onclick="loadDriveFiles('direct')" class="btn btn-small">Refresh</button>
+                <div class="card-header" style="padding: 16px 24px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="folder" style="color: var(--slate-400); width: 18px;"></i>
+                        <h3 style="margin: 0; font-size: 15px;">General Archives</h3>
+                    </div>
+                    <button onclick="loadDriveFiles('direct')" class="btn btn-icon-only btn-secondary" style="width: 32px; height: 32px; border-radius: 8px;">
+                        <i data-lucide="refresh-cw" style="width: 14px;"></i>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div id="directFiles" class="files-list">
-                        <p class="loading">Loading...</p>
+                <div class="card-body" style="padding: 0;">
+                    <div id="directFiles" class="files-list" style="max-height: 400px; overflow-y: auto;">
+                        <div class="loading-state" style="padding: 40px; text-align: center;">
+                            <i data-lucide="loader-2" class="animate-spin" style="width: 24px; color: var(--slate-600);"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -256,7 +300,15 @@
     <script src="js/uploads.js"></script>
     <script>
         lucide.createIcons();
+        window.onload = function() {
+            auth.updateHeader();
+            auth.applyRoleVisibility();
+            if (typeof checkDriveStatus === 'function') checkDriveStatus();
+            if (typeof initUploadPage === 'function') initUploadPage();
+        };
     </script>
 </body>
+
+</html>
 
 </html>

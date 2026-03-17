@@ -90,73 +90,160 @@
     </div>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <div class="page-header">
-            <h1>Dashboard</h1>
-            <p>Welcome back! Here's your business overview</p>
+    <div class="main-content" style="background: radial-gradient(circle at 50% 0%, rgba(79, 70, 229, 0.04) 0%, transparent 70%);">
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px;">
+            <div class="header-content">
+                <h1 style="font-size: 36px; margin-bottom: 8px;">Business Overview</h1>
+                <p style="font-size: 16px;">Welcome back, <span id="userNameHeader" style="color: var(--primary); font-weight: 700;">Admin</span>. Here is your enterprise report.</p>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="location.reload()">
+                    <i data-lucide="refresh-cw" style="width: 16px;"></i> Refresh
+                </button>
+                <a href="quotation.html" class="btn btn-primary">
+                    <i data-lucide="plus" style="width: 16px;"></i> New Quotation
+                </a>
+            </div>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-grid">
+        <!-- Professional Stats Grid -->
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 48px;">
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statBuyers">0</h3>
-                    <p>Total Buyers</p>
+                    <p style="text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: var(--slate-400); margin-bottom: 4px; font-weight: 600;">Total Buyers</p>
+                    <h3 id="statBuyers" style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">0</h3>
+                    <div style="font-size: 12px; color: var(--success); display: flex; align-items: center; gap: 4px; font-weight: 600;">
+                        <i data-lucide="trending-up" style="width: 14px;"></i> Active Portfolio
+                    </div>
                 </div>
                 <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statManufacturers">0</h3>
-                    <p>Manufacturers</p>
+                    <p style="text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: var(--slate-400); margin-bottom: 4px; font-weight: 600;">Manufacturers</p>
+                    <h3 id="statManufacturers" style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">0</h3>
+                    <div style="font-size: 12px; color: var(--info); display: flex; align-items: center; gap: 4px; font-weight: 600;">
+                        <i data-lucide="factory" style="width: 14px;"></i> Supply Chain
+                    </div>
                 </div>
                 <div class="stat-icon green"><i data-lucide="factory"></i></div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="statTasks">0</h3>
-                    <p>Active Tasks</p>
+                    <p style="text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: var(--slate-400); margin-bottom: 4px; font-weight: 600;">Active Tasks</p>
+                    <h3 id="statTasks" style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">0</h3>
+                    <div style="font-size: 12px; color: var(--warning); display: flex; align-items: center; gap: 4px; font-weight: 600;">
+                        <i data-lucide="clock" style="width: 14px;"></i> In Progress
+                    </div>
                 </div>
                 <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
             </div>
 
-
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3 id="driveStatus">-</h3>
-                    <p>Drive Status</p>
+                    <p style="text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: var(--slate-400); margin-bottom: 4px; font-weight: 600;">Cloud Sync</p>
+                    <h3 id="driveStatus" style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">-</h3>
+                    <div style="font-size: 12px; color: var(--slate-400); display: flex; align-items: center; gap: 4px; font-weight: 600;">
+                        <i data-lucide="database" style="width: 14px;"></i> Storage Linked
+                    </div>
                 </div>
                 <div class="stat-icon purple"><i data-lucide="hard-drive"></i></div>
             </div>
         </div>
 
         <!-- Recent Activity -->
-        <div class="content-grid">
+        <div class="content-grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px;">
             <div class="card">
                 <div class="card-header">
-                    <h3>Recent Buyers</h3>
-                    <a href="buyers.html" class="btn btn-small">View All</a>
+                    <h3 style="font-size: 18px;">Recent Buyers</h3>
+                    <a href="buyers.html" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View All</a>
                 </div>
-                <div class="card-body">
-                    <div id="recentBuyers" class="table-container">
-                        <p class="loading">Loading...</p>
+                <div class="card-body" style="padding: 0;">
+                    <div id="recentBuyers" class="table-container" style="border: none; margin: 0; border-radius: 0; box-shadow: none;">
+                        <p class="loading" style="padding: 24px;">Fetching business records...</p>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h3>Recent Tasks</h3>
-                    <a href="tasks.html" class="btn btn-small">View All</a>
+                    <h3 style="font-size: 18px;">Priorities</h3>
+                    <a href="tasks.html" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Manage</a>
                 </div>
-                <div class="card-body">
-                    <div id="recentTasks" class="table-container">
-                        <p class="loading">Loading...</p>
+                <div class="card-body" style="padding: 0;">
+                    <div id="recentTasks" class="table-container" style="border: none; margin: 0; border-radius: 0; box-shadow: none;">
+                        <p class="loading" style="padding: 24px;">Loading pipeline...</p>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal (Matching tasks.html) -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Edit Task</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="taskForm">
+                <div class="form-section">
+                    <h3 class="section-title">Task Information</h3>
+
+                    <div class="form-group">
+                        <label for="title">Task Title <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">Status <span class="required">*</span></label>
+                            <select id="status" name="status" required>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="priority">Priority <span class="required">*</span></label>
+                            <select id="priority" name="priority" required>
+                                <option value="low">Low Priority</option>
+                                <option value="medium">Medium Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="due_date">Due Date</label>
+                            <input type="date" id="due_date" name="due_date">
+                        </div>
+                        <div class="form-group">
+                            <label for="assigned_to">Assign To</label>
+                            <select id="assigned_to" name="assigned_to">
+                                <option value="">-- Select User --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">
+                        <i data-lucide="x" class="btn-icon"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i data-lucide="save" class="btn-icon"></i> Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

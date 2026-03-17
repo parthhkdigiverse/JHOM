@@ -141,16 +141,31 @@ def upload_file_to_drive(entity_type: str, entity_id: int, file_path: str, file_
 
 # ==================== DELETE FILE ====================
 
-def delete_file_from_drive(file_id: str) -> dict:
-    """Delete file from Google Drive"""
+def delete_file_from_drive(entity_type: str, filename: str) -> dict:
+    """Delete file from Google Drive by looking up its name in the specific folder"""
     try:
         service = get_drive_service()
         if not service:
             return {"status": "error", "message": "Authentication failed"}
         
-        service.files().delete(fileId=file_id).execute()
-        return {"status": "success", "message": "Deleted"}
+        folder_id = GOOGLE_DRIVE_FOLDERS.get(entity_type)
+        if not folder_id:
+            return {"status": "error", "message": f"Unknown entity type: {entity_type}"}
+            
+        # Search for the file by name in that folder
+        query = f"name = '{filename}.json' and '{folder_id}' in parents and trashed = false"
+        results = service.files().list(q=query, fields="files(id, name)").execute()
+        files = results.get('files', [])
+        
+        if not files:
+            return {"status": "error", "message": "File not found on Drive"}
+            
+        for f in files:
+            service.files().delete(fileId=f['id']).execute()
+            
+        return {"status": "success", "message": f"Deleted {len(files)} file(s)"}
     except Exception as e:
+        print(f"❌ Drive delete error: {e}")
         return {"status": "error", "message": str(e)}
 
 # ==================== LIST FILES ====================

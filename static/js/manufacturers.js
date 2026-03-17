@@ -50,12 +50,12 @@ function displayManufacturers(manufacturers) {
                         <td>${manufacturer.email || '-'}</td>
                         <td>${manufacturer.phone || '-'}</td>
                         <td>${manufacturer.product_category || '-'}</td>
-                        <td>
-                            <button onclick="editManufacturer(${manufacturer.id})" class="btn-icon" title="Edit">
-                                ✏️
+                        <td class="table-actions">
+                            <button onclick="editManufacturer('${manufacturer.id}')" class="btn btn-icon-only btn-secondary" title="Edit">
+                                <i data-lucide="edit-3"></i>
                             </button>
-                            <button onclick="deleteManufacturer(${manufacturer.id})" class="btn-icon" title="Delete">
-                                🗑️
+                            <button onclick="deleteManufacturer('${manufacturer.id}')" class="btn btn-icon-only btn-danger" title="Delete">
+                                <i data-lucide="trash-2"></i>
                             </button>
                         </td>
                     </tr>
@@ -64,7 +64,10 @@ function displayManufacturers(manufacturers) {
         </table>
     `;
 
-    container.innerHTML = html;
+    container.innerHTML = `<div class="table-container">${html}</div>`;
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 }
 
 // Search functionality

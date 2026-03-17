@@ -124,7 +124,7 @@ async function loadAdmins() {
                             <button onclick="editAdmin(${JSON.stringify(admin).replace(/"/g, '&quot;')})" class="btn-icon" title="Edit">
                                 <i data-lucide="edit-3"></i>
                             </button>
-                            <button onclick="deleteAdmin(${admin.id}, '${admin.username}')" class="btn-icon" title="Delete" style="color: var(--danger)">
+                            <button onclick="deleteAdmin('${admin.id}', '${admin.username}')" class="btn-icon" title="Delete" style="color: var(--danger)">
                                 <i data-lucide="trash-2"></i>
                             </button>
                         </div>

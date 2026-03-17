@@ -32,6 +32,11 @@ function apiCall(url, options) {
                 });
             }
             
+            // Handle 204 No Content (common for DELETE)
+            if (response.status === 204) {
+                return null;
+            }
+            
             return response.json();
         });
 }

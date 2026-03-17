@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar - JHOM</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Enterprise Calendar - JHOM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -14,194 +17,143 @@
         .calendar-main-container {
             display: grid;
             grid-template-columns: 1fr 350px;
-            gap: 25px;
-            margin-top: 20px;
+            gap: 24px;
+            margin-top: 24px;
         }
 
         .calendar-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: var(--shadow);
+            background: var(--slate-900);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--slate-800);
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--slate-100);
+        }
+
+        .fc .fc-button-primary {
+            background-color: var(--slate-800);
+            border-color: var(--slate-700);
+            color: var(--slate-100);
+            font-weight: 600;
+            text-transform: capitalize;
+            border-radius: 8px;
+        }
+
+        .fc .fc-button-primary:hover {
+            background-color: var(--slate-700);
+        }
+
+        .fc .fc-button-active {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
         }
 
         .sidebar-section {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
 
         .calendar-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow);
+            background: var(--slate-900);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--slate-800);
         }
 
         .calendar-card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--gray-900);
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--slate-100);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .event-type-badges {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-
-        .badge-appointment {
-            background: #3788d8;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-meeting {
-            background: #f59e0b;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-work {
-            background: #10b981;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-task {
-            background: #ef4444;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-event {
-            background: #8b5cf6;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            padding: 12px;
+            background: var(--slate-950);
+            border-radius: 12px;
         }
 
-        .stat-card {
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 32px;
+        .type-badge {
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 11px;
             font-weight: 700;
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .stat-label {
-            font-size: 13px;
-            opacity: 0.9;
-        }
+        .badge-appointment { background: rgba(55, 136, 216, 0.1); color: #3788d8; }
+        .badge-meeting { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .badge-work { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .badge-task { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .badge-event { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
 
         .today-event {
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            padding: 16px;
+            background: var(--slate-800);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s ease;
         }
 
         .today-event:hover {
-            transform: translateX(5px);
-            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+            background: var(--slate-750);
         }
 
         .today-event-time {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-bottom: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
         }
 
         .today-event-title {
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .event-list {
-            max-height: 500px;
-            overflow-y: auto;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--slate-100);
         }
 
         .event-item {
-            padding: 15px;
-            background: var(--gray-50);
-            border-radius: 10px;
+            padding: 14px;
+            background: var(--slate-950);
+            border-radius: 12px;
             margin-bottom: 12px;
-            border-left: 4px solid var(--primary);
-            transition: var(--transition);
+            border: 1px solid var(--slate-800);
+            transition: all 0.2s ease;
             cursor: pointer;
         }
 
         .event-item:hover {
-            background: var(--gray-100);
-            transform: translateX(5px);
-        }
-
-        .event-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
+            border-color: var(--primary);
+            background: var(--slate-900);
         }
 
         .event-title {
-            font-weight: 600;
-            color: var(--gray-900);
-            font-size: 15px;
-            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--slate-100);
+            font-size: 13px;
+            margin-bottom: 4px;
         }
 
         .event-time {
-            font-size: 12px;
-            color: var(--gray-600);
-            margin-bottom: 5px;
-        }
-
-        .event-location {
-            font-size: 12px;
-            color: var(--gray-500);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--gray-500);
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
+            font-size: 11px;
+            color: var(--slate-400);
         }
 
         @media (max-width: 1200px) {
@@ -216,17 +168,18 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <div class="icon-container">
-                <i data-lucide="building-2"></i>
-            </div>
+            <div class="icon-container"><i data-lucide="building-2"></i></div>
             <h2>JHOM</h2>
         </div>
         <div class="nav-user">
-            <span id="userName">Loading...</span>
-            <button onclick="logout()" class="btn btn-small btn-danger">Logout</button>
+            <span id="userName">Admin</span>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">
+                <i data-lucide="log-out" style="width: 14px;"></i> Logout
+            </button>
         </div>
     </nav>
 
+    <!-- Sidebar -->
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li>
@@ -290,36 +243,36 @@
     <div class="main-content">
         <div class="page-header">
             <div>
-                <h1>Calendar & Events</h1>
-                <p>Manage your schedule, tasks, and deadlines</p>
+                <h1>Operational Calendar</h1>
+                <p>Sync milestones, factory visits, and shipping deadlines</p>
             </div>
             <button onclick="showAddModal()" class="btn btn-primary">
-                <i data-lucide="plus" class="btn-icon"></i> Add Event
+                <i data-lucide="calendar-plus" class="btn-icon"></i> Schedule Event
             </button>
         </div>
 
-        <!-- Global Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
+        <!-- Mini Stats Area -->
+        <div class="stats-grid" style="margin-bottom: 0;">
+            <div class="stat-card" style="padding: 16px 24px;">
                 <div class="stat-info">
-                    <h3 id="statBuyers">0</h3>
-                    <p>Total Buyers</p>
+                    <h3 id="statTotalEvents">0</h3>
+                    <p>Total Events</p>
                 </div>
-                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
+                <div class="stat-icon purple"><i data-lucide="calendar"></i></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="padding: 16px 24px;">
                 <div class="stat-info">
-                    <h3 id="statManufacturers">0</h3>
-                    <p>Manufacturers</p>
+                    <h3 id="statTodayEvents">0</h3>
+                    <p>Today's Schedule</p>
                 </div>
-                <div class="stat-icon green"><i data-lucide="factory"></i></div>
+                <div class="stat-icon orange"><i data-lucide="clock"></i></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="padding: 16px 24px;">
                 <div class="stat-info">
-                    <h3 id="statTasks">0</h3>
-                    <p>Total Tasks</p>
+                    <h3 id="statUpcoming">12</h3>
+                    <p>Upcoming This Week</p>
                 </div>
-                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
+                <div class="stat-icon blue"><i data-lucide="trending-up"></i></div>
             </div>
         </div>
 
@@ -328,129 +281,118 @@
             <!-- Calendar Section -->
             <div class="calendar-section">
                 <div class="event-type-badges">
-                    <span class="badge-appointment">Appointment</span>
-                    <span class="badge-meeting">Meeting</span>
-                    <span class="badge-work">Work</span>
-                    <span class="badge-task">Task</span>
-                    <span class="badge-event">Event</span>
+                    <span class="type-badge badge-appointment">📋 Appointment</span>
+                    <span class="type-badge badge-meeting">👥 Meeting</span>
+                    <span class="type-badge badge-work">💼 Work</span>
+                    <span class="type-badge badge-task">✅ Task</span>
+                    <span class="type-badge badge-event">🎉 Event</span>
                 </div>
                 <div id="calendar"></div>
             </div>
 
             <!-- Sidebar Section -->
             <div class="sidebar-section">
-                <!-- Stats Card -->
-                <div class="calendar-card">
-                    <h3>Statistics</h3>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number" id="totalEvents">0</div>
-                            <div class="stat-label">Total Events</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="todayEvents">0</div>
-                            <div class="stat-label">Today</div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Today's Events -->
                 <div class="calendar-card">
-                    <h3>📅 Today's Schedule</h3>
-                    <div id="todayEventsList"></div>
+                    <h3><i data-lucide="activity" style="width: 18px; color: var(--primary);"></i> Immediate Schedule</h3>
+                    <div id="todayEventsList">
+                         <!-- Populated by JS -->
+                    </div>
                 </div>
 
-                <!-- All Events List -->
+                <!-- Upcoming List -->
                 <div class="calendar-card">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0;">All Events</h3>
-                        <button class="btn btn-primary btn-small" onclick="loadAllEvents()">
-                            <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0;"><i data-lucide="list" style="width: 18px; color: var(--success);"></i> Upcoming</h3>
+                        <button class="btn btn-icon-only btn-secondary" onclick="loadAllEvents()" style="width: 32px; height: 32px;">
+                            <i data-lucide="refresh-cw" style="width: 14px;"></i>
                         </button>
                     </div>
-                    <div id="allEventsList" class="event-list"></div>
+                    <div id="allEventsList" style="max-height: 400px; overflow-y: auto; padding-right: 4px;">
+                         <!-- Populated by JS -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Event Modal -->
+    <!-- Modals (Add/Edit) -->
     <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Add Event</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content" style="max-width: 550px; border-radius: 20px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--slate-800); padding: 24px;">
+                <h2 id="modalTitle" style="font-weight: 800;">Log Entry</h2>
+                <button onclick="closeModal()" class="btn btn-icon-only btn-secondary" style="border-radius: 50%;"><i data-lucide="x"></i></button>
             </div>
 
-            <input type="hidden" id="eventId">
+            <div style="padding: 24px;">
+                <input type="hidden" id="eventId">
 
-            <div class="form-group">
-                <label>Title <span class="required">*</span></label>
-                <input type="text" id="eventTitle" placeholder="e.g., Team Meeting" required>
-            </div>
-
-            <div class="form-group">
-                <label>Event Type <span class="required">*</span></label>
-                <select id="eventType" required>
-                    <option value="appointment">📋 Appointment</option>
-                    <option value="meeting">👥 Meeting</option>
-                    <option value="work">💼 Work</option>
-                    <option value="task">✅ Task</option>
-                    <option value="event">🎉 Event</option>
-                </select>
-            </div>
-
-            <div class="form-row">
                 <div class="form-group">
-                    <label>Start Time <span class="required">*</span></label>
-                    <input type="datetime-local" id="startTime" required>
+                    <label>Agenda / Title <span style="color: var(--danger);">*</span></label>
+                    <input type="text" id="eventTitle" placeholder="e.g., Shanghai Port Inspection" required>
                 </div>
-                <div class="form-group">
-                    <label>End Time <span class="required">*</span></label>
-                    <input type="datetime-local" id="endTime" required>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Log Type <span style="color: var(--danger);">*</span></label>
+                    <select id="eventType" required>
+                        <option value="appointment">📋 Appointment</option>
+                        <option value="meeting">👥 Meeting</option>
+                        <option value="work">💼 Work</option>
+                        <option value="task">✅ Task</option>
+                        <option value="event">🎉 Event</option>
+                    </select>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="eventDescription" rows="3" placeholder="Add details..."></textarea>
-            </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                    <div class="form-group">
+                        <label>Commencement</label>
+                        <input type="datetime-local" id="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Conclusion</label>
+                        <input type="datetime-local" id="endTime" required>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label>Location</label>
-                <input type="text" id="eventLocation" placeholder="e.g., Office, Zoom">
-            </div>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Operational Details</label>
+                    <textarea id="eventDescription" rows="3" placeholder="Context or specific instructions..."></textarea>
+                </div>
 
-            <div class="form-actions">
-                <button type="button" onclick="closeModal()" class="btn btn-secondary">
-                    <i data-lucide="x" class="btn-icon"></i> Cancel
-                </button>
-                <button type="button" onclick="saveEvent()" class="btn btn-primary">
-                    <i data-lucide="save" class="btn-icon"></i> <span id="saveButtonText">Create Event</span>
-                </button>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Coordinates / Location</label>
+                    <input type="text" id="eventLocation" placeholder="e.g., Office, Hub A, Virtual">
+                </div>
+
+                <div class="form-actions" style="margin-top: 32px; gap: 12px;">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary" style="flex: 1;">Dismiss</button>
+                    <button type="button" onclick="saveEvent()" class="btn btn-primary" style="flex: 2;">
+                        <i data-lucide="check" style="width: 18px; margin-right: 8px;"></i> <span id="saveButtonText">Confirm Log</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- View Event Modal -->
+    <!-- View Modal -->
     <div id="viewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Event Details</h2>
-                <span class="close" onclick="closeViewModal()">&times;</span>
+        <div class="modal-content" style="max-width: 500px; border-radius: 20px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--slate-800); padding: 24px;">
+                <h2 style="font-weight: 800;">Log Verification</h2>
+                <button onclick="closeViewModal()" class="btn btn-icon-only btn-secondary" style="border-radius: 50%;"><i data-lucide="x"></i></button>
             </div>
 
-            <div id="viewEventContent"></div>
+            <div style="padding: 24px;">
+                <div id="viewEventContent"></div>
 
-            <div class="form-actions">
-                <button onclick="editEventFromView()" class="btn btn-primary">
-                    <i data-lucide="edit-2" class="btn-icon"></i> Edit
-                </button>
-                <button onclick="deleteEventFromView()" class="btn btn-danger">
-                    <i data-lucide="trash-2" class="btn-icon"></i> Delete
-                </button>
-                <button onclick="closeViewModal()" class="btn btn-secondary">Close</button>
+                <div class="form-actions" style="margin-top: 32px; gap: 12px;">
+                    <button onclick="editEventFromView()" class="btn btn-secondary" style="flex: 1;">
+                        <i data-lucide="edit-3" style="width: 16px; margin-right: 8px;"></i> Edit
+                    </button>
+                    <button onclick="deleteEventFromView()" class="btn btn-danger" style="flex: 1;">
+                        <i data-lucide="trash-2" style="width: 16px; margin-right: 8px;"></i> Purge
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -463,15 +405,11 @@
     <script>
         // Check auth
         auth.requireAuth();
-
-        // Display user
         auth.updateHeader();
 
-        // Calendar variables
         let calendar;
         let currentViewEventId = null;
 
-        // Initialize calendar
         function initCalendar() {
             var calendarEl = document.getElementById('calendar');
             calendar = new FullCalendar.Calendar(calendarEl, {
@@ -479,20 +417,17 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    right: 'dayGridMonth,timeGridWeek'
                 },
-                // Load events from API
+                themeSystem: 'standard',
                 events: async function(info, successCallback, failureCallback) {
                     try {
                         const start = info.start.toISOString().split('T')[0];
                         const end = info.end.toISOString().split('T')[0];
                         const events = await CalendarAPI.getAll(start, end);
                         successCallback(events);
-                        
-                        // Also update stats and other lists
                         loadStats();
                     } catch (error) {
-                        console.error('Fetch events error:', error);
                         failureCallback(error);
                     }
                 },
@@ -500,22 +435,12 @@
                     info.jsEvent.preventDefault();
                     showViewModal(info.event.id);
                 },
-                editable: false, // Simple version first
                 selectable: true,
                 select: function (info) {
-                    // Pre-fill dates from selection
                     let start = info.startStr;
                     let end = info.endStr;
-                    
-                    // If it's just a date (no time), add default times
-                    if (start.length === 10) {
-                        start += 'T09:00';
-                        end = start.split('T')[0] + 'T10:00';
-                    } else {
-                        start = start.slice(0, 16);
-                        end = end.slice(0, 16);
-                    }
-                    
+                    if (start.length === 10) { start += 'T09:00'; end = start.split('T')[0] + 'T10:00'; }
+                    else { start = start.slice(0, 16); end = end.slice(0, 16); }
                     document.getElementById('startTime').value = start;
                     document.getElementById('endTime').value = end;
                     showAddModal();
@@ -526,15 +451,13 @@
         }
 
         function showAddModal() {
-            document.getElementById('modalTitle').textContent = 'Add Event';
-            document.getElementById('saveButtonText').textContent = 'Create Event';
+            document.getElementById('modalTitle').textContent = 'Maintain Schedule';
+            document.getElementById('saveButtonText').textContent = 'Confirm Log';
             document.getElementById('eventId').value = '';
             document.getElementById('eventTitle').value = '';
             document.getElementById('eventType').value = 'meeting';
             document.getElementById('eventDescription').value = '';
             document.getElementById('eventLocation').value = '';
-            
-            // Set default times if not already set by selection
             if (!document.getElementById('startTime').value) {
                 var now = new Date();
                 var start = new Date(now.getTime() + 3600000);
@@ -542,201 +465,122 @@
                 document.getElementById('startTime').value = start.toISOString().slice(0, 16);
                 document.getElementById('endTime').value = end.toISOString().slice(0, 16);
             }
-            
             document.getElementById('eventModal').style.display = 'block';
         }
 
-        function closeModal() {
-            document.getElementById('eventModal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('eventModal').style.display = 'none'; }
 
         async function showViewModal(eventId) {
             currentViewEventId = eventId;
             try {
                 const event = await CalendarAPI.getById(eventId);
-                
                 var colors = { 'appointment': '#3788d8', 'meeting': '#f59e0b', 'work': '#10b981', 'task': '#ef4444', 'event': '#8b5cf6' };
-                var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
-                
-                var html = '<div style="margin-bottom: 15px;"><span class="badge" style="background: ' + (colors[event.event_type] || '#3788d8') + '; color: white; padding: 6px 12px; border-radius: 20px;">' + (icons[event.event_type] || '📅') + ' ' + event.event_type.toUpperCase() + '</span></div>';
-                html += '<h2 style="margin-bottom: 15px;">' + event.title + '</h2>';
-                html += '<div style="background: #f9fafb; padding: 15px; border-radius: 8px;"><p><strong>📅 Start:</strong> ' + new Date(event.start_time).toLocaleString() + '</p>';
-                html += '<p><strong>⏰ End:</strong> ' + new Date(event.end_time).toLocaleString() + '</p>';
-                if (event.location) html += '<p><strong>📍 Location:</strong> ' + event.location + '</p>';
-                if (event.description) html += '<p><strong>📝 Description:</strong><br>' + event.description + '</p>';
+                var html = '<div style="margin-bottom: 20px;"><span style="background: ' + (colors[event.event_type] || '#3788d8') + '22; color: ' + (colors[event.event_type] || '#3788d8') + '; padding: 8px 16px; border-radius: 99px; font-weight: 800; font-size: 11px; text-transform: uppercase; border: 1px solid ' + (colors[event.event_type] || '#3788d8') + '44;">' + event.event_type + '</span></div>';
+                html += '<h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px; color: var(--slate-100);">' + event.title + '</h2>';
+                html += '<div style="background: var(--slate-950); padding: 20px; border-radius: 16px; border: 1px solid var(--slate-800);">';
+                html += '<p style="margin-bottom: 12px; color: var(--slate-300);"><strong style="color: var(--slate-500); font-size: 11px; display: block; text-transform: uppercase;">Timeframe</strong>' + new Date(event.start_time).toLocaleString() + ' — ' + new Date(event.end_time).toLocaleTimeString() + '</p>';
+                if (event.location) html += '<p style="margin-bottom: 12px; color: var(--slate-300);"><strong style="color: var(--slate-500); font-size: 11px; display: block; text-transform: uppercase;">Coordinates</strong>' + event.location + '</p>';
+                if (event.description) html += '<p style="color: var(--slate-400); font-size: 14px; line-height: 1.6;"><strong style="color: var(--slate-500); font-size: 11px; display: block; text-transform: uppercase;">Context</strong>' + event.description + '</p>';
                 html += '</div>';
-                
                 document.getElementById('viewEventContent').innerHTML = html;
                 document.getElementById('viewModal').style.display = 'block';
-            } catch (error) {
-                console.error('View event error:', error);
-                alert('Failed to load event details');
-            }
+            } catch (error) { alert('Sync error'); }
         }
 
-        function closeViewModal() {
-            document.getElementById('viewModal').style.display = 'none';
-            currentViewEventId = null;
-        }
+        function closeViewModal() { document.getElementById('viewModal').style.display = 'none'; currentViewEventId = null; }
 
         async function editEventFromView() {
             if (!currentViewEventId) return;
             try {
                 const event = await CalendarAPI.getById(currentViewEventId);
-                
-                document.getElementById('modalTitle').textContent = 'Edit Event';
-                document.getElementById('saveButtonText').textContent = 'Update Event';
+                document.getElementById('modalTitle').textContent = 'Modify Log';
+                document.getElementById('saveButtonText').textContent = 'Update Entry';
                 document.getElementById('eventId').value = event.id;
                 document.getElementById('eventTitle').value = event.title;
                 document.getElementById('eventType').value = event.event_type;
                 document.getElementById('eventDescription').value = event.description || '';
                 document.getElementById('eventLocation').value = event.location || '';
-                
-                // Format for datetime-local
                 document.getElementById('startTime').value = new Date(event.start_time).toISOString().slice(0, 16);
                 document.getElementById('endTime').value = new Date(event.end_time).toISOString().slice(0, 16);
-                
                 closeViewModal();
                 document.getElementById('eventModal').style.display = 'block';
-            } catch (error) {
-                console.error('Edit load error:', error);
-                alert('Failed to load event for editing');
-            }
+            } catch (error) { alert('Load fail'); }
         }
 
         async function deleteEventFromView() {
-            if (!currentViewEventId) return;
-            if (!confirm('Delete this event?')) return;
-            
-            try {
-                await CalendarAPI.delete(currentViewEventId);
-                alert('Event deleted!');
-                closeViewModal();
-                calendar.refetchEvents();
-                loadTodayEvents();
-                loadAllEvents();
-                loadStats();
-            } catch (error) {
-                console.error('Delete error:', error);
-                alert('Failed to delete event');
-            }
+            if (!currentViewEventId || !confirm('Permanently purge this log?')) return;
+            try { 
+                await CalendarAPI.delete(currentViewEventId); 
+                closeViewModal(); 
+                calendar.refetchEvents(); 
+                loadTodayEvents(); 
+                loadAllEvents(); 
+            } catch (error) { alert('Purge fail'); }
         }
 
         async function saveEvent() {
             var eventId = document.getElementById('eventId').value;
-            var title = document.getElementById('eventTitle').value.trim();
-            var eventType = document.getElementById('eventType').value;
-            var startTime = document.getElementById('startTime').value;
-            var endTime = document.getElementById('endTime').value;
-            var description = document.getElementById('eventDescription').value.trim();
-            var location = document.getElementById('eventLocation').value.trim();
-            
-            if (!title || !startTime || !endTime) { 
-                alert('Please fill required fields'); 
-                return; 
-            }
-            
-            // Format dates for backend: "YYYY-MM-DD HH:MM"
-            const formatForAPI = (dtStr) => dtStr.replace('T', ' ');
-            
-            const eventData = {
-                title: title,
-                event_type: eventType,
-                start_time: formatForAPI(startTime),
-                end_time: formatForAPI(endTime),
-                description: description || null,
-                location: location || null
+            var eventData = {
+                title: document.getElementById('eventTitle').value.trim(),
+                event_type: document.getElementById('eventType').value,
+                start_time: document.getElementById('startTime').value.replace('T', ' '),
+                end_time: document.getElementById('endTime').value.replace('T', ' '),
+                description: document.getElementById('eventDescription').value.trim() || null,
+                location: document.getElementById('eventLocation').value.trim() || null
             };
-
+            if (!eventData.title) return alert('Title critical');
             try {
-                if (eventId) {
-                    await CalendarAPI.update(eventId, eventData);
-                    alert('Event updated!');
-                } else {
-                    await CalendarAPI.create(eventData);
-                    alert('Event created!');
-                }
-                
-                closeModal();
-                calendar.refetchEvents();
-                loadTodayEvents();
-                loadAllEvents();
-                loadStats();
-            } catch (error) {
-                console.error('Save event error:', error);
-                alert('Failed to save event: ' + error.message);
-            }
+                if (eventId) await CalendarAPI.update(eventId, eventData);
+                else await CalendarAPI.create(eventData);
+                closeModal(); calendar.refetchEvents(); loadTodayEvents(); loadAllEvents();
+            } catch (error) { alert('Commit fail'); }
         }
 
         async function loadTodayEvents() {
             try {
-                const response = await CalendarAPI.getToday();
+                const res = await CalendarAPI.getToday();
                 const container = document.getElementById('todayEventsList');
-                
-                if (!response.events || response.events.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No events today</p></div>';
-                } else {
-                    var html = '';
-                    response.events.forEach(e => {
-                        html += '<div class="today-event" onclick="showViewModal(\'' + e.id + '\')">';
-                        html += '<div class="today-event-time">' + e.start_time + ' - ' + e.end_time + '</div>';
-                        html += '<div class="today-event-title">' + e.title + '</div>';
-                        if (e.location) html += '<div style="font-size: 11px; opacity: 0.9; margin-top: 3px;">📍 ' + e.location + '</div>';
-                        html += '</div>';
-                    });
-                    container.innerHTML = html;
+                if (!res.events || res.events.length === 0) container.innerHTML = '<p style="color: var(--slate-500); font-size: 12px; text-align: center; padding: 20px;">No operational logs for today.</p>';
+                else {
+                    container.innerHTML = res.events.map(e => `
+                        <div class="today-event" onclick="showViewModal('${e.id}')">
+                            <div class="today-event-time">${e.start_time} - ${e.end_time}</div>
+                            <div class="today-event-title">${e.title}</div>
+                        </div>
+                    `).join('');
                 }
-                document.getElementById('todayEvents').textContent = response.total || 0;
-            } catch (error) {
-                console.error('Load today events error:', error);
-            }
+                document.getElementById('statTodayEvents').textContent = res.total || 0;
+            } catch (e) {}
         }
 
         async function loadAllEvents() {
             try {
-                const response = await CalendarAPI.getUpcoming(30); // Get next 30 days
+                const res = await CalendarAPI.getUpcoming(30);
                 const container = document.getElementById('allEventsList');
-                
-                if (!response.events || response.events.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No upcoming events</p></div>';
-                } else {
-                    var icons = { 'appointment': '📋', 'meeting': '👥', 'work': '💼', 'task': '✅', 'event': '🎉' };
-                    var html = '';
-                    response.events.forEach(e => {
-                        html += '<div class="event-item" onclick="showViewModal(\'' + e.id + '\')">';
-                        html += '<div class="event-item-header"><div>';
-                        html += '<div class="event-title">' + (icons[e.event_type] || '📅') + ' ' + e.title + '</div>';
-                        html += '<div class="event-time">📅 ' + new Date(e.start_time).toLocaleString() + '</div>';
-                        if (e.location) html += '<div class="event-location">📍 ' + e.location + '</div>';
-                        html += '</div></div></div>';
-                    });
-                    container.innerHTML = html;
+                if (!res.events || res.events.length === 0) container.innerHTML = '<p style="color: var(--slate-500); font-size: 12px; text-align: center;">Standby for upcoming logs.</p>';
+                else {
+                    container.innerHTML = res.events.map(e => `
+                        <div class="event-item" onclick="showViewModal('${e.id}')">
+                            <div class="event-title">${e.title}</div>
+                            <div class="event-time">📅 ${new Date(e.start_time).toLocaleDateString()}</div>
+                        </div>
+                    `).join('');
                 }
-            } catch (error) {
-                console.error('Load all events error:', error);
-            }
+                document.getElementById('statTotalEvents').textContent = res.total || 0;
+            } catch (e) {}
         }
 
-        async function loadStats() {
-            // Get total events for current month via getAll if needed, 
-            // but for now just showing upcoming count is simpler
-            try {
-                const response = await CalendarAPI.getUpcoming(30);
-                document.getElementById('totalEvents').textContent = response.total || 0;
-            } catch (error) {}
+        function loadStats() {
+             // Basic implementation covered in other loads
         }
 
-        // Initialize
         initCalendar();
         loadTodayEvents();
         loadAllEvents();
-        loadStats();
-
-    </script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
         lucide.createIcons();
     </script>
 </body>
+
+</html>
 
 </html>

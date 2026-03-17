@@ -4,110 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Quotation - Admin Panel</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Generate Quotation - JHOM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .main-content {
-            margin-left: 260px;
-            margin-top: 70px;
-            width: calc(100% - 260px);
-            height: calc(100vh - 70px);
-            display: flex;
-            padding: 0 !important; /* Override default padding */
-        }
-
-        .form-section {
-            width: 45%;
-            background: white;
-            padding: 30px;
-            overflow-y: auto;
-            border-right: 1px solid #eee;
-        }
-
-        .preview-section {
-            width: 55%;
-            background: #525659;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            overflow-y: auto;
-            padding: 40px;
-        }
-
-        .paper {
-            background: white;
-            width: 595px;
-            min-height: 842px;
-            padding: 40px;
-            box-sizing: border-box;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 10px;
-            line-height: 1.2;
-            color: #000;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #555;
-            font-size: 13px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .product-block {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: #2E3192;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-
-        .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .p-logo { color: #C5A059; font-weight: bold; font-size: 18px; line-height: 1.1; }
-        .p-contact { text-align: right; font-size: 9px; line-height: 1.3; color: #333; }
-        .p-line-navy { height: 4px; background: #2E3192; margin-top: 5px; }
-        .p-line-gold { height: 2px; background: #C5A059; margin-top: 2px; margin-bottom: 25px; }
+        /* Specific adjustments for this page */
+        body { overflow: hidden; }
+        .main-content { padding: 0 !important; margin: 0 !important; width: 100% !important; }
     </style>
 </head>
 
@@ -120,7 +27,9 @@
         </div>
         <div class="nav-user">
             <span id="userName">Admin</span>
-            <button onclick="auth.logout()" class="btn btn-small btn-danger">Logout</button>
+            <button onclick="auth.logout()" class="btn btn-small btn-danger">
+                <i data-lucide="log-out" style="width: 14px;"></i> Logout
+            </button>
         </div>
     </nav>
 
@@ -184,124 +93,132 @@
         </ul>
     </div>
 
-    <div class="main-content" style="display: block; overflow-y: auto;">
-        <div class="page-header" style="padding: 30px 30px 10px;">
-            <div>
-                <h1>Generate Quotation</h1>
-                <p>Create and export professional business quotations</p>
+    <div class="doc-split-view">
+        <!-- Form Section -->
+        <div class="doc-form-side">
+            <div style="margin-bottom: 32px;">
+                <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">New Quotation</h1>
+                <p style="color: var(--slate-400); font-size: 14px;">Define products and terms for your business proposal.</p>
             </div>
-        </div>
-
-        <!-- Global Stats -->
-        <div class="stats-grid" style="padding: 0 30px 20px;">
-            <div class="stat-card">
-                <div class="stat-info">
-                    <h3 id="statBuyers">0</h3>
-                    <p>Total Buyers</p>
-                </div>
-                <div class="stat-icon blue"><i data-lucide="shopping-cart"></i></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-info">
-                    <h3 id="statManufacturers">0</h3>
-                    <p>Manufacturers</p>
-                </div>
-                <div class="stat-icon green"><i data-lucide="factory"></i></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-info">
-                    <h3 id="statTasks">0</h3>
-                    <p>Total Tasks</p>
-                </div>
-                <div class="stat-icon orange"><i data-lucide="check-square"></i></div>
-            </div>
-        </div>
-
-        <div style="display: flex; height: auto;">
-        <div class="form-section" style="width: 45%; border-top: 1px solid #eee;">
-            <h2>📝 Quotation Details</h2>
 
             <form id="quote-form" onsubmit="submitJSON(event)">
                 <div id="products-container"></div>
-                <button type="button" class="add-product-btn" onclick="addProduct()" style="background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 20px;">+ Add Another Product</button>
-                <div class="row" style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Price Term</label>
-                        <select id="price_term" onchange="updatePreview()">
-                            <option value="FOB">FOB</option>
-                            <option value="CIF">CIF</option>
-                        </select>
+                
+                <button type="button" class="btn btn-secondary" onclick="addProduct()" style="width: 100%; margin-bottom: 32px; border-style: dashed; background: transparent;">
+                    <i data-lucide="plus-circle" style="width: 16px;"></i> Add Product Line
+                </button>
+
+                <div class="card" style="padding: 24px; background: rgba(0,0,0,0.2);">
+                    <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 20px;">Commercial Terms</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price Term</label>
+                            <select id="price_term" onchange="updatePreview()">
+                                <option value="FOB">FOB – Free on Board</option>
+                                <option value="CIF">CIF – Cost, Insurance, Freight</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Delivery Mode</label>
+                            <select id="delivery_mode" onchange="updatePreview()">
+                                <option value="By Sea">Maritime (By Sea)</option>
+                                <option value="By Air">Aviation (By Air)</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Grand Total Price ($)</label>
-                        <input type="text" id="grand_total" value="0.00" readonly style="background-color: #e9ecef;">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Payment: Advance %</label>
+                            <input type="number" id="advance_pct" value="60" oninput="calculateMath()" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment: Balance %</label>
+                            <input type="number" id="balance_pct" value="40" readonly style="background-color: var(--slate-900); color: var(--slate-500);">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Timeline</label>
+                        <input type="text" id="timeline" value="30-45 days" oninput="updatePreview()" required placeholder="e.g. 30-45 days">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Grand Total ($)</label>
+                        <input type="text" id="grand_total" value="0.00" readonly style="background-color: var(--slate-900); color: var(--primary); font-weight: 700; font-size: 18px;">
                     </div>
                 </div>
-                <div class="row" style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Advance Payment %</label>
-                        <input type="number" id="advance_pct" value="60" oninput="calculateMath()" required>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Balance Payment %</label>
-                        <input type="number" id="balance_pct" value="40" readonly required style="background-color: #e9ecef;">
-                    </div>
+
+                <div class="form-actions" style="border: none; padding: 0;">
+                    <button type="submit" class="btn btn-primary" id="export-btn" style="width: 100%; padding: 16px;">
+                        <i data-lucide="file-check" style="width: 18px;"></i> Finalize & Export PDF
+                    </button>
                 </div>
-                <div class="row" style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Delivery Mode</label>
-                        <select id="delivery_mode" onchange="updatePreview()">
-                            <option value="By Sea">By Sea</option>
-                            <option value="By Air">By Air</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Timeline (Days)</label>
-                        <input type="text" id="timeline" value="30-45 days" oninput="updatePreview()" required>
-                    </div>
-                </div>
-                <button type="submit" class="submit-btn" id="export-btn">🚀 Export Finished PDF</button>
             </form>
         </div>
 
-        <div class="preview-section">
+        <!-- Preview Section -->
+        <div class="doc-preview-side">
             <div class="paper" id="preview-paper">
                 <div class="p-header">
-                    <div class="p-logo">JHOM EXIM<br>WORLDWIDE LLP</div>
-                    <div class="p-contact">
+                    <div class="p-logo-text">JHOM EXIM<br><span style="color: var(--slate-500); font-size: 18px;">WORLDWIDE LLP</span></div>
+                    <div class="p-contact-info">
                         478, AR Mal, Mota Varachha, Surat, Gujarat,<br>
-                        India-394101.<br>
-                        https://jhomeximworldwide.com<br>
+                        India - 394101.<br>
+                        www.jhomeximworldwide.com<br>
                         ceo@jhomeximworldwide.com
                     </div>
                 </div>
-                <div class="p-line-navy"></div>
-                <div class="p-line-gold"></div>
 
-                <div style="margin-top: 10px; font-size: 12px; line-height: 1.5;">
+                <div class="p-divider-main"></div>
+                <div class="p-divider-sub"></div>
+
+                <div style="margin-bottom: 30px; font-size: 13px; line-height: 1.6; color: var(--slate-700);">
                     <strong>Greetings from JHOM EXIM WORLDWIDE LLP!</strong><br><br>
-                    We are pleased to offer you a quotation for the export of premium-quality products, as per your interest.
-                    Please find the detailed proposal below.
+                    We are pleased to offer you a formal quotation for the export of premium-quality products as discussed. 
+                    Please find our detailed proposal and requirements below.
                 </div>
-                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
-                <h3 style="font-size: 18px; margin-bottom: 15px;">Product Details</h3>
+
+                <h3 class="p-section-title">Product Specifications</h3>
                 <div id="preview_products_list"></div>
-                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
-                <h3 style="font-size: 18px; margin-bottom: 15px;">Price Terms (<span id="prev_price_term" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">FOB</span>)</h3>
-                <ul id="preview_prices_list" style="list-style-type: none; padding-left: 20px;"></ul>
-                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
-                <h3 style="font-size: 18px; margin-bottom: 15px;">Payment Terms</h3>
-                <ul style="list-style-type: none; padding-left: 20px;">
-                    <li><span id="prev_advance" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">60</span>% Advance of the total <span id="prev_price_term_2">FOB</span> Value upon order confirmation</li>
-                    <li><span id="prev_balance" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">40</span>% Balance under Irrevocable Letter of Credit (LC) at sight</li>
-                </ul>
-                <hr style="border: none; border-top: 1px solid #000; margin: 20px 0;">
-                <h3 style="font-size: 18px; margin-bottom: 15px;">Estimated Delivery Timeline</h3>
-                <ul style="list-style-type: none; padding-left: 20px;">
-                    <li><span id="prev_delivery_mode" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">By Sea</span>: <span id="prev_timeline" style="background-color: #e8f0fe; padding: 0 2px; border-radius: 2px;">30-45 days</span></li>
-                </ul>
-                <br>
-                We look forward to building a strong and successful business relationship with you.
+
+                <h3 class="p-section-title" style="margin-top: 30px;">Commercial Quotation (<span id="prev_price_term" style="color: var(--primary);">FOB</span>)</h3>
+                <table class="p-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th style="text-align: right;">Unit Price (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="preview_prices_list"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td style="font-weight: 700; border: none;">Grand Total Value</td>
+                            <td style="font-weight: 800; text-align: right; color: var(--primary); font-size: 14px; border: none;">$ <span id="prev_grand_total_val">0.00</span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <h3 class="p-section-title" style="margin-top: 30px;">Terms & Conditions</h3>
+                <div style="font-size: 11px; line-height: 1.8; color: var(--slate-600);">
+                    <div style="margin-bottom: 12px;">
+                        <strong>1. Payment Terms:</strong><br>
+                        • <span id="prev_advance" style="color: var(--slate-900); font-weight: 700;">60</span>% Advance payment upon order confirmation.<br>
+                        • <span id="prev_balance" style="color: var(--slate-900); font-weight: 700;">40</span>% Balance against Irrevocable LC at sight.
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <strong>2. Delivery & Logistics:</strong><br>
+                        • Shipment Mode: <span id="prev_delivery_mode" style="color: var(--slate-900); font-weight: 700;">By Sea</span><br>
+                        • Estimated Lead Time: <span id="prev_timeline" style="color: var(--slate-900); font-weight: 700;">30-45 days</span> from receipt of advance/LC.
+                    </div>
+                </div>
+
+                <div style="margin-top: 60px; font-size: 12px; color: var(--slate-800);">
+                    We look forward to a mutually beneficial partnership.<br><br><br>
+                    <strong>For JHOM EXIM WORLDWIDE LLP</strong><br>
+                    <span style="font-size: 11px; color: var(--slate-500);">Authorized Signatory</span>
+                </div>
             </div>
         </div>
     </div>
@@ -312,33 +229,65 @@
     <script>
         lucide.createIcons();
         let productCount = 0;
+
         function addProduct() {
             productCount++;
             const container = document.getElementById("products-container");
             const div = document.createElement("div");
-            div.className = "product-block";
+            div.className = "product-block-card animate-slide-up";
             div.id = `product_block_${productCount}`;
             div.innerHTML = `
-                <h4 style="margin-top: 0; margin-bottom: 15px; color: #2E3192;">📦 Product ${productCount}</h4>
-                <button type="button" onclick="removeProduct('${div.id}')" style="position: absolute; top: 15px; right: 15px; background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">X Remove</button>
-                <div class="form-group"><label>Product Name</label><input type="text" class="p_name" value="Cardamom" oninput="updatePreview()" required></div>
-                <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;"><label>Quantity</label><input type="text" class="p_qty" value="12 MT" oninput="updatePreview()" required></div>
-                    <div class="form-group" style="flex: 1;"><label>Packaging</label><input type="text" class="p_pkg" value="10 kg" oninput="updatePreview()" required></div>
+                <div class="product-block-header">
+                    <span class="product-block-title">#${productCount} Product Details</span>
+                    <button type="button" class="btn btn-icon-only btn-danger" onclick="removeProduct('${div.id}')" title="Remove Item" style="width: 28px; height: 28px;">
+                        <i data-lucide="trash-2" style="width: 14px;"></i>
+                    </button>
                 </div>
-                <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;"><label>Grade</label><input type="text" class="p_grade" value="Export Quality" oninput="updatePreview()" required></div>
-                    <div class="form-group" style="flex: 1;"><label>Origin</label><input type="text" class="p_origin" value="India" oninput="updatePreview()" required></div>
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" class="p_name" value="Premium Cardamom" oninput="updatePreview()" required placeholder="Enter product name">
                 </div>
-                <div class="form-group"><label>Price for this Product ($)</label><input type="number" class="p_price" value="359300" oninput="updatePreview()" required></div>
+                <div class="form-row" style="gap: 16px;">
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="text" class="p_qty" value="12 MT" oninput="updatePreview()" required placeholder="e.g. 10 MT">
+                    </div>
+                    <div class="form-group">
+                        <label>Packaging</label>
+                        <input type="text" class="p_pkg" value="10 kg PP Bags" oninput="updatePreview()" required placeholder="e.g. 25kg Bags">
+                    </div>
+                </div>
+                <div class="form-row" style="gap: 16px;">
+                    <div class="form-group">
+                        <label>Grade/Quality</label>
+                        <input type="text" class="p_grade" value="A-Grade Export Quality" oninput="updatePreview()" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Origin</label>
+                        <input type="text" class="p_origin" value="India" oninput="updatePreview()" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Target Price (USD)</label>
+                    <input type="number" class="p_price" value="3500" oninput="updatePreview()" required>
+                </div>
             `;
             container.appendChild(div);
+            lucide.createIcons();
             updatePreview();
         }
-        function removeProduct(id) { document.getElementById(id).remove(); updatePreview(); }
+
+        function removeProduct(id) {
+            document.getElementById(id).remove();
+            updatePreview();
+        }
+
         function updatePreview() {
-            const blocks = document.querySelectorAll(".product-block");
-            let productsHTML = ""; let pricesHTML = ""; let total = 0;
+            const blocks = document.querySelectorAll(".product-block-card");
+            let productsHTML = ""; 
+            let pricesHTML = ""; 
+            let total = 0;
+
             blocks.forEach((block, i) => {
                 const name = block.querySelector(".p_name").value || "...";
                 const qty = block.querySelector(".p_qty").value || "...";
@@ -347,19 +296,37 @@
                 const origin = block.querySelector(".p_origin").value || "...";
                 const price = parseFloat(block.querySelector(".p_price").value) || 0;
                 total += price;
-                productsHTML += `<strong>${i+1}. ${name}</strong><ul style="list-style-type: disc; padding-left: 20px; margin: 5px 0;"><li>Qty: ${qty}</li><li>Pkg: ${pkg}</li><li>Grade: ${grade}</li><li>Origin: ${origin}</li></ul>`;
-                pricesHTML += `<li>${name}: $${price.toLocaleString()}</li>`;
+
+                productsHTML += `
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: 700; font-size: 13px; color: var(--slate-900); margin-bottom: 4px;">${i+1}. ${name}</div>
+                        <div style="font-size: 11px; color: var(--slate-600); display: grid; grid-template-columns: 1fr 1.5fr; gap: 4px;">
+                            <span>Quantity: <strong>${qty}</strong></span>
+                            <span>Packaging: <strong>${pkg}</strong></span>
+                            <span>Quality: <strong>${grade}</strong></span>
+                            <span>Origin: <strong>${origin}</strong></span>
+                        </div>
+                    </div>`;
+
+                pricesHTML += `
+                    <tr>
+                        <td>${name}</td>
+                        <td style="text-align: right; font-weight: 600;">$ ${price.toLocaleString()}</td>
+                    </tr>`;
             });
+
             document.getElementById("grand_total").value = total.toLocaleString();
+            document.getElementById("prev_grand_total_val").innerText = total.toLocaleString();
             document.getElementById("preview_products_list").innerHTML = productsHTML;
             document.getElementById("preview_prices_list").innerHTML = pricesHTML;
+
             const pTerm = document.getElementById("price_term").value;
             document.getElementById("prev_price_term").innerText = pTerm;
-            document.getElementById("prev_price_term_2").innerText = pTerm;
             document.getElementById("prev_delivery_mode").innerText = document.getElementById("delivery_mode").value;
             document.getElementById("prev_timeline").innerText = document.getElementById("timeline").value;
             calculateMath();
         }
+
         function calculateMath() {
             let adv = document.getElementById("advance_pct").value;
             if (adv > 100) adv = 100;
@@ -367,16 +334,18 @@
             document.getElementById("prev_advance").innerText = adv;
             document.getElementById("prev_balance").innerText = 100 - adv;
         }
+
         async function submitJSON(e) {
             e.preventDefault();
             const btn = document.getElementById('export-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ Generating...";
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin" style="width: 18px;"></i> Generating PDF...';
             btn.disabled = true;
+            lucide.createIcons();
             
             try {
                 const products = [];
-                document.querySelectorAll(".product-block").forEach(b => {
+                document.querySelectorAll(".product-block-card").forEach(b => {
                     products.push({
                         name: b.querySelector(".p_name").value,
                         quantity: b.querySelector(".p_qty").value,
@@ -401,11 +370,18 @@
                 console.error('Quotation generation failed:', error);
                 alert('Error: ' + error.message);
             } finally {
-                btn.innerText = originalText;
+                btn.innerHTML = originalText;
                 btn.disabled = false;
+                lucide.createIcons();
             }
         }
-        window.onload = addProduct;
+
+        window.onload = function() {
+            auth.updateHeader();
+            auth.applyRoleVisibility();
+            addProduct();
+        };
     </script>
 </body>
+
 </html>

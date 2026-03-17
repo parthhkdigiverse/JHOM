@@ -89,12 +89,12 @@ function displayTasks(tasks) {
                         <td><span class="badge badge-${task.priority}">${task.priority}</span></td>
                         <td>${task.due_date || '-'}</td>
                         <td>${task.assigned_name || task.assigned_to || '-'}</td>
-                        <td>
-                            <button onclick="editTask('${task.id}')" class="btn-icon" title="Edit">
-                                ✏️
+                        <td class="table-actions">
+                            <button onclick="editTask('${task.id}')" class="btn btn-icon-only btn-secondary" title="Edit">
+                                <i data-lucide="edit-3"></i>
                             </button>
-                            <button onclick="deleteTask('${task.id}')" class="btn-icon" title="Delete">
-                                🗑️
+                            <button onclick="deleteTask('${task.id}')" class="btn btn-icon-only btn-danger" title="Delete">
+                                <i data-lucide="trash-2"></i>
                             </button>
                         </td>
                     </tr>
@@ -103,7 +103,10 @@ function displayTasks(tasks) {
         </table>
     `;
 
-    container.innerHTML = html;
+    container.innerHTML = `<div class="table-container">${html}</div>`;
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 }
 
 // Filter tasks
