@@ -28,8 +28,11 @@ async def init_db():
     """Initialize Beanie with the MongoDB client and models"""
     global db_gridfs
     
-    if not MONGODB_URL:
-        logger.error("CRITICAL: MONGODB_URL environment variable is not set!")
+    if not os.getenv("MONGODB_URL"):
+        logger.error("CRITICAL: MONGODB_URL environment variable is NOT set! App will fail on Beanie initialization.")
+        # On Vercel, it's better to fail early if we know it won't work
+        if os.getenv("VERCEL") == "1":
+            raise RuntimeError("MONGODB_URL secret is missing in Vercel environment variables.")
         return False
 
     try:

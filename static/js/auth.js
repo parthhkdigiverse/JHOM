@@ -93,12 +93,23 @@ var auth = (function() {
                 body: formData.toString()
             })
             .then(function(response) {
-                return response.json().then(function(data) {
-                    return {
-                        status: response.status,
-                        ok: response.ok,
-                        data: data
-                    };
+                // Try to get JSON first
+                return response.text().then(function(text) {
+                    try {
+                        var data = JSON.parse(text);
+                        return {
+                            status: response.status,
+                            ok: response.ok,
+                            data: data
+                        };
+                    } catch (e) {
+                        console.error('[AUTH] Failed to parse JSON response. Text:', text.substring(0, 200));
+                        return {
+                            status: response.status,
+                            ok: false,
+                            data: { detail: 'Server Error (Invalid JSON). Status: ' + response.status }
+                        };
+                    }
                 });
             })
             .then(function(result) {
@@ -125,7 +136,7 @@ var auth = (function() {
                     // Failed
                     var errorMessage = 'Login failed';
 
-                    if (result.data.detail) {
+                    if (result.data && result.data.detail) {
                         if (typeof result.data.detail === 'string') {
                             errorMessage = result.data.detail;
                         } else if (result.data.detail.msg) {
@@ -143,11 +154,15 @@ var auth = (function() {
                         } else {
                             errorMessage = 'Invalid credentials';
                         }
-                    } else if (result.data.message) {
+                    } else if (result.data && result.data.message) {
                         errorMessage = result.data.message;
+                    } else if (result.status === 404) {
+                        errorMessage = 'API endpoint not found (404). Check Vercel config.';
+                    } else if (result.status >= 500) {
+                        errorMessage = 'Server error (' + result.status + '). Check Vercel logs.';
                     }
 
-                    console.error('[AUTH] Login failed:', errorMessage);
+                    console.error('[AUTH] Login failed (Status ' + result.status + '):', errorMessage);
 
                     resolve({
                         success: false,
@@ -156,7 +171,7 @@ var auth = (function() {
                 }
             })
             .catch(function(error) {
-                console.error('[AUTH] Login error:', error);
+                console.error('[AUTH] Network error or Fetch failed:', error);
                 resolve({
                     success: false,
                     message: 'Network error. Please check your connection and try again.'

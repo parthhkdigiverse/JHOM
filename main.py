@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import logging
@@ -56,6 +56,15 @@ app.include_router(proforma_invoice.router, prefix="/api/proforma", tags=["Profo
 @app.get("/")
 async def root():
     return RedirectResponse(url="/static/index.html")
+
+# Global exception handler to prevent HTML error pages on Vercel
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    logging.error(f"Global exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal Server Error: {str(exc)}"}
+    )
 
 # Health check endpoint
 @app.get("/health")
