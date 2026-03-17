@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from database.models import Admin, Buyer, Manufacturer, Task, CalendarEvent
+from utils.mongodb_storage import init_gridfs
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -42,7 +43,11 @@ async def init_db():
                 CalendarEvent
             ]
         )
-        logger.info(f"Successfully initialized Beanie for database: {DATABASE_NAME}")
+        
+        # Initialize GridFS
+        init_gridfs(client[DATABASE_NAME])
+        
+        logger.info(f"Successfully initialized Beanie and GridFS for database: {DATABASE_NAME}")
         return True
     except Exception as e:
         logger.error(f"FAILED to connect to MongoDB: {str(e)}")

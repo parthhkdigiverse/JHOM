@@ -162,10 +162,29 @@ var UploadAPI = {
     getDriveFiles: function(type) {
         return apiCall(getApiUrl('/api/upload/google-drive/files/' + type));
     },
+
+    getAtlasFiles: function(type, folder) {
+        var url = '/api/upload/atlas/files/' + type;
+        if (folder) url += '?folder=' + encodeURIComponent(folder);
+        return apiCall(getApiUrl(url));
+    },
+
+    createFolder: function(entityType, entityId, folderName) {
+        return apiCall(getApiUrl('/api/upload/folder'), {
+            method: 'POST',
+            headers: auth.getAuthHeaders(),
+            body: JSON.stringify({
+                entity_type: entityType,
+                entity_id: entityId,
+                folder_name: folderName
+            })
+        });
+    },
     
-    uploadBuyer: function(buyerId, file) {
+    uploadBuyer: function(buyerId, file, folder) {
         var formData = new FormData();
         formData.append('file', file);
+        if (folder) formData.append('folder', folder);
         
         return fetch(getApiUrl('/api/upload/buyer/' + buyerId), {
             method: 'POST',
@@ -182,9 +201,10 @@ var UploadAPI = {
         });
     },
     
-    uploadManufacturer: function(manufacturerId, file) {
+    uploadManufacturer: function(manufacturerId, file, folder) {
         var formData = new FormData();
         formData.append('file', file);
+        if (folder) formData.append('folder', folder);
         
         return fetch(getApiUrl('/api/upload/manufacturer/' + manufacturerId), {
             method: 'POST',
@@ -201,9 +221,10 @@ var UploadAPI = {
         });
     },
     
-    uploadDirect: function(file) {
+    uploadDirect: function(file, folder) {
         var formData = new FormData();
         formData.append('file', file);
+        if (folder) formData.append('folder', folder);
         
         return fetch(getApiUrl('/api/upload/direct'), {
             method: 'POST',
