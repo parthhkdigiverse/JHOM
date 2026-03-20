@@ -5,97 +5,97 @@ auth.requireAuth();
 auth.updateHeader();
 
 // Load Google Drive status
-function loadDriveStatus() {
-    UploadAPI.getDriveStatus()
-        .then(function(status) {
-            var container = document.getElementById('driveStatusContainer');
+// function loadDriveStatus() {
+//     UploadAPI.getDriveStatus()
+//         .then(function(status) {
+//             var container = document.getElementById('driveStatusContainer');
 
-            console.log('[DRIVE] Status response:', status);
+//             console.log('[DRIVE] Status response:', status);
 
-            if (status && (status.status === 'success' || status.connected === true)) {
-                var html = '<div class="drive-status success">';
-                html += '<div class="status-header">';
-                html += '<span class="status-icon">✅</span>';
-                html += '<h4>Connected to Google Drive</h4>';
-                html += '</div>';
-                html += '<div class="status-details">';
+//             if (status && (status.status === 'success' || status.connected === true)) {
+//                 var html = '<div class="drive-status success">';
+//                 html += '<div class="status-header">';
+//                 html += '<span class="status-icon">✅</span>';
+//                 html += '<h4>Connected to Google Drive</h4>';
+//                 html += '</div>';
+//                 html += '<div class="status-details">';
                 
-                if (status.user) {
-                    html += '<p><strong>User:</strong> ' + status.user + '</p>';
-                }
+//                 if (status.user) {
+//                     html += '<p><strong>User:</strong> ' + status.user + '</p>';
+//                 }
                 
-                if (status.storage_used_gb !== undefined) {
-                    html += '<p><strong>Storage:</strong> ' + status.storage_used_gb + ' GB / ' + status.storage_total_gb + ' GB</p>';
-                }
+//                 if (status.storage_used_gb !== undefined) {
+//                     html += '<p><strong>Storage:</strong> ' + status.storage_used_gb + ' GB / ' + status.storage_total_gb + ' GB</p>';
+//                 }
                 
-                if (status.folders) {
-                    html += '<div class="folders-status">';
-                    html += '<p><strong>Folders:</strong></p>';
-                    html += '<ul>';
-                    if (status.folders.buyer) {
-                        html += '<li>' + status.folders.buyer + '</li>';
-                    }
-                    if (status.folders.manufacturer) {
-                        html += '<li>' + status.folders.manufacturer + '</li>';
-                    }
-                    if (status.folders.direct) {
-                        html += '<li>' + status.folders.direct + '</li>';
-                    }
-                    html += '</ul>';
-                    html += '</div>';
-                }
+//                 if (status.folders) {
+//                     html += '<div class="folders-status">';
+//                     html += '<p><strong>Folders:</strong></p>';
+//                     html += '<ul>';
+//                     if (status.folders.buyer) {
+//                         html += '<li>' + status.folders.buyer + '</li>';
+//                     }
+//                     if (status.folders.manufacturer) {
+//                         html += '<li>' + status.folders.manufacturer + '</li>';
+//                     }
+//                     if (status.folders.direct) {
+//                         html += '<li>' + status.folders.direct + '</li>';
+//                     }
+//                     html += '</ul>';
+//                     html += '</div>';
+//                 }
                 
-                html += '</div>';
-                html += '</div>';
-                container.innerHTML = html;
-            } else if (status && status.local_storage) {
-                // Local storage mode
-                var html = '<div class="drive-status warning">';
-                html += '<div class="status-header">';
-                html += '<span class="status-icon">⚠️</span>';
-                html += '<h4>Local Storage Mode</h4>';
-                html += '</div>';
-                html += '<div class="status-details">';
-                html += '<p>' + (status.message || 'Google Drive not configured. Files saved locally.') + '</p>';
+//                 html += '</div>';
+//                 html += '</div>';
+//                 container.innerHTML = html;
+//             } else if (status && status.local_storage) {
+//                 // Local storage mode
+//                 var html = '<div class="drive-status warning">';
+//                 html += '<div class="status-header">';
+//                 html += '<span class="status-icon">⚠️</span>';
+//                 html += '<h4>Local Storage Mode</h4>';
+//                 html += '</div>';
+//                 html += '<div class="status-details">';
+//                 html += '<p>' + (status.message || 'Google Drive not configured. Files saved locally.') + '</p>';
                 
-                if (status.folders) {
-                    html += '<div class="folders-status">';
-                    html += '<p><strong>Local Folders:</strong></p>';
-                    html += '<ul>';
-                    if (status.folders.buyer) {
-                        html += '<li>Buyers: ' + status.folders.buyer + '</li>';
-                    }
-                    if (status.folders.manufacturer) {
-                        html += '<li>Manufacturers: ' + status.folders.manufacturer + '</li>';
-                    }
-                    if (status.folders.direct) {
-                        html += '<li>Direct: ' + status.folders.direct + '</li>';
-                    }
-                    html += '</ul>';
-                    html += '</div>';
-                }
+//                 if (status.folders) {
+//                     html += '<div class="folders-status">';
+//                     html += '<p><strong>Local Folders:</strong></p>';
+//                     html += '<ul>';
+//                     if (status.folders.buyer) {
+//                         html += '<li>Buyers: ' + status.folders.buyer + '</li>';
+//                     }
+//                     if (status.folders.manufacturer) {
+//                         html += '<li>Manufacturers: ' + status.folders.manufacturer + '</li>';
+//                     }
+//                     if (status.folders.direct) {
+//                         html += '<li>Direct: ' + status.folders.direct + '</li>';
+//                     }
+//                     html += '</ul>';
+//                     html += '</div>';
+//                 }
                 
-                html += '</div>';
-                html += '</div>';
-                container.innerHTML = html;
-            } else {
-                // Disconnected
-                container.innerHTML = '<div class="drive-status error">' +
-                    '<span class="status-icon">❌</span>' +
-                    '<p>Google Drive Disconnected</p>' +
-                    '<small>' + (status.message || 'Files will only be saved locally') + '</small>' +
-                    '</div>';
-            }
-        })
-        .catch(function(error) {
-            console.error('[DRIVE] Status error:', error);
-            document.getElementById('driveStatusContainer').innerHTML = 
-                '<div class="drive-status error">' +
-                '<span class="status-icon">⚠️</span>' +
-                '<p>Failed to check Google Drive status</p>' +
-                '</div>';
-        });
-}
+//                 html += '</div>';
+//                 html += '</div>';
+//                 container.innerHTML = html;
+//             } else {
+//                 // Disconnected
+//                 container.innerHTML = '<div class="drive-status error">' +
+//                     '<span class="status-icon">❌</span>' +
+//                     '<p>Google Drive Disconnected</p>' +
+//                     '<small>' + (status.message || 'Files will only be saved locally') + '</small>' +
+//                     '</div>';
+//             }
+//         })
+//         .catch(function(error) {
+//             console.error('[DRIVE] Status error:', error);
+//             document.getElementById('driveStatusContainer').innerHTML = 
+//                 '<div class="drive-status error">' +
+//                 '<span class="status-icon">⚠️</span>' +
+//                 '<p>Failed to check Google Drive status</p>' +
+//                 '</div>';
+//         });
+// }
 
 // Load buyers for dropdown
 function loadBuyers() {
@@ -196,24 +196,26 @@ document.getElementById('buyerUploadForm').addEventListener('submit', function(e
                 html += '<h4>✅ Upload Successful!</h4>';
                 html += '<p><strong>File:</strong> ' + result.file_name + '</p>';
                 html += '<p><strong>Size:</strong> ' + result.file_size_kb + ' KB</p>';
-                html += '<p><strong>Local Path:</strong> ' + result.local_path + '</p>';
+                html += '<p><strong>File:</strong> ' + result.file_name + '</p>';
+                html += '<a href="' + result.file_url + '" target="_blank" class="btn btn-small">Open File</a>';
                 
-                if (result.google_drive) {
-                    if (result.google_drive.status === 'uploaded' || result.google_drive.status === 'success') {
-                        html += '<p><strong>Google Drive:</strong> ✅ Uploaded</p>';
-                        if (result.google_drive.web_link) {
-                            html += '<a href="' + result.google_drive.web_link + '" target="_blank" class="btn btn-small">View in Drive</a>';
-                        }
-                    } else {
-                        html += '<p><strong>Google Drive:</strong> ' + result.google_drive.message + '</p>';
-                    }
-                }
+                // if (result.google_drive) {
+                //     if (result.google_drive.status === 'uploaded' || result.google_drive.status === 'success') {
+                //         html += '<p><strong>Google Drive:</strong> ✅ Uploaded</p>';
+                //         if (result.google_drive.web_link) {
+                //             html += '<a href="' + result.google_drive.web_link + '" target="_blank" class="btn btn-small">View in Drive</a>';
+                //         }
+                //     } else {
+                //         html += '<p><strong>Google Drive:</strong> ' + result.google_drive.message + '</p>';
+                //     }
+                // }
                 
                 html += '</div>';
                 resultDiv.innerHTML = html;
                 
                 document.getElementById('buyerUploadForm').reset();
-                loadDriveFiles('buyer');
+                // loadDriveFiles('buyer');
+                loadLocalFiles('buyer');
             } else {
                 resultDiv.innerHTML = '<p class="error">Upload failed: ' + (result.message || 'Unknown error') + '</p>';
             }
@@ -259,7 +261,8 @@ document.getElementById('manufacturerUploadForm').addEventListener('submit', fun
                 html += '<h4>✅ Upload Successful!</h4>';
                 html += '<p><strong>File:</strong> ' + result.file_name + '</p>';
                 html += '<p><strong>Size:</strong> ' + result.file_size_kb + ' KB</p>';
-                html += '<p><strong>Local Path:</strong> ' + result.local_path + '</p>';
+                html += '<p><strong>File:</strong> ' + result.file_name + '</p>';
+                html += '<a href="' + result.file_url + '" target="_blank" class="btn btn-small">Open File</a>';
                 
                 if (result.google_drive) {
                     if (result.google_drive.status === 'uploaded' || result.google_drive.status === 'success') {
@@ -276,7 +279,8 @@ document.getElementById('manufacturerUploadForm').addEventListener('submit', fun
                 resultDiv.innerHTML = html;
                 
                 document.getElementById('manufacturerUploadForm').reset();
-                loadDriveFiles('manufacturer');
+                // loadDriveFiles('manufacturer');
+                loadLocalFiles('manufacturer');
             } else {
                 resultDiv.innerHTML = '<p class="error">Upload failed: ' + (result.message || 'Unknown error') + '</p>';
             }
@@ -316,7 +320,8 @@ document.getElementById('directUploadForm').addEventListener('submit', function(
                 html += '<h4>✅ Upload Successful!</h4>';
                 html += '<p><strong>File:</strong> ' + result.file_name + '</p>';
                 html += '<p><strong>Size:</strong> ' + result.file_size_kb + ' KB</p>';
-                html += '<p><strong>Local Path:</strong> ' + result.local_path + '</p>';
+                html += '<p><strong>File:</strong> ' + result.file_name + '</p>';
+                html += '<a href="' + result.file_url + '" target="_blank" class="btn btn-small">Open File</a>';
                 
                 if (result.google_drive) {
                     if (result.google_drive.status === 'uploaded' || result.google_drive.status === 'success') {
@@ -333,7 +338,8 @@ document.getElementById('directUploadForm').addEventListener('submit', function(
                 resultDiv.innerHTML = html;
                 
                 document.getElementById('directUploadForm').reset();
-                loadDriveFiles('direct');
+                // loadDriveFiles('direct');
+                loadLocalFiles('direct');
             } else {
                 resultDiv.innerHTML = '<p class="error">Upload failed: ' + (result.message || 'Unknown error') + '</p>';
             }
@@ -349,41 +355,79 @@ document.getElementById('directUploadForm').addEventListener('submit', function(
 });
 
 // Load files from Google Drive
-function loadDriveFiles(type) {
+// function loadDriveFiles(type) {
+//     var container = document.getElementById(type + 'Files');
+//     container.innerHTML = '<p class="loading">Loading files...</p>';
+
+//     console.log('[FILES] Loading files for:', type);
+
+//     UploadAPI.getDriveFiles(type)
+//         .then(function(result) {
+//             console.log('[FILES] Result:', result);
+
+//             if (result && result.files && result.files.length > 0) {
+//                 var html = '<div class="files-grid">';
+                
+//                 for (var i = 0; i < result.files.length; i++) {
+//                     var file = result.files[i];
+//                     html += '<div class="file-card">';
+//                     html += '<div class="file-icon">📄</div>';
+//                     html += '<div class="file-info">';
+//                     html += '<h4>' + file.name + '</h4>';
+//                     html += '<p class="file-size">' + formatBytes(file.size) + '</p>';
+//                     html += '<p class="file-date">' + formatDate(file.createdTime) + '</p>';
+//                     if (file.local) {
+//                         html += '<p class="file-source">📂 Local</p>';
+//                     } else {
+//                         html += '<p class="file-source">☁️ Google Drive</p>';
+//                     }
+//                     html += '</div>';
+                    
+//                     if (file.webViewLink) {
+//                         html += '<a href="' + file.webViewLink + '" target="_blank" class="btn btn-small">View</a>';
+//                     }
+                    
+//                     html += '</div>';
+//                 }
+                
+//                 html += '</div>';
+//                 container.innerHTML = html;
+//             } else {
+//                 container.innerHTML = '<p class="no-data">No files found</p>';
+//             }
+//         })
+//         .catch(function(error) {
+//             console.error('[FILES] Load error:', error);
+//             container.innerHTML = '<p class="error">Failed to load files</p>';
+//         });
+// }
+
+
+function loadLocalFiles(type) {
     var container = document.getElementById(type + 'Files');
     container.innerHTML = '<p class="loading">Loading files...</p>';
 
-    console.log('[FILES] Loading files for:', type);
-
-    UploadAPI.getDriveFiles(type)
+    fetch('/api/upload/list/' + type)
+        .then(res => res.json())
         .then(function(result) {
-            console.log('[FILES] Result:', result);
-
             if (result && result.files && result.files.length > 0) {
                 var html = '<div class="files-grid">';
-                
-                for (var i = 0; i < result.files.length; i++) {
-                    var file = result.files[i];
+
+                result.files.forEach(function(file) {
                     html += '<div class="file-card">';
                     html += '<div class="file-icon">📄</div>';
                     html += '<div class="file-info">';
                     html += '<h4>' + file.name + '</h4>';
-                    html += '<p class="file-size">' + formatBytes(file.size) + '</p>';
-                    html += '<p class="file-date">' + formatDate(file.createdTime) + '</p>';
-                    if (file.local) {
-                        html += '<p class="file-source">📂 Local</p>';
-                    } else {
-                        html += '<p class="file-source">☁️ Google Drive</p>';
-                    }
+                    html += '<p class="file-size">' + file.size + '</p>';
+                    html += '<p class="file-date">' + file.created_at + '</p>';
+                    html += '<p class="file-source">📂 Local</p>';
                     html += '</div>';
-                    
-                    if (file.webViewLink) {
-                        html += '<a href="' + file.webViewLink + '" target="_blank" class="btn btn-small">View</a>';
-                    }
-                    
+
+                    html += '<a href="' + file.url + '" target="_blank" class="btn btn-small">Open</a>';
+
                     html += '</div>';
-                }
-                
+                });
+
                 html += '</div>';
                 container.innerHTML = html;
             } else {
@@ -391,7 +435,7 @@ function loadDriveFiles(type) {
             }
         })
         .catch(function(error) {
-            console.error('[FILES] Load error:', error);
+            console.error(error);
             container.innerHTML = '<p class="error">Failed to load files</p>';
         });
 }
@@ -414,9 +458,12 @@ function formatDate(dateString) {
 
 // Initialize
 console.log('[INIT] Initializing uploads page...');
-loadDriveStatus();
+// loadDriveStatus();
 loadBuyers();
 loadManufacturers();
-loadDriveFiles('buyer');
-loadDriveFiles('manufacturer');
-loadDriveFiles('direct');
+// loadDriveFiles('buyer');
+// loadDriveFiles('manufacturer');
+// loadDriveFiles('direct');
+loadLocalFiles('buyer');
+loadLocalFiles('manufacturer');
+loadLocalFiles('direct');

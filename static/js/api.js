@@ -327,6 +327,7 @@ var StatsAPI = {
 };
 
 // PDF API
+// PDF API
 var PDFAPI = {
     generateProforma: function(data) {
         return this._downloadPDF(getApiUrl('/api/proforma/generate-pdf'), data, 'Proforma_Invoice.pdf');
@@ -349,13 +350,18 @@ var PDFAPI = {
         .then(function(response) {
             if (!response.ok) {
                 return response.json().then(function(err) {
+                    // 422 Fix: If server sends validation details, log them clearly
+                    if (response.status === 422 && err.detail) {
+                        console.error('[VALIDATION ERROR]', err.detail);
+                        const details = err.detail.map(e => `${e.loc[e.loc.length-1]}: ${e.msg}`).join('\n');
+                        throw new Error("Server Validation Failed:\n" + details);
+                    }
                     throw new Error(err.detail || err.message || 'Failed to generate PDF');
-                }).catch(function() {
-                    throw new Error('Server error (' + response.status + ')');
+                }).catch(function(e) {
+                    throw new Error(e.message || 'Server error (' + response.status + ')');
                 });
             }
             
-            // Get filename from header if possible
             var filename = defaultFilename;
             var disposition = response.headers.get('Content-Disposition');
             if (disposition && disposition.indexOf('attachment') !== -1) {
@@ -371,7 +377,6 @@ var PDFAPI = {
             });
         })
         .then(function(result) {
-            // Trigger download
             var url = window.URL.createObjectURL(result.blob);
             var a = document.createElement('a');
             a.href = url;

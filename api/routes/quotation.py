@@ -11,6 +11,7 @@ from beanie import PydanticObjectId
 from schemas.quotation import QuotePayload, QuotationResponse, ProductItem
 from database.models import Admin, Quotation, Buyer
 from utils.auth import get_current_admin
+from reportlab.pdfbase.pdfmetrics import stringWidth
 
 router = APIRouter()
 
@@ -21,127 +22,183 @@ GOLD = colors.HexColor("#C5A059")
 #  HELPERS
 # ==========================================
 
-def get_pdf_buffer(payload: QuotePayload):
+def get_pdf_buffer(payload):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
+
     width, height = A4
-    margin = 50
-    current_y = height - 40
+    margin_x = 50
+    margin_top = 40
+    margin_bottom = 50
 
+    y = height - 110
+
+    content_width = width - (2 * margin_x)
+
+    # COLORS
+    NAVY = colors.HexColor("#2E3192")
+    GOLD = colors.HexColor("#C5A059")
+    LINK_BLUE = colors.HexColor("#1A73E8")
+
+    # LINE HEIGHTS (VERY IMPORTANT)
+    LINE_11 = 14
+    LINE_12 = 16
+    LINE_13 = 18
+
+    # ---------------- HEADER ----------------
     def draw_header(canv):
-        # Gold Logo (Left)
-        canv.setFont("Helvetica-Bold", 16)
+        # LEFT TITLE
+        canv.setFont("Times-Bold", 16)
         canv.setFillColor(GOLD)
-        canv.drawString(margin, height - 40, "JHOM EXIM")
-        canv.drawString(margin, height - 58, "WORLDWIDE LLP")
-        
-        # Contact Info (Right)
-        canv.setFont("Helvetica", 9)
+        canv.drawString(margin_x, height - margin_top - 14, "JHOM EXIM WORLDWIDE LLP")
+
+        canv.setFont("Times-Italic", 12)
         canv.setFillColor(colors.black)
-        canv.drawRightString(width - margin, height - 40, "478, AR Mal, Mota Varachha, Surat,")
-        canv.drawRightString(width - margin, height - 52, "Gujarat, India-394101.")
-        canv.drawRightString(width - margin, height - 64, "https://jhomeximworldwide.com")
-        canv.drawRightString(width - margin, height - 76, "ceo@jhomeximworldwide.com")
-        
-        # Header Lines
-        canv.setLineWidth(4)
+        canv.drawString(margin_x, height - margin_top - 30, '"Three Minds, One Vision."')
+
+        # RIGHT SIDE
+        canv.setFont("Times-Roman", 9)
+        right_y = height - margin_top
+
+        canv.drawRightString(width - margin_x, right_y, "478, AR Mall, Mota Varachha, Surat, Gujarat")
+        canv.drawRightString(width - margin_x, right_y - 12, "India - 394101")
+        canv.drawRightString(width - margin_x, right_y - 24, "www.jhomeximworldwide.com")
+        c.setFillColor(LINK_BLUE)
+        canv.drawRightString(width - margin_x, right_y - 36, "sales@jhomeximworldwide.com")
+
+
+        # LINES
         canv.setStrokeColor(NAVY)
-        canv.line(margin, height - 90, width - margin, height - 90)
-        canv.setLineWidth(2)
+        canv.setLineWidth(3)
+        canv.line(margin_x, height - 85, width - margin_x, height - 85)
+
         canv.setStrokeColor(GOLD)
-        canv.line(margin, height - 96, width - margin, height - 96)
+        canv.setLineWidth(1.5)
+        canv.line(margin_x, height - 90, width - margin_x, height - 90)
 
-    def check_page_break(canv, needed, current_y):
-        if current_y - needed < 50:
-            canv.showPage()
-            draw_header(canv)
-            return height - 120
-        return current_y
+    def check_page_break(y, needed=80):
+        if y - needed < margin_bottom:
+            c.showPage()
+            draw_header(c)
+            return height - 110
+        return y
 
-    # Initial Header and Start Y
     draw_header(c)
-    current_y = height - 130
 
-    c.setFont("Helvetica-Bold", 11)
+    # ---------------- GREETING ----------------
     c.setFillColor(colors.black)
-    c.drawString(margin, current_y, "Greetings from JHOM EXIM WORLDWIDE LLP!")
-    current_y -= 30
-    c.setFont("Helvetica", 11)
-    c.drawString(margin, current_y, "We are pleased to offer you a quotation for the export of premium-quality products.")
-    current_y -= 15
-    c.drawString(margin, current_y, "Please find the detailed proposal below.")
-    current_y -= 25
-    c.setLineWidth(1)
-    c.setStrokeColor(colors.black)
-    c.line(margin, current_y, width - margin, current_y)
-    current_y -= 30
+    c.setFont("Times-Bold", 11)
+    c.drawString(margin_x, y, "Greetings from JHOM EXIM WORLDWIDE LLP!")
+    y -= LINE_12
 
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin, current_y, "Product Details")
-    current_y -= 25
+    c.setFont("Times-Roman", 10)
+    c.drawString(margin_x, y, "We are pleased to offer you a quotation for the export of premium-quality Cardamom,as per your interest.")
+    y -= LINE_11
+    c.drawString(margin_x, y, "Please find the detailed proposal below.")
+    y -= 20
 
-    bullet_indent = margin + 20
-    
-    if payload.products:
-        for i, product in enumerate(payload.products):
-            current_y = check_page_break(c, 100, current_y) 
-            c.setFont("Helvetica-Bold", 11)
-            c.drawString(margin, current_y, f"{i+1}. {product.name}")
-            current_y -= 20
-            c.setFont("Helvetica", 11)
-            c.drawString(bullet_indent, current_y, f"•  Quantity: {product.quantity}")
-            current_y -= 15
-            c.drawString(bullet_indent, current_y, f"•  Packaging: {product.packaging}")
-            current_y -= 15
-            c.drawString(bullet_indent, current_y, f"•  Grade: {product.grade}")
-            current_y -= 15
-            c.drawString(bullet_indent, current_y, f"•  Origin: {product.origin}")
-            current_y -= 25
+    c.line(margin_x, y, width - margin_x, y)
+    y -= 20
 
-    c.setLineWidth(1)
-    c.setStrokeColor(colors.black)
-    c.line(margin, current_y, width - margin, current_y)
-    current_y -= 30
+    # ---------------- PRODUCT DETAILS ----------------
+    c.setFont("Times-Bold", 13)
+    c.drawString(margin_x, y, "Product Details")
+    y -= 20
 
-    current_y = check_page_break(c, 80, current_y)
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin, current_y, f"Price Terms ({payload.price_term})")
-    current_y -= 25
-    
-    c.setFont("Helvetica", 11)
-    if payload.products:
-        for product in payload.products:
-            current_y = check_page_break(c, 20, current_y)
-            formatted_price = "{:,.2f}".format(product.price)
-            c.drawString(bullet_indent, current_y, f"•  {product.name}: ${formatted_price}")
-            current_y -= 15
-        
-    current_y -= 10
-    c.line(margin, current_y, width - margin, current_y)
-    current_y -= 30
+    for i, product in enumerate(payload.products):
+        y = check_page_break(y)
 
-    current_y = check_page_break(c, 80, current_y)
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin, current_y, "Payment Terms") 
-    current_y -= 25
-    c.setFont("Helvetica", 11)
-    c.drawString(bullet_indent, current_y, f"•  {payload.advance_pct}% Advance of the total {payload.price_term} Value upon order confirmation")
-    current_y -= 15
-    c.drawString(bullet_indent, current_y, f"•  {payload.balance_pct}% Balance under Irrevocable Letter of Credit (LC) at sight")
-    current_y -= 25
-    c.line(margin, current_y, width - margin, current_y)
-    current_y -= 30
+        c.setFont("Times-Bold", 11)
+        c.drawString(margin_x, y, f"{i+1}. {product.name}")
+        y -= LINE_11
 
-    current_y = check_page_break(c, 60, current_y)
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin, current_y, "Estimated Delivery Timeline")
-    current_y -= 25
-    c.setFont("Helvetica", 11)
-    c.drawString(bullet_indent, current_y, f"•  {payload.delivery_mode}: {payload.timeline} (depending on vessel schedule & clearance)")
-    current_y -= 40
+        c.setFont("Times-Roman", 11)
+        c.drawString(margin_x + 20, y, f"• Quantity: {product.quantity}")
+        y -= LINE_11
+        c.drawString(margin_x + 20, y, f"• Packaging: {product.packaging}")
+        y -= LINE_11
+        c.drawString(margin_x + 20, y, f"• Grade: {product.grade}")
+        y -= LINE_11
+        c.drawString(margin_x + 20, y, f"• Origin: {product.origin}")
+        y -= 18
 
-    current_y = check_page_break(c, 30, current_y)
-    c.drawString(margin, current_y, "We look forward to building a strong and successful business relationship with you.")
+    c.line(margin_x, y, width - margin_x, y)
+    y -= 20
+
+    # ---------------- PRICE TERMS ----------------
+    c.setFont("Times-Bold", 13)
+    c.drawString(margin_x, y, f"Price Terms ({payload.price_term})")
+    y -= 20
+
+    c.setFont("Times-Roman", 11)
+    for product in payload.products:
+        price = "{:,.2f}".format(product.price)
+        c.drawString(margin_x + 20, y, f"• {product.name}: ${price}")
+        y -= LINE_11
+
+    y -= 10
+    c.line(margin_x, y, width - margin_x, y)
+    y -= 20
+
+    # ---------------- PAYMENT TERMS ----------------
+    c.setFont("Times-Bold", 13)
+    c.drawString(margin_x, y, "Payment Terms")
+    y -= 20
+
+    c.setFont("Times-Roman", 11)
+    c.drawString(margin_x + 20, y, f"• {payload.advance_pct}% Advance of total value upon confirmation")
+    y -= LINE_11
+    c.drawString(margin_x + 20, y, f"• {payload.balance_pct}% Balance via Irrevocable LC at sight")
+    y -= 20
+
+    c.line(margin_x, y, width - margin_x, y)
+    y -= 20
+
+    # ---------------- DELIVERY ----------------
+    c.setFont("Times-Bold", 13)
+    c.drawString(margin_x, y, "Estimated Delivery Timeline")
+    y -= 20
+
+    c.setFont("Times-Roman", 11)
+    c.drawString(margin_x + 20, y, f"• {payload.delivery_mode}: {payload.timeline} (depending on vessel schedule & clearance)")
+    y -= 30
+
+    # ---------------- CLOSING ----------------
+    c.drawString(margin_x, y, "We look forward to building a strong and successful business relationship with you.")
+    y -= 30
+
+    # ---------------- SIGNATURE ----------------
+    c.setFont("Times-Roman", 11)
+    c.drawString(margin_x, y, "Warm regards,")
+    y -= 12
+
+    c.setFont("Times-Bold", 11)
+    c.drawString(margin_x, y, "Jeel A Borad")
+    y -= 12
+
+    c.setFont("Times-Roman", 10)
+    c.drawString(margin_x, y, "CEO & Founder")
+    y -= 20
+    c.drawString(margin_x, y, "+91 87800 27334")
+    y -= 12
+
+    c.setFillColor(LINK_BLUE)
+    c.setStrokeColor(LINK_BLUE)
+
+    c.drawString(margin_x, y, "jhomeximworldwidellp@gmail.com")
+    c.line(margin_x, y - 2, margin_x + stringWidth("jhomeximworldwidellp@gmail.com", c._fontname, c._fontsize), y - 2)
+    y -= 20
+    c.drawString(margin_x, y, "www.jhomeximworldwide.com")
+    c.line(margin_x, y - 2, margin_x + stringWidth("www.jhomeximworldwide.com", c._fontname, c._fontsize), y - 2)
+
+    y -= 12
+    c.setFillColor(colors.black)
+    c.setFont("Times-Bold", 10)
+    c.drawString(margin_x, y, "JHOM EXIM WORLDWIDE LLP")
+    y -= 12
+
+    c.setFont("Times-Roman", 9)
+    c.drawString(margin_x, y, "Surat, Gujarat, India.")
 
     c.save()
     buffer.seek(0)

@@ -161,63 +161,90 @@
         <!-- Preview Section -->
         <div class="doc-preview-side">
             <div class="paper" id="preview-paper">
-                <div class="p-header">
-                    <div class="p-logo-text">JHOM EXIM<br><span style="color: var(--slate-500); font-size: 18px;">WORLDWIDE LLP</span></div>
-                    <div class="p-contact-info">
-                        478, AR Mal, Mota Varachha, Surat, Gujarat,<br>
-                        India - 394101.<br>
-                        www.jhomeximworldwide.com<br>
+                <div class="p-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+                    <div class="p-logo-group">
+                        <div class="p-logo-text" style="font-family: 'Times New Roman', Times, serif;  font-weight: 700; font-size: 25px; color: #C5A059; line-height: 1.1;">
+                            Jhom Exim Worldwide LLP
+                        </div>
+                        <div style="font-weight: 200; font-size: 15px; color: #000; line-height: 1.1;">
+                            "Three Minds, One Vision."
+                        </div>
+                    </div>
+                    <div class="p-contact-info" style="text-align: right; font-size: 11px; color: #000; line-height: 1.4;">
+                        478, AR Mall, Mota Varachha, Surat,<br>
+                        Gujarat, India-394101.<br>
+                        https://jhomeximworldwide.com<br>
+                        <a href="ceo@jhomeximworldwide.com" 
+                        style="color: #0000FF; text-decoration: underline; font-size: 11px;">
                         ceo@jhomeximworldwide.com
+                        </a>
                     </div>
                 </div>
 
-                <div class="p-divider-main"></div>
-                <div class="p-divider-sub"></div>
+                <div style="height: 8px; background: #2b3a67; width: 100%; margin-top: 10px;"></div>
+                <div style="height: 4px; background: #B08D57; width: 100%; margin-top: 3px; margin-bottom: 25px;"></div>
 
-                <div style="margin-bottom: 30px; font-size: 13px; line-height: 1.6; color: var(--slate-700);">
-                    <strong>Greetings from JHOM EXIM WORLDWIDE LLP!</strong><br><br>
-                    We are pleased to offer you a formal quotation for the export of premium-quality products as discussed. 
-                    Please find our detailed proposal and requirements below.
+                <div style="margin-bottom: 25px; font-size: 12px; line-height: 1.5; color: #000;">
+                    <strong style="font-size: 13px;">Greetings from JHOM EXIM WORLDWIDE LLP!</strong><br><br>
+                    We are pleased to offer you a quotation for the <b> export of premium-quality Cardamom</b>, as per your interest.<br>
+                    Please find the detailed proposal below.
                 </div>
 
-                <h3 class="p-section-title">Product Specifications</h3>
+                <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+                <h3 style="font-family: 'Times New Roman', Times, serif; font-size: 16px; font-weight: 800; margin-bottom: 12px; text-decoration: none;">Product Details</h3>
                 <div id="preview_products_list"></div>
 
-                <h3 class="p-section-title" style="margin-top: 30px;">Commercial Quotation (<span id="prev_price_term" style="color: var(--primary);">FOB</span>)</h3>
-                <table class="p-table">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th style="text-align: right;">Unit Price (USD)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="preview_prices_list"></tbody>
-                    <tfoot>
-                        <tr>
-                            <td style="font-weight: 700; border: none;">Grand Total Value</td>
-                            <td style="font-weight: 800; text-align: right; color: var(--primary); font-size: 14px; border: none;">$ <span id="prev_grand_total_val">0.00</span></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
 
-                <h3 class="p-section-title" style="margin-top: 30px;">Terms & Conditions</h3>
-                <div style="font-size: 11px; line-height: 1.8; color: var(--slate-600);">
-                    <div style="margin-bottom: 12px;">
-                        <strong>1. Payment Terms:</strong><br>
-                        • <span id="prev_advance" style="color: var(--slate-900); font-weight: 700;">60</span>% Advance payment upon order confirmation.<br>
-                        • <span id="prev_balance" style="color: var(--slate-900); font-weight: 700;">40</span>% Balance against Irrevocable LC at sight.
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <strong>2. Delivery & Logistics:</strong><br>
-                        • Shipment Mode: <span id="prev_delivery_mode" style="color: var(--slate-900); font-weight: 700;">By Sea</span><br>
-                        • Estimated Lead Time: <span id="prev_timeline" style="color: var(--slate-900); font-weight: 700;">30-45 days</span> from receipt of advance/LC.
-                    </div>
+                <h3 style="font-family: 'Times New Roman', Times, serif; font-size: 16px; font-weight: 800; margin-bottom: 12px;">Price Terms (<span id="prev_price_term">FOB</span>)</h3>
+                <ul id="preview_prices_list" style="list-style: none; padding-left: 15px; font-size: 12px;"></ul>
+
+                <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+                <h3 style="font-family: 'Times New Roman', Times, serif; font-size: 16px; font-weight: 800; margin-bottom: 12px;">Payment Terms</h3>
+                <ul style="list-style: none; padding-left: 15px; font-size: 12px; line-height: 1.8;">
+                    <li>• <span id="prev_advance">60</span>% Advance of the total <span class="term_label">FOB</span> Value upon order confirmation</li>
+                    <li>• <span id="prev_balance">40</span>% Balance under Irrevocable Letter of Credit (LC) at sight</li>
+                </ul>
+
+                <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+                <h3 style="font-family: 'Times New Roman', Times, serif; font-size: 16px; font-weight: 800; margin-bottom: 12px;">Estimated Delivery Timeline</h3>
+                <ul style="list-style: none; padding-left: 15px; font-size: 12px;">
+                    <li>• <span id="prev_delivery_mode">By Sea</span>: <span id="prev_timeline">30-45 days</span> (depending on vessel schedule & clearance)</li>
+                </ul>
+
+                <div style="margin-top: 25px; font-size: 12px;">
+                    We look forward to building a strong and successful business relationship with you.
                 </div>
 
-                <div style="margin-top: 60px; font-size: 12px; color: var(--slate-800);">
-                    We look forward to a mutually beneficial partnership.<br><br><br>
-                    <strong>For JHOM EXIM WORLDWIDE LLP</strong><br>
-                    <span style="font-size: 11px; color: var(--slate-500);">Authorized Signatory</span>
+                <div class="p-footer" style="margin-top: 25px; line-height: 1.6; color: #000;">
+                    
+                    <div style="font-size: 12px;">Warm regards,</div>
+                    
+                    <div style="font-size: 14px; font-weight: 800;">Jeel A Borad </div>
+                    
+                    <div style="font-size: 11px;">CEO & Founder</div>
+                    <div style="font-size: 11px;  margin-top: 15px;">+91 87800 27334</div>
+                    
+                    <div>
+                        <a href="mailto:jhomeximworldwidellp@gmail.com" 
+                        style="color: #0000FF; text-decoration: underline; font-size: 11px;">
+                        jhomeximworldwidellp@gmail.com
+                        </a>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <a href="https://www.jhomeximworldwide.com" 
+                        style="color: #0000FF; text-decoration: underline; font-size: 11px;">
+                        www.jhomeximworldwide.com
+                        </a>
+                    </div>
+                    
+                    <div style="font-weight: 800; font-size: 11px; text-transform: uppercase;">
+                        JHOM EXIM WORLDWIDE LLP 
+                    </div>
+                    <div style="font-size: 10px;">Surat, Gujarat, India.</div>
                 </div>
             </div>
         </div>
@@ -289,41 +316,47 @@
             let total = 0;
 
             blocks.forEach((block, i) => {
-                const name = block.querySelector(".p_name").value || "...";
-                const qty = block.querySelector(".p_qty").value || "...";
-                const pkg = block.querySelector(".p_pkg").value || "...";
-                const grade = block.querySelector(".p_grade").value || "...";
-                const origin = block.querySelector(".p_origin").value || "...";
+                const name = block.querySelector(".p_name").value || "Product Name";
+                const qty = block.querySelector(".p_qty").value || "0 MT";
+                const pkg = block.querySelector(".p_pkg").value || "N/A";
+                const grade = block.querySelector(".p_grade").value || "N/A";
+                const origin = block.querySelector(".p_origin").value || "India";
                 const price = parseFloat(block.querySelector(".p_price").value) || 0;
+                
                 total += price;
 
+                // Product Details Section Content
                 productsHTML += `
-                    <div style="margin-bottom: 15px;">
-                        <div style="font-weight: 700; font-size: 13px; color: var(--slate-900); margin-bottom: 4px;">${i+1}. ${name}</div>
-                        <div style="font-size: 11px; color: var(--slate-600); display: grid; grid-template-columns: 1fr 1.5fr; gap: 4px;">
-                            <span>Quantity: <strong>${qty}</strong></span>
-                            <span>Packaging: <strong>${pkg}</strong></span>
-                            <span>Quality: <strong>${grade}</strong></span>
-                            <span>Origin: <strong>${origin}</strong></span>
-                        </div>
+                    <div style="margin-bottom: 20px; font-size: 12px;">
+                        <div style="font-weight: 700; margin-bottom: 5px;">${i+1}. ${name}</div>
+                        <ul style="list-style: none; padding-left: 15px; line-height: 1.4;">
+                            <li>• Quantity: ${qty}</li>
+                            <li>• Packaging: ${pkg}</li>
+                            <li>• Grade: ${grade}</li>
+                            <li>• Origin: ${origin}</li>
+                        </ul>
                     </div>`;
 
+                // Price Terms Section Content
                 pricesHTML += `
-                    <tr>
-                        <td>${name}</td>
-                        <td style="text-align: right; font-weight: 600;">$ ${price.toLocaleString()}</td>
-                    </tr>`;
+                    <li style="margin-bottom: 5px;">• ${name}: $${price.toLocaleString(undefined, {minimumFractionDigits: 2})}</li>
+                `;
             });
 
-            document.getElementById("grand_total").value = total.toLocaleString();
-            document.getElementById("prev_grand_total_val").innerText = total.toLocaleString();
+            // Update the Preview DOM
             document.getElementById("preview_products_list").innerHTML = productsHTML;
             document.getElementById("preview_prices_list").innerHTML = pricesHTML;
-
+            
             const pTerm = document.getElementById("price_term").value;
             document.getElementById("prev_price_term").innerText = pTerm;
+            
+            // Update term labels (FOB/CIF) in payment terms
+            document.querySelectorAll(".term_label").forEach(el => el.innerText = pTerm);
+
             document.getElementById("prev_delivery_mode").innerText = document.getElementById("delivery_mode").value;
             document.getElementById("prev_timeline").innerText = document.getElementById("timeline").value;
+            
+            document.getElementById("grand_total").value = total.toLocaleString();
             calculateMath();
         }
 

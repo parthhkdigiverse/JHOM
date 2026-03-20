@@ -19,8 +19,7 @@ router = APIRouter()
 
 NAVY = colors.HexColor("#2E3192")
 GOLD = colors.HexColor("#C5A059")
-LIGHT_GREY = colors.HexColor("#f2f2f2")
-BORDER_GREY = colors.HexColor("#dddddd")
+LINK = colors.HexColor("#0056b3")
 
 # ==========================================
 #  HELPERS
@@ -33,7 +32,7 @@ def get_proforma_buffer(payload: ProformaPayload):
     width, height = A4
     margin = 40
     
-    current_y = height - 40
+    current_y = height - 30
 
     def draw_header(canv):
         canv.setFont("Helvetica-Bold", 16)
@@ -43,8 +42,8 @@ def get_proforma_buffer(payload: ProformaPayload):
         
         canv.setFont("Helvetica", 9)
         canv.setFillColor(colors.black)
-        canv.drawRightString(width - margin, height - 40, "478, AR Mal, Mota Varachha, Surat,")
-        canv.drawRightString(width - margin, height - 52, "Gujarat, India-394101.")
+        canv.drawRightString(width - margin, height - 40, "478, AR Mall, Mota Varachha, Surat, Gujarat,")
+        canv.drawRightString(width - margin, height - 52, "India-394101.")
         canv.drawRightString(width - margin, height - 64, "https://jhomeximworldwide.com")
         canv.drawRightString(width - margin, height - 76, "ceo@jhomeximworldwide.com")
         
@@ -56,17 +55,16 @@ def get_proforma_buffer(payload: ProformaPayload):
         canv.setStrokeColor(GOLD)
         canv.line(margin, height - 96, width - margin, height - 96)
 
-    def draw_footer_lines(canv):
-        canv.setLineWidth(4)
-        canv.setStrokeColor(NAVY)
-        canv.line(margin, 40, width - margin, 40)
-        canv.setLineWidth(2)
-        canv.setStrokeColor(GOLD)
-        canv.line(margin, 46, width - margin, 46)
+    # def draw_footer_lines(canv):
+    #     canv.setLineWidth(4)
+    #     canv.setStrokeColor(NAVY)
+    #     canv.line(margin, 40, width - margin, 40)
+    #     canv.setLineWidth(2)
+    #     canv.setStrokeColor(GOLD)
+    #     canv.line(margin, 46, width - margin, 46)
 
     def check_page(canv, needed, current_y):
-        if current_y - needed < 140:
-            draw_footer_lines(canv)
+        if current_y - needed < 50:
             canv.showPage()
             draw_header(canv)
             return height - 120
@@ -77,20 +75,26 @@ def get_proforma_buffer(payload: ProformaPayload):
     current_y = height - 120
 
     # Title
+    current_y -= 20
     c.setFont("Helvetica-Bold", 18)
     c.drawString(margin, current_y, "PROFORMA INVOICE")
-    current_y -= 25
+    current_y -= 30
 
     # Exporter
     current_y = check_page(c, 150, current_y)
     exporter_text = ["JHOM EXIM WORLDWIDE LLP", "Surat, Gujarat, India", "www.jhomeximworldwide.com", "jhomeximworldwidellp@gmail.com", "+91 87800 27334"]
     c.setFont("Helvetica-Bold", 10)
     c.drawString(margin, current_y, "Exporter:")
-    current_y -= 12
+    current_y -= 13
     c.setFont("Helvetica", 10)
+
     for line in exporter_text:
+        if "www.jhomeximworldwide.com" in line:
+            c.setFillColor(LINK)   
+        else:
+            c.setFillColor(colors.black)
         c.drawString(margin, current_y, line)
-        current_y -= 12
+        current_y -= 13
     current_y -= 10
     
     # Invoice Info
@@ -133,10 +137,10 @@ def get_proforma_buffer(payload: ProformaPayload):
         c.drawString(margin, current_y, line)
         current_y -= 15
     current_y -= 15
-    c.setLineWidth(3)
-    c.setStrokeColor(colors.lightgrey)
+    c.setLineWidth(1)
+    c.setStrokeColor(colors.black)
     c.line(margin, current_y, width - margin, current_y)
-    current_y -= 20
+    current_y -= 30
 
     # Table
     current_y = check_page(c, 100, current_y)
@@ -147,40 +151,57 @@ def get_proforma_buffer(payload: ProformaPayload):
     for i, p in enumerate(payload.products):
         table_data.append([str(i+1), p.description, p.hs_code, p.packaging, p.quantity, p.origin])
     pt = Table(table_data, colWidths=[40, 150, 80, 100, 85, 60])
-    pt.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), LIGHT_GREY),('GRID', (0,0), (-1,-1), 1, BORDER_GREY),('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),('FONTSIZE', (0,0), (-1,-1), 9),('ALIGN', (0,0), (-1,-1), 'LEFT'),('VALIGN', (0,0), (-1,-1), 'MIDDLE'),('PADDING', (0,0), (-1,-1), 5)]))
+    pt.setStyle(TableStyle([('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),('TOPPADDING', (0,0), (-1,0), 5),
+    ('BOTTOMPADDING', (0,0), (-1,0), 8),('TOPPADDING', (0,1), (-1,-1), 5),
+    ('BOTTOMPADDING', (0,1), (-1,-1), 5),('FONTSIZE', (0,0), (-1,-1), 10),('ALIGN', (0,0), (-1,-1), 'LEFT'),('VALIGN', (0,0), (-1,-1), 'MIDDLE')]))
     ptw, pth = pt.wrap(width - 2*margin, height)
     pt.drawOn(c, margin, current_y - pth)
     current_y -= pth + 20
 
-    # Totals/Summary
-    current_y = check_page(c, 50, current_y)
-    c.setFont("Helvetica", 10)
-    c.drawString(margin, current_y, f"Incoterm: {payload.incoterm}")
-    current_y -= 15
-    c.drawString(margin, current_y, f"Currency: {payload.currency}")
     current_y -= 15
     c.setLineWidth(1)
     c.setStrokeColor(colors.black)
     c.line(margin, current_y, width - margin, current_y)
-    current_y -= 20
+    current_y -= 30
+
+    # Totals/Summary
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(margin, current_y, "Incoterm:")
+
+    c.setFont("Helvetica", 10)
+    c.drawString(margin + 50, current_y, payload.incoterm)
+
+    current_y -= 15
+
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(margin, current_y, "Currency:")
+
+    c.setFont("Helvetica", 10)
+    c.drawString(margin + 50, current_y, payload.currency)
+    current_y -= 25
+
+    c.setLineWidth(1)
+    c.setStrokeColor(colors.black)
+    c.line(margin, current_y, width - margin, current_y)
+    current_y -= 30
 
     for p in payload.products:
         current_y = check_page(c, 80, current_y)
         c.setFont("Helvetica-Bold", 12)
         c.drawString(margin, current_y, p.description)
-        current_y -= 15
+        current_y -= 25
         c.setFont("Helvetica", 10)
         c.drawString(margin, current_y, f"Quantity: {p.quantity}")
-        current_y -= 12
+        current_y -= 14
         c.drawString(margin, current_y, f"Rate: {payload.currency} {p.rate:,.2f} / Unit")
-        current_y -= 12
+        current_y -= 14
         c.setFont("Helvetica-Bold", 10)
         c.drawString(margin, current_y, f"Total: {payload.currency} {p.total:,.2f}")
-        current_y -= 15
-        c.setLineWidth(0.5)
-        c.setStrokeColor(colors.lightgrey)
+        current_y -= 25
+        c.setLineWidth(1)
+        c.setStrokeColor(colors.black)
         c.line(margin, current_y, width - margin, current_y)
-        current_y -= 20
+        current_y -= 30
 
     # Grand Total
     current_y = check_page(c, 100, current_y)
@@ -201,9 +222,83 @@ def get_proforma_buffer(payload: ProformaPayload):
         current_y -= 15
     current_y -= 15
     c.setLineWidth(1)
-    c.setStrokeColor(colors.grey)
+    c.setStrokeColor(colors.black)
     c.line(margin, current_y, width - margin, current_y)
+    current_y -= 30
+
+
+     # PAYMENT TERMS
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, current_y, "Payment Terms")
     current_y -= 25
+
+    c.setFont("Helvetica", 10)
+    c.drawString(margin, current_y, f"• {payload.advance_pct} Advance Payment through Bank Transfer (T/T) upon order confirmation")
+    current_y -= 14
+    c.drawString(margin, current_y, f"• {payload.balance_pct} Balance under Irrevocable Letter of Credit (L/C) at sight")
+    # current_y -= 20
+
+    current_y -= 15
+    c.setLineWidth(1)
+    c.setStrokeColor(colors.black)
+    c.line(margin, current_y, width - margin, current_y)
+    current_y -= 30
+
+    # DELIVERY
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, current_y, "Delivery & Shipment Terms")
+    current_y -= 25 
+
+    c.setFont("Helvetica", 10)
+    c.drawString(margin, current_y, f"• Mode of Shipment: {payload.mode_of_shipment}")
+    current_y -= 14
+    c.drawString(margin, current_y, f"• Estimated Delivery Time: {payload.delivery_time}")
+    current_y -= 14
+    c.drawString(margin, current_y, f"• Port of Loading: {payload.port_of_loading}")
+    current_y -= 14
+    c.drawString(margin, current_y, f"• Port of Discharge: {payload.port_of_discharge}")
+    # current_y -= 20
+
+    current_y -= 15
+    c.setLineWidth(1)
+    c.setStrokeColor(colors.black)
+    c.line(margin, current_y, width - margin, current_y)
+    current_y -= 30
+
+    # Packaging
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, current_y, "Packaging & Quality")
+    current_y -= 25
+
+    c.setFont("Helvetica", 10)
+    c.drawString(margin, current_y, f"• Packaging: Export suitable packing (10 KG & 25 KG bags as per product specification)")
+    current_y -= 14
+    c.drawString(margin, current_y, f"• Export-quality material, processed and packed under strict quality control")
+    current_y -= 14
+    c.drawString(margin, current_y, f"• Compliance with international export standards")
+
+    current_y -= 15
+    c.setLineWidth(1)
+    c.setStrokeColor(colors.black)
+    c.line(margin, current_y, width - margin, current_y)
+    current_y -= 30
+
+    # DECLARATION
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(margin, current_y, "Declaration")
+    current_y -= 25
+
+    c.setFont("Helvetica", 10)
+    c.drawString(margin, current_y, "We hereby certify that the goods mentioned above are of Indian origin. The prices and terms stated above are true")
+    current_y -= 14
+    c.drawString(margin, current_y, "and correct and agreed mutually between buyer and seller.")
+    # current_y -= 30
+
+    current_y -= 15
+    c.setLineWidth(1)
+    c.setStrokeColor(colors.black)
+    c.line(margin, current_y, width - margin, current_y)
+    current_y -= 30
 
     # Signature
     current_y = check_page(c, 120, current_y)
@@ -212,12 +307,12 @@ def get_proforma_buffer(payload: ProformaPayload):
     current_y -= 40
     c.setFont("Helvetica", 10)
     c.drawString(margin, current_y, "Authorized Signatory")
-    current_y -= 12
+    current_y -= 14
     c.drawString(margin, current_y, "Jeel A. Borad")
-    current_y -= 12
+    current_y -= 14
     c.drawString(margin, current_y, "CEO & Founder")
 
-    draw_footer_lines(c)
+    # draw_footer_lines(c)
     c.save()
     buffer.seek(0)
     return buffer

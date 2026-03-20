@@ -225,103 +225,156 @@
 
         <!-- Preview Section -->
         <div class="doc-preview-side">
-            <div class="paper" id="preview-paper">
-                <div class="p-header">
-                    <div class="p-logo-text">JHOM EXIM<br><span style="color: var(--slate-500); font-size: 18px;">WORLDWIDE LLP</span></div>
-                    <div class="p-contact-info">
-                        478, AR Mal, Mota Varachha, Surat, Gujarat,<br>
-                        India - 394101.<br>
-                        www.jhomeximworldwide.com<br>
-                        ceo@jhomeximworldwide.com
-                    </div>
-                </div>
-
-                <div class="p-divider-main"></div>
-                <div class="p-divider-sub" style="margin-bottom: 20px;"></div>
-
-                <div style="text-align: center; font-size: 18px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 30px;">
-                    Proforma Invoice
-                </div>
-
-                <div style="display: flex; justify-content: space-between; gap: 40px; border-bottom: 2px solid var(--slate-100); padding-bottom: 20px; margin-bottom: 30px;">
-                    <div style="width: 55%; font-size: 11px; color: var(--slate-700); line-height: 1.6;">
-                        <strong style="color: var(--slate-900); text-transform: uppercase; font-size: 10px;">Exporter:</strong><br>
-                        <strong>JHOM EXIM WORLDWIDE LLP</strong><br>
-                        Surat, Gujarat, India<br>
-                        GSTIN: 24AABFJ1234A1Z5<br>
-                        PAN: AABFJ1234A<br>
-                        +91 87800 27334 | ceo@jhomeximworldwide.com
-                    </div>
-                    <div style="width: 45%; font-size: 11px; text-align: right; color: var(--slate-700); line-height: 1.6;">
-                        PI No: <strong id="prev_id" style="color: var(--primary);"></strong><br>
-                        Date: <strong id="prev_date"></strong><br>
-                        LC Date: <strong id="prev_lc_date"></strong><br>
-                        Validity: <strong id="prev_validity"></strong>
-                    </div>
-                </div>
-
-                <div style="background: var(--slate-50); padding: 15px; border-radius: 4px; margin-bottom: 30px;">
-                    <h3 style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--slate-500); margin-bottom: 8px;">Consignee / Buyer</h3>
-                    <div style="font-size: 13px; font-weight: 700; color: var(--slate-900);" id="prev_buyer_name"></div>
-                    <div style="font-size: 11px; color: var(--slate-600); line-height: 1.4; margin-top: 4px;" id="prev_buyer_address"></div>
-                </div>
-
-                <h3 class="p-section-title">Itemized Commercial Details</h3>
-                <table class="p-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">SR</th>
-                            <th>Description</th>
-                            <th>HS Code</th>
-                            <th>Packaging</th>
-                            <th>Quantity</th>
-                            <th style="text-align: right;">Rate (USD)</th>
-                            <th style="text-align: right;">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="prev_table_body"></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="6" style="text-align: right; font-weight: 700; border: none; padding-top: 20px;">Grand Total Value (<span id="prev_incoterm">FOB</span>)</td>
-                            <td style="text-align: right; font-weight: 800; color: var(--primary); font-size: 14px; border: none; padding-top: 20px;" id="prev_grand_total"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <div style="font-size: 11px; color: var(--slate-600); margin-bottom: 30px;">
-                    <strong>Amount in Words:</strong> <span id="prev_amount_words" style="text-transform: capitalize;"></span>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                    <div>
-                        <h3 class="p-section-title" style="font-size: 11px;">Payment Terms</h3>
-                        <div style="font-size: 10px; color: var(--slate-600); line-height: 1.8;">
-                            • <strong style="color: var(--slate-900);"><span id="prev_advance_pct"></span>% Advance</strong> through Bank Transfer (T/T)<br>
-                            • <strong style="color: var(--slate-900);"><span id="prev_balance_pct"></span>% Balance</strong> against Irrevocable LC at sight
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="p-section-title" style="font-size: 11px;">Shipment Terms</h3>
-                        <div style="font-size: 10px; color: var(--slate-600); line-height: 1.8;">
-                            • Mode: <strong id="prev_shipment_mode"></strong> | Lead Time: <strong id="prev_delivery_time"></strong><br>
-                            • Loading: <strong id="prev_port_loading"></strong><br>
-                            • Discharge: <strong id="prev_port_discharge"></strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end;">
-                   <div style="font-size: 10px; color: var(--slate-400);">
-                       This is a computer-generated Proforma Invoice.<br>
-                       System ID: 0xF2A1B02
-                   </div>
-                   <div style="text-align: right;">
-                        <div style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 12px; margin-bottom: 40px;">For JHOM EXIM WORLDWIDE LLP</div>
-                        <div style="font-size: 11px; color: var(--slate-500);">Authorized Signatory / CEO</div>
-                   </div>
-                </div>
+    <div class="invoice-container-v2" id="preview-paper">
+        <div class="inv-header-flex">
+            <div class="inv-brand-box">
+                <h1>JHOM EXIM</h1>
+                <h1> WORLDWIDE LLP</h1>
+            </div>
+            <div class="inv-contact-top" style="color: #000; font-size: 13; font-weight: bold;">
+                <p>478, AR Mal, Mota Varachha, Surat, Gujarat,</p>
+                <p>India-394101.</p>
+                <p class="inv-link-blue">www.jhomeximworldwide.com</p>
+                <p class="inv-link-blue">ceo@jhomeximworldwide.com</p>
             </div>
         </div>
+
+        <div class="inv-line-heavy"></div>
+        <div class="inv-line-light"></div>
+
+        <div class="inv-title-main">PROFORMA INVOICE</div>
+
+        <div class="inv-info-grid">
+            <div class="inv-exporter-box">
+                <span class="inv-label-blue">Exporter:</span>
+                <p class="inv-bold-dark" style="font-size: 13px;">JHOM EXIM WORLDWIDE LLP</p>
+                <p class="inv-bold-dark" style="font-size: 13px;">Surat, Gujarat, India</p>
+                <a href="www.jhomeximworldwide.com" 
+                        style="color: #0056b3; text-decoration: underline; font-size: 13px; font-weight: 500;">
+                        www.jhomeximworldwide.com
+                        </a>
+                <a href="mailto:jhomeximworldwidellp@gmail.com" 
+                        style="color: #000; font-size: 13px;">
+                        jhomeximworldwidellp@gmail.com
+                        </a>
+                <!-- <p class="inv-link-blue">🌐 www.jhomeximworldwide.com</p> -->
+                <p style="color: #000; font-size: 13px; font-weight: 500; margin-bottom: 13px;">+91 87800 27334</p>
+                <p style="font-size: 13px; font-weight: 500;">Proforma Invoice No: <span class="inv-bold-dark" id="prev_id" style="font-size: 13px;"></span></p>
+                <p style="font-size: 13px; font-weight: 500;">Proforma Invoice Date: <span class="inv-bold-dark" id="prev_date" style="font-size: 13px;"></span></p>
+                <p style="font-size: 13px; font-weight: 500;">Letter of Credit Date: <span class="inv-bold-dark" id="prev_lc_date"></span></p>
+                <p style="font-size: 13px; font-weight: 500;">Validity: <span class="inv-bold-dark" id="prev_validity"></span></p>
+            </div>
+            <!-- <div class="inv-ref-box text-right">
+                <p>Proforma Invoice No: <span class="inv-bold-dark" id="prev_id" style="color: var(--inv-blue);"></span></p>
+                <p>Proforma Invoice Date: <span class="inv-bold-dark" id="prev_date"></span></p>
+                <p>Letter of Credit Date: <span id="prev_lc_date"></span></p>
+                <p>Validity: <span id="prev_validity"></span></p>
+            </div> -->
+        </div>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div>
+            <span class="inv-label-blue">Buyer Details</span>
+            <div>
+                <p class="buyer_details_content"><strong>Company Name:</strong><br> <span class="inv-bold-dark" id="prev_buyer_name"></span></p>
+                <p class="buyer_details_content" style="margin-top: 20px;"><strong>Registered Address:</strong></p>
+                <p class="prev_buyer_name" id="prev_buyer_address" style="line-height: 1.4;"></p>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div class="inv-label-blue">Product Details</div>
+
+        <table class="inv-data-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">Sr. No</th>
+                    <th>Description</th>
+                    <th>HS Code</th>
+                    <th>Packaging</th>
+                    <th>Quantity</th>
+                    <th>Origin</th>
+                    <th class="text-right">Rate (USD)</th>
+                    <th class="text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody id="prev_table_body">
+                </tbody>
+        </table>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div>
+            <p class="buyer_details_content"><strong>Incoterm:</strong> <span class="inv-bold-dark" id="prev_incoterm"></span> - <span class="inv-bold-dark" id="prev_port_loading1"></span></p>
+            <p class="buyer_details_content"><strong>Currency:</strong> <span class="inv-bold-dark">USD</span></p>
+        </div>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div id="prev_product_summary"></div>
+
+        <span class="inv-label-blue">Grand Total FOB Value</span>
+        <span style="font-size: 15px; font-weight: 800;" id="prev_grand_total"></span>
+
+        <div class="inv-words-box">
+            <p style="font-size: 15px;"><strong>Amount in Words:</strong><br> <span id="prev_amount_words" style="text-transform: capitalize;"></span></p>
+        </div>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div>
+            <div>
+                <div class="inv-section-header-small">Payment Terms</div>
+                <ul class="inv-terms-list">
+                    <li><strong><span id="prev_advance_pct"></span>% Advance Payment</strong> through Bank Transfer (T/T)</li>
+                    <li><strong><span id="prev_balance_pct"></span>% Balance</strong> under Irrevocable Letter of Credit (L/C) at sight</li>
+                </ul>
+            </div>
+
+            <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+            <div>
+                <div class="inv-section-header-small">Delivery & Shipment Terms</div>
+                <ul class="inv-terms-list">
+                    <li>Mode of Shipment: <span class="inv-bold-dark" id="prev_shipment_mode"></span></li>
+                    <li>Estimated Delivery Time: <span class="inv-bold-dark" id="prev_delivery_time"></span></li>
+                    <li>Port of Loading: <span id="prev_port_loading"></span></li>
+                    <li>Port of Discharge: <span id="prev_port_discharge"></span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div>
+            <div class="inv-section-header-small" style="margin-bottom: -10px;">Packaging & Quality</div><br>
+            <ul class="inv-terms-list">
+                <li>Export suitable packing as per product specification</li>
+                <li>Compliance with international export standards</li>
+            </ul>
+        </div>
+
+        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+
+        <div>
+            <div class="inv-section-header-small">Declaration:</div>
+            <p class="inv-terms-list">We hereby certify that the goods mentioned above are of Indian origin.The prices and terms stated above are true
+                and correct and agreed mutually between buyer and seller.</p>
+        </div>
+
+        <div class="inv-footer-signature">
+            <div class="inv-sig-block">
+                <p class="inv-bold-dark" style="font-size: 13px; font-weight: 800;">For JHOM EXIM WORLDWIDE LLP</p>
+                <div class="inv-sig-space"></div>
+                <p class="inv-terms-list">Authorized Signatory</p>
+                <p class="inv-terms-list">Jeel A. Borad</p>
+                <p class="inv-terms-list">CEO & Founder</p>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 
     <script src="js/config.js"></script>
@@ -433,7 +486,8 @@
             document.getElementById("prev_buyer_name").innerText = document.getElementById("buyer_name").value;
             document.getElementById("prev_buyer_address").innerText = document.getElementById("buyer_address").value;
 
-            let tableHTML = ""; let grandTotal = 0;
+            let tableHTML = ""; 
+            let grandTotal = 0;
             const blocks = document.querySelectorAll(".product-block-card");
             blocks.forEach((block, i) => {
                 const desc = block.querySelector(".p_desc").value;
@@ -443,17 +497,54 @@
                 const qtyUnit = block.querySelector(".p_qty_unit").value;
                 const rate = parseNumeric(block.querySelector(".p_rate").value);
                 const total = rate * qtyVal;
-                block.querySelector(".p_total").value = total;
+                // block.querySelector(".p_total").value = total;
                 grandTotal += total;
-                tableHTML += `<tr><td style="font-weight:700;">${i+1}</td><td>${desc}</td><td>${hs}</td><td>${pkg}</td><td>${qtyVal.toLocaleString()} ${qtyUnit}</td><td style="text-align:right;">$ ${rate.toLocaleString()}</td><td style="text-align:right; font-weight:700;">$ ${total.toLocaleString()}</td></tr>`;
+                tableHTML += `
+                    <tr>
+                        <td style="text-align:center;">${i+1}</td>
+                        <td style="font-weight:600;">${desc}</td>
+                        <td>${hs}</td>
+                        <td>${pkg}</td>
+                        <td>${qtyVal.toLocaleString()} ${qtyUnit}</td>
+                        <td>India</td> <td class="text-right">$ ${rate.toLocaleString()}</td>
+                        <td class="text-right" style="font-weight:700;">$ ${total.toLocaleString()}</td>
+                    </tr>`;
             });
 
+            let summaryHTML = "";
+
+            blocks.forEach((block, i) => {
+                const desc = block.querySelector(".p_desc").value;
+                const qtyVal = parseNumeric(block.querySelector(".p_qty_val").value);
+                const qtyUnit = block.querySelector(".p_qty_unit").value;
+                const rate = parseNumeric(block.querySelector(".p_rate").value);
+                const total = rate * qtyVal;
+
+                summaryHTML += `
+                    <div>
+                        <div style="font-weight: 800; font-size: 20px;">
+                            ${desc}
+                        </div>
+
+                        <div style="margin-top: 15px; font-size: 14px;">
+                            <div font-weight: 500;>Quantity: ${qtyVal.toLocaleString()} ${qtyUnit}</div>
+                            <div font-weight: 500;>Rate: USD ${rate.toLocaleString()} / ${qtyUnit}</div>
+                            <div style="font-weight:800;">
+                                Total: USD ${total.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+
+                        <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+                    </div>
+                `;
+            });
             document.getElementById("prev_table_body").innerHTML = tableHTML;
+            document.getElementById("prev_product_summary").innerHTML = summaryHTML;
             document.getElementById("grand_total").value = grandTotal.toLocaleString();
-            document.getElementById("prev_grand_total").innerText = "$ " + grandTotal.toLocaleString();
+            document.getElementById("prev_grand_total").innerText = "USD " + grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2});
             const words = numberToWords(grandTotal);
             document.getElementById("amount_words").value = words;
-            document.getElementById("prev_amount_words").innerText = words;
+            document.getElementById("prev_amount_words").innerText = numberToWords(grandTotal);
 
             const inc = document.getElementById("incoterm").value;
             const fullInc = inc === "CIF" ? `CIF – ${document.getElementById("cif_port").value || 'Destination Port'}` : "FOB – India Port";
@@ -463,6 +554,7 @@
             document.getElementById("prev_shipment_mode").innerText = document.getElementById("shipment_mode").value;
             document.getElementById("prev_delivery_time").innerText = document.getElementById("delivery_time").value + " Days";
             document.getElementById("prev_port_loading").innerText = document.getElementById("port_loading").value;
+            document.getElementById("prev_port_loading1").innerText = document.getElementById("port_loading").value;
             document.getElementById("prev_port_discharge").innerText = document.getElementById("port_discharge").value;
         }
 
@@ -477,42 +569,62 @@
             try {
                 const products = [];
                 document.querySelectorAll(".product-block-card").forEach((b, i) => {
+                    const qtyVal = parseNumeric(b.querySelector(".p_qty_val").value);
+                    const rateVal = parseNumeric(b.querySelector(".p_rate").value);
+                    
                     products.push({
                         sr_no: i + 1,
                         description: b.querySelector(".p_desc").value,
                         hs_code: b.querySelector(".p_hs").value,
                         packaging: b.querySelector(".p_pkg").value,
-                        quantity: b.querySelector(".p_qty_val").value + " " + b.querySelector(".p_qty_unit").value,
+                        quantity: qtyVal + " " + b.querySelector(".p_qty_unit").value,
                         origin: "India",
-                        rate: parseNumeric(b.querySelector(".p_rate").value),
-                        total: parseNumeric(b.querySelector(".p_total").value)
+                        rate: parseFloat(rateVal.toFixed(2)),
+                        total: parseFloat((qtyVal * rateVal).toFixed(2))
                     });
                 });
                 
+                const rawGrandTotal = products.reduce((sum, p) => sum + p.total, 0);
+
+                // Add this helper function at the top of your script
+                function formatToISODate(dateStr) {
+                    const date = new Date(dateStr);
+                    // If it's a valid date, return YYYY-MM-DD, otherwise return original
+                    return !isNaN(date) ? date.toISOString().split('T')[0] : dateStr;
+                }
+                
+                // FIX: Mapping the payload to match exactly what your backend expects
                 const payload = {
-                    id: "JHOM/PI/" + document.getElementById("pi_id").value,
-                    date: document.getElementById("pi_date").value,
-                    lc_date: document.getElementById("lc_date").value,
+                    // Error 1 Fix: Change 'pi_number' to 'invoice_no'
+                    invoice_no: "JHOM/PI/" + document.getElementById("pi_id").value,
+                    buyer_id: "1", 
+                    // Format these to YYYY-MM-DD
+                    date: formatToISODate(document.getElementById("pi_date").value),
+                    lc_date: formatToISODate(document.getElementById("lc_date").value),
+                    
                     validity: document.getElementById("validity").value + " Days",
                     buyer_name: document.getElementById("buyer_name").value,
                     buyer_address: document.getElementById("buyer_address").value,
-                    products,
-                    incoterm: document.getElementById("incoterm").value === "CIF" ? `CIF – ${document.getElementById("cif_port").value}` : "FOB – India Port",
+                    products: products,
+                    incoterm: document.getElementById("incoterm").value === "CIF" ? 
+                            `CIF – ${document.getElementById("cif_port").value}` : "FOB – India Port",
                     currency: "USD",
-                    advance_pct: parseInt(document.getElementById("advance_pct").value),
-                    balance_pct: parseInt(document.getElementById("balance_pct").value),
+                    advance_pct: parseInt(document.getElementById("advance_pct").value) || 0,
+                    balance_pct: parseInt(document.getElementById("balance_pct").value) || 0,
                     mode_of_shipment: document.getElementById("shipment_mode").value,
                     delivery_time: document.getElementById("delivery_time").value + " Days",
                     port_of_loading: "India Port",
                     port_of_discharge: document.getElementById("port_discharge").value,
                     amount_in_words: document.getElementById("amount_words").value,
-                    grand_total: parseNumeric(document.getElementById("grand_total").value)
+                    grand_total: rawGrandTotal
                 };
+                
+                console.log("Corrected Payload:", payload);
                 
                 await PDFAPI.generateProforma(payload);
             } catch (error) {
                 console.error('Proforma generation failed:', error);
-                alert('Error: ' + error.message);
+                alert(error.message); 
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;

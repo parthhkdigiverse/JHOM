@@ -1166,6 +1166,7 @@ textarea[disabled] {
 /* ==========================================
    BUSINESS DOCUMENTS (QUOTATION/INVOICE)
    ========================================== */
+/* ===== LAYOUT ===== */
 .doc-split-view {
     display: flex;
     height: calc(100vh - var(--navbar-height));
@@ -1174,6 +1175,7 @@ textarea[disabled] {
     margin-left: var(--sidebar-width);
 }
 
+/* ===== FORM SIDE ===== */
 .doc-form-side {
     width: 42%;
     background: var(--bg-surface);
@@ -1182,115 +1184,426 @@ textarea[disabled] {
     padding: 32px;
 }
 
+/* ===== PREVIEW SIDE ===== */
 .doc-preview-side {
     width: 58%;
-    background: #475569; /* Slate 600 - Professional PDF viewer background */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    background: #ffffff; 
+    display: block;      
     overflow-y: auto;
-    padding: 48px;
+    padding: 0;          
+    height: 100%;
 }
 
+/* ===== PAPER (PDF LOOK) ===== */
 .paper {
-    background: var(--doc-bg);
-    color: var(--doc-text);
-    width: 210mm; /* A4 Width */
-    min-height: 297mm; /* A4 Height */
-    padding: 25mm 20mm;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    font-family: 'Inter', sans-serif;
+    width: 100%;        
+    max-width: 794px;   
+    min-height: 1123px;
+    background: #ffffff;
+    padding: 60px 70px;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    color: #000000;
+    line-height: 1.5;
+    box-shadow: none;   
     position: relative;
 }
 
+/* Added a slight border to the left of the preview to separate from form */
+.doc-preview-side {
+    border-left: 1px solid #e2e8f0;
+}
+
+/* ===== HEADER ===== */
 .p-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+.p-logo-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .p-logo-text {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--primary);
-    line-height: 1;
+    font-family: "Helvetica", "Inter", sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: #C5A059;
+    line-height: 1.1;
 }
 
 .p-contact-info {
     text-align: right;
     font-size: 11px;
-    color: var(--slate-500);
+    line-height: 1.4;
+    color: #000000;
 }
 
+/* ===== BLACK DIVIDERS (Updated to Black) ===== */
 .p-divider-main {
-    height: 4px;
-    background: var(--primary);
-    margin-bottom: 2px;
+    height: 2px;
+    background: #000000; /* Changed to Black */
+    width: 100%;
+    margin-top: 15px;
 }
 
 .p-divider-sub {
     height: 1px;
-    background: var(--primary-soft);
-    margin-bottom: 40px;
+    background: #000000; /* Changed to Black */
+    width: 100%;
+    margin-top: 3px;
+    margin-bottom: 30px;
 }
 
+/* ===== SECTION TITLES (Black Bottom Border) ===== */
 .p-section-title {
     font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--slate-900);
-    border-bottom: 2px solid var(--slate-100);
+    font-weight: 800;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #000000; /* Changed to Black */
     padding-bottom: 8px;
-    margin-bottom: 20px;
+    color: #000000;
+    text-transform: none;
 }
 
+/* ===== DYNAMIC LISTS ===== */
+.p-list {
+    list-style: none;
+    padding-left: 15px;
+    font-size: 12px;
+    margin-bottom: 15px;
+    color: #000000;
+}
+
+.p-list li {
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.p-list li::before {
+    content: "•";
+    position: absolute;
+    left: -15px;
+    font-weight: bold;
+}
+
+/* ===== TABLE STYLING ===== */
 .p-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin-top: 5px;
 }
 
 .p-table th {
-    background: var(--slate-50);
     text-align: left;
-    padding: 12px;
-    font-size: 11px;
+    padding: 8px 0;
+    border-bottom: 1.5px solid #000000; /* Changed to Black */
+    font-size: 13px;
     font-weight: 700;
-    color: var(--slate-600);
-    border-bottom: 2px solid var(--slate-200);
+    color: #000000;
 }
 
 .p-table td {
-    padding: 12px;
-    font-size: 12px;
-    border-bottom: 1px solid var(--slate-100);
+    padding: 10px 0;
+    border-bottom: 1px solid #e2e8f0; 
+    font-size: 13px;
+    color: #000000;
 }
 
-.product-block-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--glass-border);
-    padding: 24px;
-    border-radius: var(--border-radius);
-    margin-bottom: 24px;
-    position: relative;
-    transition: var(--transition-fast);
+.p-table tfoot td {
+    border: none;
+    padding-top: 15px;
+    font-weight: 800;
+    font-size: 14px;
+    color: #000000;
 }
 
-.product-block-card:hover {
-    border-color: rgba(79, 70, 229, 0.3);
-    background: rgba(255, 255, 255, 0.05);
+/* ===== FOOTER SECTION ===== */
+.p-footer {
+    margin-top: 60px;
+    font-size: 13px;
+    color: #000000;
 }
 
-.product-block-header {
+.p-footer-sign {
+    margin-top: 40px;
+    font-weight: 700;
+}
+
+/* ===== SCROLLBARS ===== */
+.doc-preview-side::-webkit-scrollbar,
+.doc-form-side::-webkit-scrollbar {
+    width: 6px;
+}
+
+.doc-preview-side::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 10px;
+}
+
+/* ===== RESPONSIVE / ZOOM ===== */
+@media (max-width: 1450px) {
+    .paper {
+        transform: scale(0.8);
+        transform-origin: top center;
+    }
+}
+
+
+/* JHOM EXIM WORLDWIDE - PROFORMA INVOICE OFFICIAL STYLING 
+   Matches PROFORMA Order 1203.pdf 
+*/
+
+:root {
+    --inv-blue: #0056b3; /* Exact Blue from PDF Titles and Grand Total */
+    --inv-text-dark: #1a1a1a;
+    --inv-text-gray: #4b5563;
+    --inv-border: #d1d5db;
+    --inv-bg-light: #f9fafb;
+}
+
+/* Paper Container - Simulates A4 Page */
+.invoice-container-v2 {
+    background: #ffffff;
+    padding: 0.75in; /* Standard Margins */
+    color: var(--inv-text-dark);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    min-height: 11.69in;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Header Grid */
+.inv-header-flex {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+.inv-brand-box h1 {
+    font-size: 32px; /* JHOM EXIM */
+    font-weight: 500;
+    margin: 0;
+    line-height: 1;
+    color: #C5A059;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.inv-brand-box h2 {
+    font-size: 18px; /* WORLDWIDE LLP */
+    font-weight: 500;
+    color: var(--inv-text-gray);
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.inv-contact-top {
+    text-align: right;
+    font-size: 10.5px;
+    color: var(--inv-text-gray);
+    line-height: 1.4;
+}
+
+/* Header Separator Lines */
+.inv-line-heavy {
+    height: 8px;
+    background: #2b3a67; 
+    margin-top: 15px;
+}
+
+.inv-line-light {
+    height: 4px;
+    background: #B08D57;
+    margin-top: 2px;
+    margin-bottom: 30px;
+}
+
+/* Document Title */
+.inv-title-main {
+    /* text-align: center; */
+    font-size: 25px;
+    font-weight: 800;
+    color: #000000;
+    /* letter-spacing: 5px; */
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* Info Grid (Exporter & Reference) */
+.inv-info-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 40px;
+    margin-bottom: 25px;
+    font-size: 11.5px;
+}
+
+.inv-label-blue {
+    display: block;
+    font-weight: 800;
+    /* text-transform: uppercase; */
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 15px;
+}
+
+.inv-link-blue {
+    color: #000000;
+    font-weight: bold;
+}
+
+/* Buyer Container */
+.inv-buyer-container {
+    background: var(--inv-bg-light);
+    padding: 15px;
+    border-radius: 4px;
+    border-left: 5px solid var(--inv-blue);
+    margin-bottom: 30px;
+}
+
+/* Section Headers */
+.inv-section-header {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: var(--inv-blue);
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.inv-section-header-small {
+    font-weight: 800;
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+/* Product Table */
+.inv-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-bottom: 15px;
+}
+
+.inv-data-table th {
+    /* background: #f3f4f6; */
+    border: none;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.inv-data-table td {
+    border: none;
+    padding: 10px 8px;
+    vertical-align: top;
+}
+
+/* Financial Results */
+.inv-financial-row {
+    display: flex;
+    justify-content: flex-end;
     margin-bottom: 20px;
 }
 
-.product-block-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--primary);
+.inv-total-box {
+    background: var(--inv-blue);
+    color: #ffffff;
+    padding: 12px 25px;
+    border-radius: 2px;
+    display: flex;
+    gap: 40px;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+.inv-words-box {
+    font-size: 11.5px;
+    margin-bottom: 30px;
+    margin-top: 15px;
+}
+
+/* Terms and Logistics */
+.inv-terms-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.inv-terms-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    color: #000000;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.inv-terms-list li {
+    position: relative;
+    padding-left: 15px;
+}
+
+.inv-terms-list li::before {
+    content: "•";
+    color: #000000;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Declaration and Certification */
+.inv-declaration-box {
+    margin-top: 30px;
+    font-size: 10.5px;
+    color: var(--inv-text-gray);
+    font-style: italic;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+/* Signature Section */
+.inv-footer-signature {
+    margin-top: 60px;
+}
+
+.inv-sig-block {
+    display: inline-block;
+    min-width: 250px;
+}
+
+.inv-sig-space {
+    height: 40px;
+}
+
+/* Helpers */
+.inv-bold-dark { font-weight: 500; color: #000000; }
+.text-right { text-align: right; }
+
+.buyer_details_content{
+    font-size: 14px;
+    font-weight: bold;
+
+}
+
+.prev_buyer_name{
+    font-size: 14px;
+    color: #000000;
+}
+
+.product_details{
+    font-size: 14px;
+    color: #000000;
 }

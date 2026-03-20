@@ -31,21 +31,20 @@ def get_storage_path(env_key: str, default_windows: str) -> str:
         path = os.getenv(env_key, default_windows)
     return path
 
-BUYER_DRIVE = get_storage_path("BUYER_DRIVE", r"E:\Buyer")
-MANUFACTURER_DRIVE = get_storage_path("MANUFACTURER_DRIVE", r"E:\manufacture")
-DIRECT_DRIVE = get_storage_path("DIRECT_DRIVE", r"E:\Direct")
+BASE_UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+
+BUYER_DRIVE = os.path.join(BASE_UPLOAD_FOLDER, "buyers")
+MANUFACTURER_DRIVE = os.path.join(BASE_UPLOAD_FOLDER, "manufacturers")
+DIRECT_DRIVE = os.path.join(BASE_UPLOAD_FOLDER, "direct")
+
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
 # Create directories safely
 def ensure_storage_dirs():
-    """Ensure storage directories exist without crashing if read-only"""
     for path in [BUYER_DRIVE, MANUFACTURER_DRIVE, DIRECT_DRIVE]:
-        try:
-            if not os.path.exists(path):
-                os.makedirs(path, exist_ok=True)
-                print(f"📁 Created directory: {path}")
-        except Exception as e:
-            print(f"⚠️ Could not create directory {path}: {e}")
+        os.makedirs(path, exist_ok=True)
+
+ensure_storage_dirs()
 
 # Call creation only if not on Vercel or in a safe way
 if not is_vercel:
@@ -166,13 +165,12 @@ def save_uploaded_file(folder: str, filename: str, contents: bytes) -> str:
     return file_path
 
 def get_entity_folder(entity_type: str, entity_id: int = None) -> str:
-    """Get folder path for entity"""
     if entity_type == "buyer":
         path = os.path.join(BUYER_DRIVE, f"buyer_{entity_id}")
     elif entity_type == "manufacturer":
         path = os.path.join(MANUFACTURER_DRIVE, f"manufacturer_{entity_id}")
-    else:  # direct
-        path = os.path.join(DIRECT_DRIVE, datetime.now().strftime("%Y-%m-%d"))
-    
+    else:
+        path = DIRECT_DRIVE
+
     os.makedirs(path, exist_ok=True)
     return path
